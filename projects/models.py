@@ -13,16 +13,17 @@ class Client(models.Model):
         return self.name
 
 
-class Project(models.Model):
-    CLUSTER_CHOICES = [
-        ('B2B', 'B2B'),
-        ('SIM', 'SIM'),
-        ('CPG', 'CPG'),
-        ('BAN', 'Banking'),
-    ]
+class Division(models.Model):
+    name = models.CharField(max_length=50, blank=True)
 
+    def __str__(self):
+        return self.name
+
+
+class Project(models.Model):
+
+    division = models.ForeignKey(Division, on_delete=models.CASCADE, null=True, blank=True)
     created_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, blank=True)
-    cluster = models.CharField(max_length=50, choices=CLUSTER_CHOICES)
     client = models.CharField(max_length=50)
     name = models.CharField(max_length=50, blank=True)
     description = models.CharField(max_length=50, null=True, blank=True)
