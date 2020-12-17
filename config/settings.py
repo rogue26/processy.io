@@ -39,10 +39,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'widget_tweaks',
-    'projects.apps.ProjectsConfig',
-    'workstreams.apps.WorkstreamsConfig',
-    'deliverables.apps.DeliverablesConfig',
-    'tasks.apps.TasksConfig'
+    'projects',
+    'workstreams',
+    'deliverables',
+    'tasks',
+    'users'
 ]
 
 STATICFILES_FINDERS = [
@@ -87,8 +88,8 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'cpqmi',
-        'USER': 'cpqmi_db_user',
+        'NAME': 'processy',
+        'USER': 'processy_db_user',
         'PASSWORD': '796jHpeU4J9xHgEjLbp',
         'HOST': 'localhost',
         'PORT': '',
@@ -98,7 +99,7 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
 
-AUTH_USER_MODEL = 'projects.User'
+AUTH_USER_MODEL = 'users.CustomUser'
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -147,6 +148,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 # Configure Django App for Heroku.
-django_heroku.settings(locals())
+# django_heroku.settings(locals())
 
 DEBUG_PROPAGATE_EXCEPTIONS = True

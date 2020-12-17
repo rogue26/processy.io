@@ -1,21 +1,7 @@
-from django.db import models
-from django.contrib.auth.models import AbstractUser
 from django.db import transaction
 from django.db import models
-from django.contrib.auth.models import (
-    BaseUserManager, AbstractBaseUser
-)
 
-
-class User(AbstractUser):
-    USER_TYPE_CHOICES = (
-        (1, 'Partner'),
-        (2, 'Director'),
-        (3, 'Manager'),
-        (4, 'Consultant')
-    )
-
-    user_type = models.PositiveSmallIntegerField(choices=USER_TYPE_CHOICES, null=True, blank=True)
+from users.models import CustomUser
 
 
 class Client(models.Model):
@@ -35,7 +21,7 @@ class Project(models.Model):
         ('BAN', 'Banking'),
     ]
 
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    created_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, blank=True)
     cluster = models.CharField(max_length=50, choices=CLUSTER_CHOICES)
     client = models.CharField(max_length=50)
     name = models.CharField(max_length=50, blank=True)
