@@ -1,0 +1,27 @@
+<table id="projects-table" class="table">
+    <thead>
+    <tr>
+        <th class="text-center" scope="col">Project</th>
+        <th class="text-center" scope="col">Client</th>
+        <th class="text-center" scope="col">Edit</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for project in projects %}
+    <tr>
+        <td class="text-center">{{ project.name }}</td>
+        <td class="text-center">{{ project.client }}</td>
+        <td class="text-center">
+            <!-- Edit project buttons -->
+            <form action="/project/{{ project.id }}">
+                <input type="submit" class="edit-project btn btn-sm btn-primary fa" value="&#xf040"/>
+            </form>
+<!--            <button type="button" class="edit-project btn btn-sm btn-primary"-->
+<!--                    data-form-url="/project/{{ project.id }}/">-->
+<!--                <span class="fa fa-pencil"></span>-->
+<!--            </button>-->
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>

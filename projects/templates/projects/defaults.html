@@ -1,0 +1,223 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% load widget_tweaks %}
+
+<div class="container mt-3">
+    <div class="row mt-3 mb-5">
+        <div class="col-4 mt-3">
+            <h4>Configure defaults</h4>
+        </div>
+        <div class="col ml-5 mt-3">
+            <div class="row">
+                <div class="dropdown">
+                    <button id="workstream-types" class="btn btn-secondary ml-3 dropdown-toggle" type="button"
+                            name="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="fa fa-gear mr-2"></span>Workstream types
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a id="add-workstream-type" class="dropdown-item" href="#">Add new</a>
+                        <a id="manage-workstream-types" class="dropdown-item" href="#">Manage</a>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <button id="deliverable-types" class="btn btn-secondary ml-3 dropdown-toggle" type="button"
+                            name="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="fa fa-gear mr-2"></span>Deliverable types
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a id="add-deliverable-type" class="dropdown-item" href="#">Add new</a>
+                        <a id="manage-deliverable-types" class="dropdown-item" href="#">Manage</a>
+                    </div>
+                </div>
+
+                <div class="dropdown">
+                    <button id="task-types" class="btn btn-secondary ml-3 dropdown-toggle" type="button"
+                            name="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="fa fa-gear mr-2"></span>Task types
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a id="add-task-type" class="dropdown-item" href="#">Add new</a>
+                        <a id="manage-task-types" class="dropdown-item" href="#">Manage</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="btn-group btn-group-toggle mb-3" data-toggle="buttons">
+        <label class="btn btn-secondary active">
+            <input type="radio" name="options" id="option1" autocomplete="off" checked value="workstreams"> Workstreams
+        </label>
+        <label class="btn btn-secondary">
+            <input type="radio" name="options" id="option2" autocomplete="off" value="deliverables"> Deliverables
+        </label>
+        <label class="btn btn-secondary">
+            <input type="radio" name="options" id="option3" autocomplete="off" value="tasks"> Tasks
+        </label>
+    </div>
+
+    <div id="workstreams-table" class="row">
+        <div class="column">
+            <div class="row">
+                <h4 class="my-auto">Default workstream configurations</h4>
+                <button id="add-workstream" class="btn btn-secondary ml-3" type="button" name="button">
+                    <span class="fa fa-plus mr-2"></span>Add new default workstream
+                </button>
+            </div>
+            <div class="row mt-3">
+                {% if workstreams %}
+                {% include "workstreams/_workstreams_table.html" %}
+                {% else %}
+                <p class="no-projects text-primary">No workstreams added yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div id="deliverables-table" class="row" style="display: none;">
+        <div class="column">
+            <div class="row">
+                <h4 class="my-auto">Default deliverable configurations</h4>
+                <button id="add-deliverable" class="btn btn-secondary ml-3" type="button" name="button">
+                    <span class="fa fa-plus mr-2"></span>Add new default deliverables
+                </button>
+            </div>
+            <div class="row mt-3">
+                {% if deliverables %}
+                {% include "deliverables/_deliverables_table.html" %}
+                {% else %}
+                <p class="no-projects text-primary">No deliverables added yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div id="tasks-table" class="row" style="display: none;">
+        <div class="column">
+            <div class="row">
+                <h4 class="my-auto">Default task configurations</h4>
+                <button id="add-task" class="btn btn-secondary ml-3" type="button" name="button">
+                    <span class="fa fa-plus mr-2"></span>Add new default tasks
+                </button>
+            </div>
+            <div class="row mt-3">
+                {% if tasks %}
+                {% include "tasks/_tasks_table.html" %}
+                {% else %}
+                <p class="no-projects text-primary">No tasks added yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+{% block extrascripts %}
+<script type="text/javascript">
+      $(function () {
+          // Log in & Sign up buttons
+          // The formURL is given explicitly
+          $("#login-btn").modalForm({
+            formURL: "{% url 'login_modal' %}"
+          });
+
+          $("#signup-btn").modalForm({
+            formURL: "{% url 'signup_modal' %}"
+          });
+
+          // Create workstream button opens modal with id="create-modal"
+          $("#add-workstream").modalForm({
+            formURL: "{% url 'add_workstream' project_id=1 %}",
+            modalID: "#create-modal"
+          });
+
+          // Create deliverable button opens modal with id="create-modal"
+          $("#add-deliverable").modalForm({
+            formURL: "{% url 'add_deliverable' project_id=1 %}",
+            modalID: "#create-modal"
+          });
+
+          // Create task button opens modal with id="create-modal"
+          $("#add-task").modalForm({
+            formURL: "{% url 'add_task' project_id=1 %}",
+            modalID: "#create-modal"
+          });
+
+          // Create task button opens modal with id="create-modal"
+          $("#add-workstream-type").modalForm({
+            formURL: "{% url 'add_workstream_type' %}",
+            modalID: "#create-modal"
+          });
+
+          // Create task button opens modal with id="create-modal"
+          $("#add-deliverable-type").modalForm({
+            formURL: "{% url 'add_deliverable_type' %}",
+            modalID: "#create-modal"
+          });
+
+          // Create task button opens modal with id="create-modal"
+          $("#add-task-type").modalForm({
+            formURL: "{% url 'add_task_type' %}",
+            modalID: "#create-modal"
+          });
+
+          var asyncSuccessMessage = [
+            "<div ",
+            "style='position:fixed;top:0;z-index:10000;width:100%;border-radius:0;' ",
+            "class='alert alert-icon alert-success alert-dismissible fade show mb-0' role='alert'>",
+            "Success: Updated.",
+            "<button type='button' class='close' data-dismiss='alert' aria-label='Close'>",
+            "<span aria-hidden='true'>&times;</span>",
+            "</button>",
+            "</div>",
+            "<script>",
+            "$('.alert').fadeTo(2000, 500).slideUp(500, function () {$('.alert').slideUp(500).remove();});",
+            "<\/script>"
+          ].join("");
+
+
+          // Read and Delete buttons open modal with id="modal"
+          // The formURL is retrieved from the data of the element
+          $(".bs-modal").each(function () {
+              $(this).modalForm({formURL: $(this).data("form-url")});
+          });
+
+          // Hide message
+          $(".alert").fadeTo(2000, 500).slideUp(500, function () {
+              $(".alert").slideUp(500);
+          });
+
+          $('input[type=radio][name="options"]').change(function() {
+
+            if ($(this).val() == "workstreams") {
+              $('#workstreams-table').show()
+              $('#deliverables-table').hide()
+              $('#tasks-table').hide()
+            } else if ($(this).val() == "deliverables") {
+              $('#workstreams-table').hide()
+              $('#deliverables-table').show()
+              $('#tasks-table').hide()
+            } else if ($(this).val() == "tasks") {
+              $('#workstreams-table').hide()
+              $('#deliverables-table').hide()
+              $('#tasks-table').show()
+            }
+
+          });
+      });
+
+
+
+
+
+
+
+</script>
+{% endblock extrascripts %}

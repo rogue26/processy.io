@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% load widget_tweaks %}
+
+<div class="container">
+    <div class="gantt"></div>
+</div>
+{% endblock content %}
+{% block extrascripts %}
+<script>
+    $(function() {
+        "use strict";
+
+
+
+        // shifts dates closer to Date.now()
+        var offset = new Date().setHours(0, 0, 0, 0) -
+            new Date({{ gantt_json|safe }}[0].values[0].from).setDate(35);
+        for (var i = 0, len = {{ gantt_json|safe }}.length, value; i < len; i++) {
+            value = {{ gantt_json|safe }}[i].values[0];
+            value.from += offset;
+            value.to += offset;
+        }
+
+        $(".gantt").gantt({
+            source: {{ gantt_json|safe }},
+            navigate: "scroll",
+            scale: "weeks",
+            maxScale: "months",
+            minScale: "hours",
+            itemsPerPage: 10,
+            scrollToToday: false,
+            useCookie: true,
+            onItemClick: function(data) {
+                alert("Item clicked - show some details");
+            },
+            onAddClick: function(dt, rowId) {
+                alert("Empty space clicked - add an item!");
+            },
+            onRender: function() {
+                if (window.console && typeof console.log === "function") {
+                    console.log("chart rendered");
+                }
+            }
+        });
+
+        $(".gantt").popover({
+            selector: ".bar",
+            title: function _getItemText() {
+                return this.textContent;
+            },
+            container: '.gantt',
+            content: "Here's some useful information.",
+            trigger: "hover",
+            placement: "auto right"
+        });
+
+        prettyPrint();
+
+    });
+
+</script>
+{% endblock extrascripts %}
+

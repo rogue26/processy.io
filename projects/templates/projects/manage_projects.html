@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% load widget_tweaks %}
+<div class="container mt-3">
+    <div class="row">
+        <div class="col-6">
+            <div class="ml-3 mr-3 mt-3 mb-3">
+                <h4 class="mb-3">Create a new project</h4>
+
+                <form action="" method="post">
+                    {% csrf_token %}
+
+                    {% for hidden_field in form.hidden_fields %}
+                    {{ hidden_field }}
+                    {% endfor %}
+
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger" role="alert">
+                        {% for error in form.non_field_errors %}
+                        {{ error }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    {% for field in form.visible_fields %}
+                    <div class="form-group">
+                        {% if field.field.widget.input_type == "checkbox" %}
+                        <div>{{ field.label_tag }}</div>
+                        {% for choice_id, choice_label in field.field.choices %}
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="id_{{field.label}}_{{choice_id}}" name="{{ field.name }}" value="{{ choice_id }}">
+                            <label class="custom-control-label" for="id_{{field.label}}_{{choice_id}}">{{ choice_label }}</label>
+                        </div>
+                        {% endfor %}
+                        {% else %}
+                        {{ field.label_tag }}
+                        {% if form.field.label %}
+                        {% if field.errors %}
+                        {% render_field field class="form-control is-invalid" %}
+                        {% for error in field.errors %}
+                        <div class="invalid-feedback">
+                            {{ error }}
+                        </div>
+                        {% endfor %}
+                        {% else %}
+                        {% render_field field class="form-control is-valid" %}
+                        {% endif %}
+                        {% else %}
+                        {% render_field field class="form-control" %}
+                        {% endif %}
+                        {% endif %}
+                        {% if field.help_text %}
+                        <small class="form-text text-muted">{{ field.help_text }}</small>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+
+
+                    <input class="bs-modal btn btn-primary mr-1" type="submit" name="save-project" , value="Save">
+                    <input class="bs-modal btn btn-primary mr-1" type="submit" name="add-workstreams" ,
+                           value="Configure workstreams">
+                </form>
+            </div>
+
+        </div>
+        <div class="col-6 rounded-lg bg-light border">
+            <div class="ml-3 mr-3 mt-3 mb-3">
+                <h4 class="mb-3">Your projects</h4>
+                {% if projects %}
+                {% include "projects/_projects_table.html" %}
+                {% else %}
+                <p class="no-projects text-primary">No projects added yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+{% block extrascripts %}
+<script type="text/javascript">
+      $(function () {
+          // Log in & Sign up buttons
+          // The formURL is given explicitly
+          $("#login-btn").modalForm({
+            formURL: "{% url 'login_modal' %}"
+          });
+
+          $("#signup-btn").modalForm({
+            formURL: "{% url 'signup_modal' %}"
+          });
+
+          var asyncSuccessMessage = [
+            "<div ",
+            "style='position:fixed;top:0;z-index:10000;width:100%;border-radius:0;' ",
+            "class='alert alert-icon alert-success alert-dismissible fade show mb-0' role='alert'>",
+            "Success: Updated.",
+            "<button type='button' class='close' data-dismiss='alert' aria-label='Close'>",
+            "<span aria-hidden='true'>&times;</span>",
+            "</button>",
+            "</div>",
+            "<script>",
+            "$('.alert').fadeTo(2000, 500).slideUp(500, function () {$('.alert').slideUp(500).remove();});",
+            "<\/script>"
+          ].join("");
+
+
+          // Read and Edit buttons open modal with id="modal"
+          // The formURL is retrieved from the data of the element
+          $(".bs-modal").each(function () {
+              $(this).modalForm({formURL: $(this).data("form-url")});
+          });
+
+          // Hide message
+          $(".alert").fadeTo(2000, 500).slideUp(500, function () {
+              $(".alert").slideUp(500);
+          });
+      });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+{% endblock extrascripts %}
