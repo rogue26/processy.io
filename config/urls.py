@@ -28,6 +28,7 @@ urlpatterns = [
     path('', include('deliverables.urls')),
     path('', include('tasks.urls')),
     path('', include('users.urls')),
+    path('', include('organizations.urls')),
     path('__debug__/', include(debug_toolbar.urls)),
 ] \
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)\

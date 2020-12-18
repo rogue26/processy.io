@@ -10,6 +10,7 @@ from ..models import Project
 from workstreams.models import Workstream
 from deliverables.models import Deliverable
 from tasks.models import Task
+from organizations.models import Organization
 
 
 def set_child_task_start_end(child_tasks):
@@ -73,7 +74,7 @@ class ProjectsDashboard(LoginRequiredMixin, TemplateView):
         context = {}
 
         project = Project.objects.get(id=self.kwargs['project_id'])
-
+        organization = request.user.organization
 
         workstreams = list(Workstream.objects.filter(project__id=self.kwargs['project_id']))
         deliverables = list(Deliverable.objects.filter(project__id=self.kwargs['project_id']))
@@ -90,6 +91,7 @@ class ProjectsDashboard(LoginRequiredMixin, TemplateView):
         context['deliverables'] = deliverables
         context['tasks'] = tasks
         context['project_id'] = self.kwargs['project_id']
+        context['organization'] = organization
         context['gantt_json'] = create_gantt_json(workstreams)
 
         return self.render_to_response(context)

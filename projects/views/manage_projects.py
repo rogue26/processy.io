@@ -5,6 +5,7 @@ from ..forms import ProjectForm
 from ..models import Project
 
 from workstreams.models import Workstream
+from organizations.models import Organization
 
 
 class ManageProjects(FormView):
@@ -26,7 +27,9 @@ class ManageProjects(FormView):
             # create object of form
             form = ProjectForm(request.POST or None, request.FILES or None)
 
+            organization = request.user.organization
             context['form'] = form
+            context['organization'] = organization
             context['workstreams'] = Workstream.objects.all()
             context['projects'] = Project.objects.filter(is_the_reference_project=False, created_by=request.user)
             context['workstream_columns'] = range(2)

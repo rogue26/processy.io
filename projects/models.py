@@ -2,6 +2,7 @@ from django.db import transaction
 from django.db import models
 
 from users.models import CustomUser
+from organizations.models import Division
 
 
 class Client(models.Model):
@@ -13,15 +14,7 @@ class Client(models.Model):
         return self.name
 
 
-class Division(models.Model):
-    name = models.CharField(max_length=50, blank=True)
-
-    def __str__(self):
-        return self.name
-
-
 class Project(models.Model):
-
     division = models.ForeignKey(Division, on_delete=models.CASCADE, null=True, blank=True)
     created_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, blank=True)
     client = models.CharField(max_length=50)

@@ -6,6 +6,7 @@ from ..models import Project
 from workstreams.models import Workstream
 from deliverables.models import Deliverable
 from tasks.models import Task
+from organizations.models import Organization
 
 
 class DefaultsDashboard(LoginRequiredMixin, TemplateView):
@@ -19,11 +20,13 @@ class DefaultsDashboard(LoginRequiredMixin, TemplateView):
 
         project = Project.objects.filter(is_the_reference_project=True).first()
 
+        organization = request.user.organization
         workstreams = list(Workstream.objects.filter(project__id=project.id))
         deliverables = list(Deliverable.objects.filter(project__id=project.id))
         tasks = list(Task.objects.filter(project__id=project.id))
 
         context['project'] = project
+        context['organization'] = organization
         context['projects'] = Project.objects.filter(is_the_reference_project=False, created_by=request.user)
         context['workstreams'] = workstreams
         context['deliverables'] = deliverables
