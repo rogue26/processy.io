@@ -74,6 +74,7 @@ class ProjectsDashboard(LoginRequiredMixin, TemplateView):
 
         project = Project.objects.get(id=self.kwargs['project_id'])
 
+
         workstreams = list(Workstream.objects.filter(project__id=self.kwargs['project_id']))
         deliverables = list(Deliverable.objects.filter(project__id=self.kwargs['project_id']))
         tasks = list(Task.objects.filter(project__id=self.kwargs['project_id']))
@@ -84,6 +85,7 @@ class ProjectsDashboard(LoginRequiredMixin, TemplateView):
         set_child_task_start_end(initial_tasks)
 
         context['project'] = project
+        context['projects'] = Project.objects.filter(is_the_reference_project=False, created_by=request.user)
         context['workstreams'] = workstreams
         context['deliverables'] = deliverables
         context['tasks'] = tasks

@@ -26,20 +26,33 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             {% if not user.is_anonymous %}
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="/">Projects</a>
-                    </li>
-                    <li class="nav-item active">
-                        <a class="nav-link" href="/defaults">Defaults</a>
-                    </li>
-                </ul>
+            <ul class="navbar-nav mr-auto">
+
+                <li class="nav-item dropdown active">
+                    <a class="nav-link dropdown-toggle" href="/" id="navbarDropdown" role="button"
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Projects
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="#">Create new</a>
+                        <div class="dropdown-divider"></div>
+                        {% for project in projects %}
+                        <a class="dropdown-item" href="/project/{{ project.id }}">{{project.client}} - {{project.name}}</a>
+                        {% endfor %}
+                    </div>
+                </li>
+
+                <li class="nav-item active">
+                    <a class="nav-link" href="/defaults">Defaults</a>
+                </li>
+            </ul>
             {% endif %}
             <ul class="navbar-nav">
                 {% if not user.is_anonymous %}
                 <li class="nav-item">
                     <span> Your are logged in as <strong>{{ user }}</strong>.</span>
-                    <a href="{% url 'logout' %}" id="logout-btn" class="btn btn-secondary ml-3" role="button">Log out</a>
+                    <a href="{% url 'logout' %}" id="logout-btn" class="btn btn-secondary ml-3" role="button">Log
+                        out</a>
                 </li>
 
                 {% else %}

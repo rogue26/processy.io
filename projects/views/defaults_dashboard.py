@@ -24,6 +24,7 @@ class DefaultsDashboard(LoginRequiredMixin, TemplateView):
         tasks = list(Task.objects.filter(project__id=project.id))
 
         context['project'] = project
+        context['projects'] = Project.objects.filter(is_the_reference_project=False, created_by=request.user)
         context['workstreams'] = workstreams
         context['deliverables'] = deliverables
         context['tasks'] = tasks
