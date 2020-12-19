@@ -19,53 +19,5 @@
 {% endblock content %}
 
 {% block extrascripts %}
-<script type="text/javascript">
-      $(function () {
-          // Log in & Sign up buttons
-          // The formURL is given explicitly
-          $("#login-btn").modalForm({
-            formURL: "{% url 'login_modal' %}"
-          });
 
-          $("#log-in-link").modalForm({
-            formURL: "{% url 'login_modal' %}"
-          });
-
-          $("#signup-btn").modalForm({
-            formURL: "{% url 'signup_modal' %}"
-          });
-
-          $("#sign-up-link").modalForm({
-            formURL: "{% url 'signup_modal' %}"
-          });
-
-          var asyncSuccessMessage = [
-            "<div ",
-            "style='position:fixed;top:0;z-index:10000;width:100%;border-radius:0;' ",
-            "class='alert alert-icon alert-success alert-dismissible fade show mb-0' role='alert'>",
-            "Success: Updated.",
-            "<button type='button' class='close' data-dismiss='alert' aria-label='Close'>",
-            "<span aria-hidden='true'>&times;</span>",
-            "</button>",
-            "</div>",
-            "<script>",
-            "$('.alert').fadeTo(2000, 500).slideUp(500, function () {$('.alert').slideUp(500).remove();});",
-            "<\/script>"
-          ].join("");
-
-
-          // Read and Edit buttons open modal with id="modal"
-          // The formURL is retrieved from the data of the element
-          $(".bs-modal").each(function () {
-              $(this).modalForm({formURL: $(this).data("form-url")});
-          });
-
-          // Hide message
-          $(".alert").fadeTo(2000, 500).slideUp(500, function () {
-              $(".alert").slideUp(500);
-          });
-      });
-
-
-</script>
 {% endblock extrascripts %}
