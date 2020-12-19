@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'tasks',
     'users',
     'organizations',
+    'content',
     'debug_toolbar'
 ]
 

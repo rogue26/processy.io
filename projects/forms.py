@@ -1,5 +1,6 @@
 from django import forms
 from projects.models import Client, Project
+from bootstrap_modal_forms.forms import BSModalModelForm
 
 
 class ClientForm(forms.ModelForm):
@@ -18,3 +19,11 @@ class ProjectForm(forms.ModelForm):
         # help_texts = {
         #     'client': "What is the name of the client?"
         # }
+
+class AddProjectForm(BSModalModelForm):
+    class Meta:
+        model = Project
+        exclude = ['timestamp', 'workstream', 'is_the_reference_project', 'created_by']
+        labels = {
+            "name": "Project name"
+        }

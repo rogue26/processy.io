@@ -6,7 +6,7 @@
 
 
 <div class="container-fluid">
-    <div class="row mt-3 mb-3">
+    <div class="row mt-4 mb-3">
         <div class="col-md-3 pl-5">
             <h4 class="mb-3">Project info</h4>
             <div>
@@ -15,14 +15,14 @@
             <div>
                 <h6><strong>Client name:</strong> {{project.client}}</h6>
             </div>
-            <div class="mb-3">
+            <div>
                 <h6><strong>Division:</strong> {{project.division}}</h6>
             </div>
-            <div class="row mb-3">
+            <div class="row mb-3 mt-3">
                 <div class="col-md-12">
                     <button id="configure" class="btn btn-secondary text-left btn-block" type="button" name="button"
                             style="active">
-                        <span class="fa fa-gear mr-2"></span>Configure
+                        <span class="fa fa-gear mr-2"></span>Configure project
                     </button>
                 </div>
             </div>
@@ -73,75 +73,83 @@
             </div>
         </div>
         <div class="col-md-9">
-            <div class="btn-group d-flex btn-group-toggle pl-5 pr-5 mx-auto" data-toggle="buttons">
-                <label class="btn btn-secondary active w-100">
-                    <input type="radio" name="options" id="option1" autocomplete="off" value="workstreams">
-                    Workstreams
-                </label>
-                <label class="btn btn-secondary w-100">
-                    <input type="radio" name="options" id="option2" autocomplete="off" value="deliverables">
-                    Deliverables
-                </label>
-                <label class="btn btn-secondary w-100">
-                    <input type="radio" name="options" id="option3" autocomplete="off" value="tasks">
-                    Tasks
-                </label>
+            <div id="configure-project-selector">
+                <div class="btn-group d-flex btn-group-toggle pl-5 pr-5 mx-auto" data-toggle="buttons">
+                    <label class="btn btn-secondary active w-100">
+                        <input type="radio" name="options" id="option1" autocomplete="off" value="workstreams">
+                        Workstreams
+                    </label>
+                    <label class="btn btn-secondary w-100">
+                        <input type="radio" name="options" id="option2" autocomplete="off" value="deliverables">
+                        Deliverables
+                    </label>
+                    <label class="btn btn-secondary w-100">
+                        <input type="radio" name="options" id="option3" autocomplete="off" value="tasks">
+                        Tasks
+                    </label>
+                </div>
             </div>
+
             <div class="row mt-3">
                 <div class="col-md-12">
-                    <div id="workstreams-table" class="row">
-                        <div class="column mx-auto">
-                            <div class="row">
-                                <h4 class="my-auto">Default workstream configurations</h4>
-                                <button id="add-workstream" class="btn btn-secondary ml-3" type="button" name="button">
-                                    <span class="fa fa-plus mr-2"></span>Add new workstream
-                                </button>
+                    <div id="configure-project-table">
+                        <div id="workstreams-table" class="row">
+                            <div class="column mx-auto">
+                                <div class="row">
+                                    <h4 class="my-auto">Default workstream configurations</h4>
+                                    <button id="add-workstream" class="btn btn-secondary ml-3" type="button"
+                                            name="button">
+                                        <span class="fa fa-plus mr-2"></span>Add new workstream
+                                    </button>
+                                </div>
+                                <div class="row mt-3">
+                                    {% if workstreams %}
+                                    {% include "workstreams/_workstreams_table.html" %}
+                                    {% else %}
+                                    <p class="no-projects text-primary">No workstreams added yet.</p>
+                                    {% endif %}
+                                </div>
                             </div>
-                            <div class="row mt-3">
-                                {% if workstreams %}
-                                {% include "workstreams/_workstreams_table.html" %}
-                                {% else %}
-                                <p class="no-projects text-primary">No workstreams added yet.</p>
-                                {% endif %}
+                        </div>
+
+                        <div id="deliverables-table" class="row" style="display: none;">
+                            <div class="column mx-auto">
+                                <div class="row">
+                                    <h4 class="my-auto">Default deliverable configurations</h4>
+                                    <button id="add-deliverable" class="btn btn-secondary ml-3" type="button"
+                                            name="button">
+                                        <span class="fa fa-plus mr-2"></span>Add new deliverables
+                                    </button>
+                                </div>
+                                <div class="row mt-3">
+                                    {% if deliverables %}
+                                    {% include "deliverables/_deliverables_table.html" %}
+                                    {% else %}
+                                    <p class="no-projects text-primary">No deliverables added yet.</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="tasks-table" class="row" style="display: none;">
+                            <div class="column mx-auto">
+                                <div class="row">
+                                    <h4 class="my-auto">Default task configurations</h4>
+                                    <button id="add-task" class="btn btn-secondary ml-3" type="button" name="button">
+                                        <span class="fa fa-plus mr-2"></span>Add new tasks
+                                    </button>
+                                </div>
+                                <div class="row mt-3">
+                                    {% if tasks %}
+                                    {% include "tasks/_tasks_table.html" %}
+                                    {% else %}
+                                    <p class="no-projects text-primary">No tasks added yet.</p>
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <div id="deliverables-table" class="row" style="display: none;">
-                        <div class="column">
-                            <div class="row">
-                                <h4 class="my-auto">Default deliverable configurations</h4>
-                                <button id="add-deliverable" class="btn btn-secondary ml-3" type="button" name="button">
-                                    <span class="fa fa-plus mr-2"></span>Add new deliverables
-                                </button>
-                            </div>
-                            <div class="row mt-3">
-                                {% if deliverables %}
-                                {% include "deliverables/_deliverables_table.html" %}
-                                {% else %}
-                                <p class="no-projects text-primary">No deliverables added yet.</p>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="tasks-table" class="row" style="display: none;">
-                        <div class="column">
-                            <div class="row">
-                                <h4 class="my-auto">Default task configurations</h4>
-                                <button id="add-task" class="btn btn-secondary ml-3" type="button" name="button">
-                                    <span class="fa fa-plus mr-2"></span>Add new tasks
-                                </button>
-                            </div>
-                            <div class="row mt-3">
-                                {% if tasks %}
-                                {% include "tasks/_tasks_table.html" %}
-                                {% else %}
-                                <p class="no-projects text-primary">No tasks added yet.</p>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
 
                     <div id="project-timeline">
                         <div id="ganttChart"></div>
@@ -218,7 +226,7 @@ var ganttData = {{ gantt_json|safe }};
               $(".alert").slideUp(500);
           });
 
-          $('input[type=radio][name="configure-options"]').change(function() {
+          $('input[type=radio][name="options"]').change(function() {
 
             if ($(this).val() == "workstreams") {
               $('#workstreams-table').show()
@@ -237,14 +245,15 @@ var ganttData = {{ gantt_json|safe }};
           });
 
             $("#view-timeline").click(function(){
-                $("#configure-project").hide();
+                $("#configure-project-table").hide();
+                $("#configure-project-selector").hide();
                 $("#project-timeline").show();
             });
 
             $("#view-timeline").one("click", function(){
 $("#ganttChart").ganttView({
                     data: ganttData,
-                    slideWidth: 868,
+                    slideWidth: 700,
                     behavior: {
                         onClick: function (data) {
                             var msg = "You clicked on an event: { start: " + data.start.toString("M/d/yyyy") + ", end: " + data.end.toString("M/d/yyyy") + " }";
@@ -263,15 +272,10 @@ $("#ganttChart").ganttView({
                 });
 
 
-
-
-
-
-
-
             $("#configure").click(function(){
               $("#project-timeline").hide();
-              $("#configure-project").show();
+              $("#configure-project-table").show();
+              $("#configure-project-selector").show();
             });
 
             $('#output-sow').click(function(){
@@ -301,6 +305,8 @@ $("#ganttChart").ganttView({
              });
 
       });
+
+
 
 
 

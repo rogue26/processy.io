@@ -6,26 +6,34 @@
 
 
 <div class="container-fluid">
-    <div class="row mt-3 mb-3">
+    <div class="row mt-4 mb-3">
         <div class="col-md-3 pl-5">
             <h4 class="mb-3">Organization info</h4>
             <div>
-                <h6><strong>Organization name:</strong> {{organization.name}}</h6>
+                <h6><strong>Organization name:</strong></br>{{organization.name}} ({{organization.nickname}})</h6>
             </div>
             <div>
-                <h6><strong>Domain:</strong> {{organization.domain}}</h6>
+                <h6><strong>Domain:</strong></br>{{organization.domain}}</h6>
+            </div>
+            <div class="row mb-3 mt-3">
+                <div class="col-md-12">
+                    <button id="configure-organization" class="btn btn-secondary text-left btn-block" type="button" name="button"
+                            style="active">
+                        <span class="fa fa-gear mr-2"></span>Configure Organization
+                    </button>
+                </div>
             </div>
             <div class="row mb-3">
                 <div class="col-md-12">
-                    <button id="configure" class="btn btn-secondary text-left btn-block" type="button" name="button"
+                    <button id="add-division" class="btn btn-secondary text-left btn-block" type="button" name="button"
                             style="active">
-                        <span class="fa fa-gear mr-2"></span>Configure
+                        <span class="fa fa-sitemap mr-2"></span>Add division
                     </button>
                 </div>
             </div>
         </div>
         <div class="col-md-9">
-            <div class="row mt-3">
+            <div class="row">
                 <div class="col-md-12">
                     <h4 class="mb-3">Organization projects</h4>
                     {% if projects %}
@@ -63,6 +71,11 @@
             formURL: "{% url 'signup_modal' %}"
           });
 
+        // Create division button opens modal with id="create-modal"
+          $("#add-division").modalForm({
+            formURL: "{% url 'add_division' organization_id=organization.id %}",
+            modalID: "#create-modal"
+          });
 
           var asyncSuccessMessage = [
             "<div ",

@@ -10,19 +10,11 @@ class DeliverableType(models.Model):
     def __str__(self):
         return self.name
 
-
 class Deliverable(models.Model):
-    FORMAT_CHOICES = [
-        ('XLS', 'Excel tool'),
-        ('PPT', 'PowerPoint deck'),
-        ('PBI', 'Power BI dashboard'),
-        ('TBL', 'Tableau dashboard'),
-    ]
 
     description = models.CharField(max_length=50, null=True, blank=True)
     category = models.ForeignKey(DeliverableType, on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
-    format = models.CharField(max_length=50, choices=FORMAT_CHOICES)
     scope = models.CharField(max_length=50, blank=True)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     workstream = models.ForeignKey(Workstream, on_delete=models.CASCADE, null=True)

@@ -44,7 +44,6 @@ class ConfigureDeliverable(BSModalFormView):
         initial['name'] = current_deliverable.name
         initial['category'] = current_deliverable.category
         initial['description'] = current_deliverable.description
-        initial['format'] = current_deliverable.format
         initial['scope'] = current_deliverable.scope
         initial['workstream'] = current_deliverable.workstream
 
@@ -70,7 +69,6 @@ class ConfigureDeliverable(BSModalFormView):
             deliverable.name = updated_form_data.get('name')
             deliverable.category = DeliverableType.objects.get(id=updated_form_data.get('category'))
             deliverable.description = updated_form_data.get('description')
-            deliverable.format = updated_form_data.get('format')
             deliverable.scope = updated_form_data.get('scope')
             deliverable.workstream = Workstream.objects.get(id=updated_form_data.get('workstream'))
 

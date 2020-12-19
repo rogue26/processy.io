@@ -7,12 +7,18 @@ from django.shortcuts import redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView, FormView
 
-from bootstrap_modal_forms.generic import BSModalFormView
+from bootstrap_modal_forms.generic import BSModalFormView, BSModalCreateView
 
-from .forms import OrganizationForm
+from .forms import OrganizationForm, AddDivisionForm
 from .models import Organization
 
 from projects.models import Project
+
+
+class AddDivision(BSModalCreateView):
+    template_name = 'organizations/add_division.html'
+    form_class = AddDivisionForm
+    success_url = reverse_lazy('organization')
 
 
 class AddOrganization(FormView):
@@ -28,11 +34,9 @@ class AddOrganization(FormView):
 
     def form_valid(self, form):
         org = form.save()
-        print('org = ', org, org.pk)
 
         user = self.request.user
 
-        print('user = ', user)
         user.organization = Organization.objects.get(id=org.id)
         user.save()
 

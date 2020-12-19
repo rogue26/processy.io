@@ -1,0 +1,69 @@
+{% load widget_tweaks %}
+
+<form method="post" action="">
+    {% csrf_token %}
+
+    <div class="modal-header">
+        <h3 class="modal-title">Configure task</h3>
+
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <div class="modal-body">
+
+        <div class="{% if form.non_field_errors %}invalid{% endif %} mb-2">
+            {% for error in form.non_field_errors %}
+            {{ error }}
+            {% endfor %}
+        </div>
+
+
+        {% for field in form.visible_fields %}
+        <div class="form-group">
+            {% if field.field.widget.input_type == "checkbox" %}
+                <div>{{ field.label_tag }}</div>
+                {% for choice_id, choice_label in field.field.choices %}
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="id_{{field.label}}_{{choice_id}}"
+                               name="{{ field.name }}" value="{{ choice_id }}" {% if choice_id in selected_deliverables %}checked{% endif %}>
+                        <label class="custom-control-label" for="id_{{field.label}}_{{choice_id}}">{{ choice_label }}</label>
+                    </div>
+                {% endfor %}
+            {% else %}
+                {{ field.label_tag }}
+                {% if form.field.label %}
+                    {% if field.errors %}
+                        {% render_field field class="form-control is-invalid" %}
+                        {% for error in field.errors %}
+                            <div class="invalid-feedback">
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        {% render_field field class="form-control is-valid" %}
+                    {% endif %}
+                {% else %}
+                    {% render_field field class="form-control" %}
+                {% endif %}
+            {% endif %}
+            {% if field.help_text %}
+                <small class="form-text text-muted">{{ field.help_text }}</small>
+            {% endif %}
+            <div class="{% if field.errors %} invalid{% endif %}">
+                {% for error in field.errors %}
+                <p class="help-block">{{ error }}</p>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+
+    <div class="modal-footer">
+        <input type="hidden" value="{{ project_id }}" name="project_number">
+        <button type="button" class="submit-btn btn btn-primary">Save configuration</button>
+    </div>
+
+</form>
