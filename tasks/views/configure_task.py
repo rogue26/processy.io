@@ -31,7 +31,10 @@ class ConfigureTask(BSModalFormView):
 
         current_task = Task.objects.get(id=self.kwargs['task_id'])
 
-        context["prerequisite_tasks"] = \
+        context["selected_prerequisite_tasks"] = \
+            [_.pk for _ in current_task.prerequisite_tasks.all()]
+
+        context["selected_required_resources"] = \
             [_.pk for _ in current_task.prerequisite_tasks.all()]
 
         return context

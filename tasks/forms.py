@@ -5,6 +5,13 @@ from bootstrap_modal_forms.forms import BSModalModelForm, BSModalForm
 from .models import TaskType, Task, ResourceType, ComplexityDriver
 
 
+# from django.forms import ModelChoiceField
+
+class TaskModelChoiceField(forms.ModelMultipleChoiceField):
+    def label_from_instance(self, obj):
+        return obj.augmented_name
+
+
 class AddTaskTypeForm(BSModalModelForm):
     class Meta:
         model = TaskType
@@ -27,7 +34,7 @@ class TaskForm(BSModalModelForm):
         widget=forms.CheckboxSelectMultiple,
         required=False)
 
-    prerequisite_tasks = forms.ModelMultipleChoiceField(
+    prerequisite_tasks = TaskModelChoiceField(
         queryset=Task.objects.all(),
         widget=forms.CheckboxSelectMultiple,
         required=False)

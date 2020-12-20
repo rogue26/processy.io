@@ -27,7 +27,8 @@
                 {% for choice_id, choice_label in field.field.choices %}
                     <div class="custom-control custom-checkbox">
                         <input type="checkbox" class="custom-control-input" id="id_{{field.label}}_{{choice_id}}"
-                               name="{{ field.name }}" value="{{ choice_id }}" {% if choice_id in selected_deliverables %}checked{% endif %}>
+                               name="{{ field.name }}" value="{{ choice_id }}"
+                               {% if choice_id in selected_prerequisite_tasks %} checked {% endif %}>
                         <label class="custom-control-label" for="id_{{field.label}}_{{choice_id}}">{{ choice_label }}</label>
                     </div>
                 {% endfor %}

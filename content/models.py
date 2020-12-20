@@ -2,6 +2,7 @@ from django.db import models
 
 from users.models import CustomUser
 from tasks.models import Task
+from deliverables.models import Deliverable
 
 
 class ContentType(models.Model):
@@ -26,4 +27,5 @@ class Content(models.Model):
     tasks = models.ManyToManyField(Task, blank=True)
     tags = models.ManyToManyField(ContentTag, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True, null=True)
-    category = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    category = models.ForeignKey(ContentType, null=True, blank=True, on_delete=models.CASCADE)
+    deliverables = models.ManyToManyField(Deliverable, blank=True)

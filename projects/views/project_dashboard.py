@@ -65,7 +65,7 @@ def create_gantt_json(workstreams):
 
 
 class ProjectsDashboard(LoginRequiredMixin, TemplateView):
-    template_name = "projects/project.html"
+    template_name = "projects/project2.html"
     login_url = '/'
 
     def get(self, request, *args, **kwargs):

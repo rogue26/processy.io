@@ -10,8 +10,8 @@ class DeliverableType(models.Model):
     def __str__(self):
         return self.name
 
-class Deliverable(models.Model):
 
+class Deliverable(models.Model):
     description = models.CharField(max_length=50, null=True, blank=True)
     category = models.ForeignKey(DeliverableType, on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
@@ -24,6 +24,10 @@ class Deliverable(models.Model):
 
     def __str__(self):
         return self.name
+
+    @property
+    def augmented_name(self):
+        return ''.join([self.name, ' (', self.workstream.name, ')'])
 
     def save(self, *args, **kwargs):
         if not self.is_the_reference_deliverable:

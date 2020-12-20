@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% load widget_tweaks %}
+
+
+<div class="container-fluid">
+    <div class="row mt-4 mb-3">
+        <div class="col-md-3 pl-5">
+            <h4 class="mb-3">Knowledge management dashboard</h4>
+            <div>
+                <h6><strong>Org_name name:</strong> {{organization.name}}</h6>
+            </div>
+
+            <div class="row mb-3 mt-3">
+                <div class="col-md-12">
+                    <button id="configure" class="btn btn-secondary text-left btn-block active" type="button"
+                            name="button"
+                            style="active">
+                        <span class="fa fa-gear mr-2"></span>Link if I need it
+                    </button>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-md-9 mb-3">
+            <div id="content-table" class="row">
+                <div class="col-md-12">
+                    <div class="row mb-3 pl-3">
+                        <h4 class="my-auto">Uploaded content</h4>
+                    </div>
+
+                    {% if content_items %}
+                    {% include "content/_content_table.html" %}
+                    {% else %}
+                    <p class="no-projects text-primary">No content added yet.</p>
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}
+
+{% block extrascripts %}
+<script type="text/javascript">
+
+      $(function () {
+
+            $('#output-sow').click(function(){
+
+                $('.fa-file-text').removeClass('fa-file-text').addClass('fa-spinner').addClass('fa-spin');
+
+                var project_id = {{ project_id }};
+                $.ajax(
+                    {
+                        type:"GET",
+                        url: '{% url "ajax_test" %}',
+                        data:{project_id: project_id},
+                        success: function( data )
+                        {
+                            var a = document.createElement('a');
+                            var url = data;
+                            a.href = url;
+                            a.download = 'myfile.csv';
+                            document.body.append(a);
+                            a.click();
+                            a.remove();
+                            window.URL.revokeObjectURL(url);
+                            $('.fa-spinner').removeClass('fa-spinner').removeClass('fa-spin').addClass('fa-file-text')
+                        }
+                     }
+                 )
+             });
+
+      });
+
+
+
+
+
+</script>
+{% endblock extrascripts %}

@@ -38,6 +38,10 @@ class Task(models.Model):
     def __str__(self):
         return self.name
 
+    @property
+    def augmented_name(self):
+        return ''.join([self.name, ' (', self.deliverable.workstream.name, ' - ', self.deliverable.name,')'])
+
     def save(self, *args, **kwargs):
         if not self.is_the_reference_task:
             return super(Task, self).save(*args, **kwargs)

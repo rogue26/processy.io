@@ -20,6 +20,15 @@ class AddDivision(BSModalCreateView):
     form_class = AddDivisionForm
     success_url = reverse_lazy('organization')
 
+    def form_valid(self, form):
+
+        if not self.request.is_ajax():
+            form.instance.organization = self.request.user.organization
+            form.save()
+        else:
+            pass
+        return HttpResponseRedirect(reverse_lazy('organization'))
+
 
 class AddOrganization(FormView):
     template_name = 'organizations/add_organization.html'
@@ -54,17 +63,8 @@ class OrganizationDashboard(LoginRequiredMixin, TemplateView):
         if not request.user.is_authenticated:
             return self.handle_no_permission()
 
-        print()
-        print('##########################')
-        print(request.user.organization)
-        print(request.user.organization is None)
-        print(not request.user.organization)
         if not request.user.organization:
             return redirect(reverse_lazy('add_organization'))
-
-        print('##########################')
-        print()
-        #
 
         return super().dispatch(request, *args, **kwargs)
 
