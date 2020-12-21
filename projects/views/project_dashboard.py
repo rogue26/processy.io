@@ -10,6 +10,7 @@ from ..models import Project
 from workstreams.models import Workstream
 from deliverables.models import Deliverable
 from tasks.models import Task
+from content.models import Content
 from organizations.models import Organization
 
 
@@ -63,7 +64,6 @@ def create_gantt_json(workstreams):
     return json.dumps(gantt_dict)
 
 
-
 class ProjectsDashboard(LoginRequiredMixin, TemplateView):
     template_name = "projects/project2.html"
     login_url = '/'
@@ -94,4 +94,20 @@ class ProjectsDashboard(LoginRequiredMixin, TemplateView):
         context['organization'] = organization
         context['gantt_json'] = create_gantt_json(workstreams)
 
+        # deliverables_copied_from = project.deliverable_set.copied_from_set
+        # context['content_items'] = Content.objects.filter(deliverables__copied_from__in=Deliverable.objects.all())
+
+        print('##########################')
+        # all deliverables copied from
+        print(Deliverable.objects.filter(copied_from_set__isnull=False))
+        print('##########################')
+        # all deliverables copied from for this project
+        copied_deliverables = Deliverable.objects.filter(copied_from_set__in=project.deliverable_set.all())
+        print(copied_deliverables)
+        print('##########################')
+        content_query = Content.objects.filter(deliverables__in=copied_deliverables)
+        print(content_query)
+        print('##########################')
+
+        context['content_items'] = content_query
         return self.render_to_response(context)

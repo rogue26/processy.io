@@ -25,9 +25,19 @@ class Workstream(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
 
     is_the_reference_workstream = models.BooleanField(default=False)
+    copied_from = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE,
+                                    related_name='copied_from_set')
 
     def __str__(self):
         return self.name
+
+    @property
+    def augmented_name(self):
+        return ''.join([self.name, ' (', self.workstream.project.name, ')'])
+
+    @property
+    def augmented_name2(self):
+        return ''.join([self.name, ' (', self.workstream.project.name, ')'])
 
     def save(self, *args, **kwargs):
         if not self.is_the_reference_workstream:

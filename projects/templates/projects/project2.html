@@ -45,14 +45,14 @@
             <div class="row mb-3">
                 <div class="col-md-12">
                     <div class="dropdown">
-                        <button id="slide-pack" class="btn btn-secondary text-left btn-block dropdown-toggle"
+                        <button id="content" class="btn btn-secondary text-left btn-block dropdown-toggle"
                                 type="button" name="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <span class="fa fa-download mr-2"></span>Slide pack
+                            <span class="fa fa-lightbulb mr-2"></span>Project content
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" href="#">Configure slide pack</a>
-                            <a id="output-slides" class="dropdown-item" href="#">Export slides</a>
+                            <a id="view-content" class="dropdown-item" href="#">View project content</a>
+                            <!--                            <a id="output-slides" class="dropdown-item" href="#">Export slides</a>-->
                         </div>
                     </div>
                 </div>
@@ -94,7 +94,7 @@
                 <div id="workstreams-table" class="row">
                     <div class="col-md-12">
                         <div class="row mb-3 pl-3">
-                            <h4 class="my-auto">Default workstream configurations</h4>
+                            <h4 class="my-auto">Project workstreams</h4>
                             <button id="add-workstream" class="btn btn-secondary ml-3 " type="button"
                                     name="button">
                                 <span class="fa fa-plus mr-2"></span>Add new workstream
@@ -113,7 +113,7 @@
                 <div id="deliverables-table" class="row" style="display: none;">
                     <div class="col-md-12">
                         <div class="row mb-3 pl-3">
-                            <h4 class="my-auto">Default deliverable configurations</h4>
+                            <h4 class="my-auto">Project deliverables</h4>
                             <button id="add-deliverable" class="btn btn-secondary ml-3" type="button"
                                     name="button">
                                 <span class="fa fa-plus mr-2"></span>Add new deliverables
@@ -132,7 +132,7 @@
                 <div id="tasks-table" class="row" style="display: none;">
                     <div class="col-md-12">
                         <div class="row mb-3 pl-3">
-                            <h4 class="my-auto">Default task configurations</h4>
+                            <h4 class="my-auto">Project tasks</h4>
                             <button id="add-task" class="btn btn-secondary ml-3" type="button" name="button">
                                 <span class="fa fa-plus mr-2"></span>Add new tasks
                             </button>
@@ -145,12 +145,19 @@
                     </div>
                 </div>
             </div>
-
-
             <div id="project-timeline">
+                <h4 id="timeline-header" class="mb-3" style="display: none;">Project timeline</h4>
                 <div id="ganttChart"></div>
                 <br/><br/>
                 <div id="eventMessage"></div>
+            </div>
+            <div id="project-content" style="display: none;">
+                <h4 class="mb-3">Project content</h4>
+                {% if content_items %}
+                {% include "content/_project_content_table.html" %}
+                {% else %}
+                <p class="no-projects text-primary">No content found for this project.</p>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -204,9 +211,28 @@ var ganttData = {{ gantt_json|safe }};
 
           });
 
+            $("#configure").click(function(){
+              $("#configure-project-selector").show();
+              $("#configure-project-table").show();
+              $("#project-content").hide();
+              $("#timeline-header").hide();
+              $("#project-timeline").hide();
+
+            });
+
+            $("#content").click(function(){
+              $("#configure-project-selector").hide();
+              $("#configure-project-table").hide();
+              $("#project-content").show();
+              $("#timeline-header").hide();
+              $("#project-timeline").hide();
+            });
+
             $("#view-timeline").click(function(){
-                $("#configure-project-table").hide();
                 $("#configure-project-selector").hide();
+                $("#configure-project-table").hide();
+                $("#project-content").hide();
+                $("#timeline-header").show();
                 $("#project-timeline").show();
             });
 
@@ -232,11 +258,7 @@ $("#ganttChart").ganttView({
                 });
 
 
-            $("#configure").click(function(){
-              $("#project-timeline").hide();
-              $("#configure-project-table").show();
-              $("#configure-project-selector").show();
-            });
+
 
             $('#output-sow').click(function(){
 
@@ -265,6 +287,7 @@ $("#ganttChart").ganttView({
              });
 
       });
+
 
 
 

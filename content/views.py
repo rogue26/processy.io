@@ -55,19 +55,22 @@ class AddContent(BSModalFormView):
 
     def form_valid(self, form):
         if not self.request.is_ajax():
-            form.instance.uploaded_by = self.request.user
-            form.save()
 
-            # # get list of task types to add
-            # task_types_to_add = self.request.POST.getlist('task_type')
-            #
-            # for task_type_num in task_types_to_add:
-            #     task_type_name = TaskType.objects.get(id=int(task_type_num)).name
-            #     new_task = Task.objects.create(name=task_type_name,
-            #                                    description=task_type_name,
-            #                                    project_id=self.kwargs['project_id'],
-            #                                    category_id=int(task_type_num))
-            #     new_task.save()
+            form.instance.uploaded_by = self.request.user
+            new_content = form.save()
+
+            # for each selected deliverable, find the deliverables it was copied from
+            # and add those deliverables to the selected deliverables
+            for workstream in new_content.workstreams.all():
+                new_content.workstreams.add(workstream.copied_from)
+
+            for deliverable in new_content.deliverables.all():
+                new_content.deliverables.add(deliverable.copied_from)
+
+            for task in new_content.tasks.all():
+                new_content.tasks.add(task.copied_from)
+
+            new_content.save()
 
         else:
             pass
@@ -78,8 +81,6 @@ class ContentDashboard(LoginRequiredMixin, TemplateView):
     template_name = "content/manage_content.html"
     login_url = '/'
 
-
-
     def get(self, request, *args, **kwargs):
         """Handle GET requests: instantiate a blank version of the form."""
 
@@ -88,9 +89,10 @@ class ContentDashboard(LoginRequiredMixin, TemplateView):
         organization = request.user.organization
         content = Content.objects.filter(
             uploaded_by__organization=organization)
-
+        projects = Project.objects.filter(is_the_reference_project=False, created_by=request.user)
 
         context['organization'] = organization
         context['content_items'] = content
+        context['projects'] = projects
 
         return self.render_to_response(context)

@@ -87,7 +87,7 @@ class ConfigureTask(BSModalFormView):
 
             task.project = Project.objects.get(id=self.kwargs['project_id'])
             task.deliverable = Deliverable.objects.get(id=updated_form_data.get('deliverable'))
-            task.resources_required = Resource.objects.filter(pk__in=updated_form_data.getlist('resources_required'))
+            task.resources_required.set(Resource.objects.filter(pk__in=updated_form_data.getlist('resources_required')))
 
             task.prerequisite_tasks.set(Task.objects.filter(pk__in=updated_form_data.getlist('prerequisite_tasks')))
 

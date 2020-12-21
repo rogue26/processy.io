@@ -10,6 +10,22 @@ class ComplexityDriver(models.Model):
         return self.name
 
 
+class ResourceType(models.Model):
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
+
+class Resource(models.Model):
+    name = models.CharField(max_length=50)
+    category = models.ForeignKey(ResourceType, on_delete=models.CASCADE, null=True)
+    timestamp = models.DateTimeField(auto_now_add=True, null=True)
+
+    def __str__(self):
+        return self.name
+
+
 class TaskType(models.Model):
     name = models.CharField(max_length=50)
 
@@ -22,8 +38,9 @@ class Task(models.Model):
     description = models.CharField(max_length=50, null=True, blank=True)
     category = models.ForeignKey(TaskType, on_delete=models.CASCADE)
     baseline_fte_hours = models.DecimalField(max_digits=5, decimal_places=1, default=0)
-    # resources_required = models.ManyToManyField(Resource, blank=True)
-    prerequisite_tasks = models.ManyToManyField('self', blank=True, symmetrical=False)
+    resources_required = models.ManyToManyField(Resource, blank=True)
+    prerequisite_tasks = models.ManyToManyField('self', blank=True, symmetrical=False,
+                                                related_name='prerequisite_tasks_set')
     complexity_drivers = models.ManyToManyField(ComplexityDriver, through='ComplexityRelationship')
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     deliverable = models.ForeignKey(Deliverable, on_delete=models.CASCADE, null=True)
@@ -34,13 +51,20 @@ class Task(models.Model):
     owner = models.CharField(max_length=50, null=True, blank=True)
 
     is_the_reference_task = models.BooleanField(default=False)
+    copied_from = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE,
+                                    related_name='copied_from_set')
 
     def __str__(self):
         return self.name
 
     @property
     def augmented_name(self):
-        return ''.join([self.name, ' (', self.deliverable.workstream.name, ' - ', self.deliverable.name,')'])
+        return ''.join([self.name, ' (', self.deliverable.workstream.name, ' - ', self.deliverable.name, ')'])
+
+    @property
+    def augmented_name2(self):
+        return ''.join([self.name, ' (', self.deliverable.project.name,' - ',self.deliverable.workstream.name, ' - ', self.deliverable.name, ')'])
+
 
     def save(self, *args, **kwargs):
         if not self.is_the_reference_task:
@@ -59,23 +83,6 @@ class ComplexityRelationship(models.Model):
     complexity_driver = models.ForeignKey(ComplexityDriver, on_delete=models.CASCADE)
     task = models.ForeignKey(Task, on_delete=models.CASCADE)
     time_factor = models.DecimalField(max_digits=3, decimal_places=2, default=0)
-
-    def __str__(self):
-        return self.name
-
-
-class ResourceType(models.Model):
-    name = models.CharField(max_length=50)
-
-    def __str__(self):
-        return self.name
-
-
-class Resource(models.Model):
-    name = models.CharField(max_length=50)
-    category = models.ForeignKey(ResourceType, on_delete=models.CASCADE, null=True)
-    task = models.ForeignKey(Task, on_delete=models.CASCADE, null=True)
-    timestamp = models.DateTimeField(auto_now_add=True, null=True)
 
     def __str__(self):
         return self.name

@@ -73,10 +73,11 @@ class OrganizationDashboard(LoginRequiredMixin, TemplateView):
 
         context = {}
 
-        projects = Project.objects.filter(is_the_reference_project=False)
+        projects = Project.objects.filter(is_the_reference_project=False, created_by=request.user)
         organization = request.user.organization
 
         context['organization'] = organization
         context['projects'] = projects
+
 
         return self.render_to_response(context)

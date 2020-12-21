@@ -21,13 +21,19 @@ class Deliverable(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True, null=True)
 
     is_the_reference_deliverable = models.BooleanField(default=False)
-
+    copied_from = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE,
+                                    related_name='copied_from_set')
     def __str__(self):
         return self.name
 
     @property
     def augmented_name(self):
         return ''.join([self.name, ' (', self.workstream.name, ')'])
+
+    @property
+    def augmented_name2(self):
+        return ''.join([self.name, ' (', self.project.name,' - ',self.workstream.name, ')'])
+
 
     def save(self, *args, **kwargs):
         if not self.is_the_reference_deliverable:
