@@ -3,7 +3,8 @@ from .models import Content, ContentType
 from tasks.models import Task
 from deliverables.models import Deliverable
 
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
+
 from django.urls import reverse_lazy
 from django.shortcuts import redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -96,3 +97,11 @@ class ContentDashboard(LoginRequiredMixin, TemplateView):
         context['projects'] = projects
 
         return self.render_to_response(context)
+
+
+def ajax_content_download(request):
+    if request.method == 'GET':
+        content = Content.objects.get(id=request.GET['content_id'])
+        return HttpResponse(content.file.url)
+    else:
+        return HttpResponse("unsuccesful")
