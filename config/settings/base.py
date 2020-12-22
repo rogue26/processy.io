@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'users',
     'organizations',
     'content',
+    'teams'
 ]
 
 STATICFILES_FINDERS = [

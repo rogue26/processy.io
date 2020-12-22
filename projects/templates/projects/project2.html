@@ -59,8 +59,8 @@
             </div>
             <div class="row mb-3">
                 <div class="col-md-12">
-                    <button id="setup-team" class="btn btn-secondary text-left btn-block" type="button" name="button">
-                        <span class="fa fa-users mr-2"></span>Set up team
+                    <button id="manage-team" class="btn btn-secondary text-left btn-block" type="button" name="button">
+                        <span class="fa fa-users mr-2"></span>Manage team
                     </button>
                 </div>
             </div>
@@ -145,12 +145,7 @@
                     </div>
                 </div>
             </div>
-            <div id="project-timeline">
-                <h4 id="timeline-header" class="mb-3" style="display: none;">Project timeline</h4>
-                <div id="ganttChart"></div>
-                <br/><br/>
-                <div id="eventMessage"></div>
-            </div>
+
             <div id="project-content" style="display: none;">
                 <h4 class="mb-3">Project content</h4>
                 {% if content_data %}
@@ -159,13 +154,33 @@
                 <p class="no-projects text-primary">No content found for this project.</p>
                 {% endif %}
             </div>
+            <div id="project-team" style="display: none;">
+                <div class="row mb-3 pl-3">
+                    <h4 class="mb-3 my-auto">Project team</h4>
+                    <button id="add-team-member" class="btn btn-secondary ml-3 " type="button"
+                            name="button">
+                        <span class="fa fa-plus mr-2"></span>Add team member
+                    </button>
+                </div>
+
+                {% if team_members %}
+                {% include "teams/_team-members-table.html" %}
+                {% else %}
+                <p class="no-projects text-primary">No team members created for this project yet.</p>
+                {% endif %}
+            </div>
+            <div id="project-timeline">
+                <h4 id="timeline-header" class="mb-3" style="display: none;">Project timeline</h4>
+                <div id="ganttChart"></div>
+                <br/><br/>
+                <div id="eventMessage"></div>
+            </div>
         </div>
     </div>
 </div>
 
 
 {% endblock content %}
-
 
 
 {% block extrascripts %}
@@ -194,6 +209,12 @@ $(function() {
         modalID: "#create-modal"
     });
 
+    // Add team member button opens modal with id="create-modal"
+    $("#add-team-member").modalForm({
+        formURL: "{% url 'add_team_member' project_id=project_id %}",
+        modalID: "#create-modal"
+    });
+
     $('input[type=radio][name="options"]').change(function() {
 
         if ($(this).val() == "workstreams") {
@@ -216,6 +237,7 @@ $(function() {
         $("#configure-project-selector").show();
         $("#configure-project-table").show();
         $("#project-content").hide();
+        $("#project-team").hide();
         $("#timeline-header").hide();
         $("#project-timeline").hide();
 
@@ -225,6 +247,16 @@ $(function() {
         $("#configure-project-selector").hide();
         $("#configure-project-table").hide();
         $("#project-content").show();
+        $("#project-team").hide();
+        $("#timeline-header").hide();
+        $("#project-timeline").hide();
+    });
+
+    $("#manage-team").click(function() {
+        $("#configure-project-selector").hide();
+        $("#configure-project-table").hide();
+        $("#project-content").hide();
+        $("#project-team").show();
         $("#timeline-header").hide();
         $("#project-timeline").hide();
     });
@@ -233,6 +265,7 @@ $(function() {
         $("#configure-project-selector").hide();
         $("#configure-project-table").hide();
         $("#project-content").hide();
+        $("#project-team").hide();
         $("#timeline-header").show();
         $("#project-timeline").show();
     });
@@ -306,6 +339,7 @@ $(function() {
         })
     });
 });
+
 
 </script>
 

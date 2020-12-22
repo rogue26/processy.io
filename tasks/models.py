@@ -1,7 +1,7 @@
 from django.db import models, transaction
 from deliverables.models import Deliverable
 from projects.models import Project
-
+from teams.models import TeamMember
 
 class ComplexityDriver(models.Model):
     name = models.CharField(max_length=50)
@@ -48,7 +48,7 @@ class Task(models.Model):
     end_time = models.DateTimeField(null=True, blank=True)
     status = models.CharField(max_length=50, null=True, blank=True)
     percent_complete = models.DecimalField(max_digits=3, decimal_places=2, null=True, blank=True)
-    owner = models.CharField(max_length=50, null=True, blank=True)
+    team_member = models.ForeignKey(TeamMember, null=True, blank=True, on_delete=models.CASCADE)
 
     is_the_reference_task = models.BooleanField(default=False)
     copied_from = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE,

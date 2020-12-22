@@ -57,7 +57,7 @@ class ConfigureTask(BSModalFormView):
         initial['end_time'] = current_task.end_time
         initial['deliverable'] = current_task.deliverable
         initial['status'] = current_task.status
-        initial['owner'] = current_task.owner
+        initial['team_member'] = current_task.team_member
 
         # note - manytomany and foreignkey fields are set by passing the list of currently checked
         # items and setting the appropriate check value in the template
@@ -83,7 +83,7 @@ class ConfigureTask(BSModalFormView):
             task.category = TaskType.objects.get(id=updated_form_data.get('category'))
             task.baseline_fte_hours = updated_form_data.get('baseline_fte_hours')
             task.status = updated_form_data.get('status')
-            task.owner = updated_form_data.get('owner')
+            task.team_member = updated_form_data.get('team_member')
 
             task.project = Project.objects.get(id=self.kwargs['project_id'])
             task.deliverable = Deliverable.objects.get(id=updated_form_data.get('deliverable'))

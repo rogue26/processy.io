@@ -12,6 +12,7 @@ from deliverables.models import Deliverable
 from tasks.models import Task
 from content.models import Content
 from organizations.models import Organization
+from teams.models import TeamMember
 
 
 def set_child_task_start_end(child_tasks):
@@ -93,6 +94,7 @@ class ProjectsDashboard(LoginRequiredMixin, TemplateView):
         context['project_id'] = self.kwargs['project_id']
         context['organization'] = organization
         context['gantt_json'] = create_gantt_json(workstreams)
+        context['team_members'] = TeamMember.objects.filter(project=project)
 
         # get content and related workstreams, deliverables, and tasks
 
