@@ -2,15 +2,33 @@
     <thead>
     <tr>
         <th class="text-center" scope="col">Name</th>
+        <th class="text-center" scope="col">Related workstreams</th>
+        <th class="text-center" scope="col">Related deliverables</th>
+        <th class="text-center" scope="col">Related tasks</th>
         <th class="text-center" scope="col">Download</th>
     </tr>
     </thead>
     <tbody>
-    {% for item in content_items %}
+    {% for item, workstreams, deliverables, tasks in content_data %}
     <tr>
         <th class="text-center">{{ item.name }}</th>
+        <th class="text-center">
+            {% for workstream in workstreams %}
+                {{ workstream.augmented_name2 }}
+            {% endfor %}
+        </th>
+        <th class="text-center">
+            {% for deliverable in deliverables %}
+                {{ deliverable.augmented_name2 }}
+            {% endfor %}
+        </th>
+        <th class="text-center">
+            {% for task in tasks %}
+                {{ task.augmented_name2 }}
+            {% endfor %}
+        </th>
 
-        <td class="text-center">
+        <td class="text-center align-middle">
 
             <!-- Download button -->
 

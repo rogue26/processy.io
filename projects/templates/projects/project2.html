@@ -48,10 +48,10 @@
                         <button id="content" class="btn btn-secondary text-left btn-block dropdown-toggle"
                                 type="button" name="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <span class="fa fa-lightbulb mr-2"></span>Project content
+                            <span class="fa fa-lightbulb mr-2"></span>Knowledge management
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a id="view-content" class="dropdown-item" href="#">View project content</a>
+                            <a id="view-content" class="dropdown-item" href="#">Project-relevant material</a>
                             <!--                            <a id="output-slides" class="dropdown-item" href="#">Export slides</a>-->
                         </div>
                     </div>
@@ -153,7 +153,7 @@
             </div>
             <div id="project-content" style="display: none;">
                 <h4 class="mb-3">Project content</h4>
-                {% if content_items %}
+                {% if content_data %}
                 {% include "content/_project_content_table.html" %}
                 {% else %}
                 <p class="no-projects text-primary">No content found for this project.</p>
@@ -169,6 +169,7 @@
 
 
 {% block extrascripts %}
+
 <script type="text/javascript">
 
 $(function() {
@@ -307,7 +308,5 @@ $(function() {
 });
 
 </script>
-
-$(function() {
 
 {% endblock extrascripts %}

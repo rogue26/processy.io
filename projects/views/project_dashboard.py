@@ -1,7 +1,7 @@
 import json
 import datetime
 
-from django.db.models import Max
+from django.db.models import Max, Q
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView
 
@@ -94,20 +94,27 @@ class ProjectsDashboard(LoginRequiredMixin, TemplateView):
         context['organization'] = organization
         context['gantt_json'] = create_gantt_json(workstreams)
 
-        # deliverables_copied_from = project.deliverable_set.copied_from_set
-        # context['content_items'] = Content.objects.filter(deliverables__copied_from__in=Deliverable.objects.all())
+        # get content and related workstreams, deliverables, and tasks
 
-        print('##########################')
-        # all deliverables copied from
-        print(Deliverable.objects.filter(copied_from_set__isnull=False))
-        print('##########################')
-        # all deliverables copied from for this project
+        ## workstreams
+        copied_workstreams = Workstream.objects.filter(copied_from_set__in=project.workstream_set.all())
         copied_deliverables = Deliverable.objects.filter(copied_from_set__in=project.deliverable_set.all())
-        print(copied_deliverables)
-        print('##########################')
-        content_query = Content.objects.filter(deliverables__in=copied_deliverables)
-        print(content_query)
-        print('##########################')
+        copied_tasks = Task.objects.filter(copied_from_set__in=project.task_set.all())
 
-        context['content_items'] = content_query
+        content_items = Content.objects.filter(Q(workstreams__in=copied_workstreams) |
+                                               Q(deliverables__in=copied_deliverables) |
+                                               Q(tasks__in=copied_tasks))
+
+        project_workstreams = \
+            [project.workstream_set.all().prefetch_related('content_set').filter(content=_) for _ in content_items]
+
+        project_deliverables = \
+            [project.deliverable_set.all().prefetch_related('content_set').filter(content=_) for _ in content_items]
+
+        project_tasks = \
+            [project.task_set.all().prefetch_related('content_set').filter(content=_) for _ in content_items]
+
+        content_data = zip(content_items, project_workstreams, project_deliverables, project_tasks)
+
+        context['content_data'] = content_data
         return self.render_to_response(context)
