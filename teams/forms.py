@@ -6,7 +6,7 @@ from .models import TeamMember
 from tasks.models import Task
 
 
-class AddTeamMemberForm(BSModalModelForm):
+class TeamMemberForm(BSModalModelForm):
 
     tasks = forms.ModelMultipleChoiceField(
         queryset=Task.objects.all(),

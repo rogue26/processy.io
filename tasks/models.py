@@ -37,7 +37,7 @@ class Task(models.Model):
     name = models.CharField(max_length=50)
     description = models.CharField(max_length=50, null=True, blank=True)
     category = models.ForeignKey(TaskType, on_delete=models.CASCADE)
-    baseline_fte_hours = models.DecimalField(max_digits=5, decimal_places=1, default=0)
+    baseline_fte_days = models.DecimalField(max_digits=5, decimal_places=1, default=0)
     resources_required = models.ManyToManyField(Resource, blank=True)
     prerequisite_tasks = models.ManyToManyField('self', blank=True, symmetrical=False,
                                                 related_name='prerequisite_tasks_set')
@@ -48,7 +48,7 @@ class Task(models.Model):
     end_time = models.DateTimeField(null=True, blank=True)
     status = models.CharField(max_length=50, null=True, blank=True)
     percent_complete = models.DecimalField(max_digits=3, decimal_places=2, null=True, blank=True)
-    team_member = models.ForeignKey(TeamMember, null=True, blank=True, on_delete=models.CASCADE)
+    team_member = models.ForeignKey(TeamMember, null=True, blank=True, on_delete=models.SET_NULL)
 
     is_the_reference_task = models.BooleanField(default=False)
     copied_from = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE,

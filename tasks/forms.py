@@ -46,6 +46,6 @@ class TaskForm(BSModalModelForm):
 
     class Meta:
         model = Task
-        fields = ['name', 'category', 'status', 'team_member', 'deliverable', 'description', 'baseline_fte_hours',
+        fields = ['name', 'category', 'status', 'team_member', 'deliverable', 'description', 'baseline_fte_days',
                   'start_time', 'end_time', 'percent_complete', 'resources_required',
                   'prerequisite_tasks', 'complexity_drivers']

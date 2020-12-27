@@ -25,7 +25,7 @@ def set_child_task_start_end(child_tasks):
             task.start_time = task.prerequisite_tasks.all().aggregate(Max('end_time'))['end_time__max']
 
         # set end time
-        task.end_time = task.start_time + datetime.timedelta(days=float(task.baseline_fte_hours))
+        task.end_time = task.start_time + datetime.timedelta(days=float(task.baseline_fte_days))
         task.save()
 
         # get child tasks and continue

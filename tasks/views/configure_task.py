@@ -52,7 +52,7 @@ class ConfigureTask(BSModalFormView):
         initial['description'] = current_task.description
         initial['category'] = current_task.category
 
-        initial['baseline_fte_hours'] = current_task.baseline_fte_hours
+        initial['baseline_fte_days'] = current_task.baseline_fte_days
         initial['start_time'] = current_task.start_time
         initial['end_time'] = current_task.end_time
         initial['deliverable'] = current_task.deliverable
@@ -81,9 +81,13 @@ class ConfigureTask(BSModalFormView):
             task.name = updated_form_data.get('name')
             task.description = updated_form_data.get('description')
             task.category = TaskType.objects.get(id=updated_form_data.get('category'))
-            task.baseline_fte_hours = updated_form_data.get('baseline_fte_hours')
+            task.baseline_fte_days = updated_form_data.get('baseline_fte_days')
             task.status = updated_form_data.get('status')
-            task.team_member = updated_form_data.get('team_member')
+
+            try:
+                task.team_member = updated_form_data.get('team_member')
+            except ValueError:
+                task.team_member = None
 
             task.project = Project.objects.get(id=self.kwargs['project_id'])
             task.deliverable = Deliverable.objects.get(id=updated_form_data.get('deliverable'))

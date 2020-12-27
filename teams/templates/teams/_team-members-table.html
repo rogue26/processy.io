@@ -11,22 +11,26 @@
     {% for team_member in team_members %}
     <tr>
         <th class="text-center">{{ team_member }}</th>
-        <td class="text-center">{{ team_member.availability }}</td>
-        <td class="text-center"></td>
+        <td class="text-center">{{ team_member.project_availability }}</td>
+        <td class="text-center">
+            {% for task in team_member.task_set.all %}
+                {{ task }}
+            {% endfor %}
+        </td>
 
         <td class="text-center">
 
             <!-- Edit button -->
             <button type="button" class="bs-modal btn btn-sm btn-primary"
-                    data-form-url="{% url 'configure_team_member' team_member.id %}">
+                    data-form-url="{% url 'configure_team_member' project_id team_member.id %}">
                 <input type="hidden" value="{{ team_member.id }}" name="team_member_id">
                 <span class="fa fa-gears"></span>
             </button>
 
             <!-- Delete button -->
             <button type="button"
-                    class="bs-modal delete-task btn btn-sm btn-secondary"
-                    data-form-url="#">
+                    class="bs-modal delete-team-member btn btn-sm btn-secondary"
+                    data-form-url="{% url 'delete_team_member' project_id team_member.id %}">
                 <span class="fa fa-trash"></span>
             </button>
         </td>
