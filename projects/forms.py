@@ -1,7 +1,6 @@
 from django import forms
 from projects.models import Client, Project
 from bootstrap_modal_forms.forms import BSModalModelForm
-from bootstrap_datepicker_plus import DateTimePickerInput, DatePickerInput
 
 
 class DateInput(forms.DateInput):
