@@ -1,25 +1,26 @@
 import json
-import datetime
 
-from django.http import HttpResponseRedirect
-from django.urls import reverse_lazy
-from django.shortcuts import redirect
-from django.urls import reverse_lazy
+from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import TemplateView, FormView
+from django.views.generic import TemplateView
+from django.urls import reverse_lazy
 
-from bootstrap_modal_forms.generic import BSModalFormView, BSModalCreateView
-
-from .forms import OrganizationForm, AddDivisionForm, OrganizationModalForm
-from .models import Organization
+from bootstrap_modal_forms.generic import BSModalCreateView
 
 from projects.models import Project
+
+from .forms import OrganizationForm, AddDivisionForm, OrganizationModalForm
+
+from workstreams.models import Workstream
+from deliverables.models import Deliverable
+from tasks.models import Task
 
 
 class AddDivision(BSModalCreateView):
     template_name = 'organizations/add_division.html'
     form_class = AddDivisionForm
-    success_url = reverse_lazy('organization')
+
+    # success_url = reverse_lazy('organization')
 
     def form_valid(self, form):
 
@@ -34,56 +35,108 @@ class AddDivision(BSModalCreateView):
 class AddOrganizationModal(BSModalCreateView):
     template_name = 'organizations/add_organization_modal.html'
     form_class = OrganizationModalForm
-    success_url = reverse_lazy('manage_projects')
 
-
-class AddOrganization(FormView):
-    template_name = 'organizations/add_organization.html'
-    form_class = OrganizationForm
-
-    def get(self, request, *args, **kwargs):
-        """Handle GET requests: instantiate a blank version of the form."""
-
-        context = self.get_context_data()
-        # context['project_id'] = self.kwargs['project_id']
-        return self.render_to_response(context)
+    def get_success_url(self):
+        try:
+            return reverse_lazy(self.kwargs['redirect_location'])
+        except:
+            return reverse_lazy('manage_projects')
 
     def form_valid(self, form):
-        org = form.save()
 
-        user = self.request.user
+        if not self.request.is_ajax():
 
-        user.organization = Organization.objects.get(id=org.id)
-        user.save()
+            org = form.save()
 
-        return HttpResponseRedirect('/')
+            user = self.request.user
+            user.organization = org
+            user.save()
+
+            pre_existing_ref_projects = Project.objects.filter(is_the_reference_project=True, created_by=user)
+
+            if not pre_existing_ref_projects.exists():
+                ref_project = Project()
+                ref_project.name = "Reference project"
+                ref_project.description = "Placeholder project for holding an organization's default workstreams"
+                ref_project.is_the_reference_project = True
+
+                ref_project.save()
+            else:
+                # todo: when user has a "personal" reference project and they create an organization,
+                #  they should have the option to make that reference project the organizational reference project
+                #  ... unless we decide to implement both personal and organization reference configurations...
+                #  to deal with later.
+                pass
+
+        else:
+            pass
+
+        return HttpResponseRedirect(self.get_success_url())
 
 
 class OrganizationDashboard(LoginRequiredMixin, TemplateView):
     template_name = "organizations/org_dashboard.html"
     login_url = '/'
 
-    add_org_template_name = "organizations/add_organization.html"
+    # add_org_template_name = "organizations/add_organization.html"
     form_class = OrganizationForm
-
-    def dispatch(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            return self.handle_no_permission()
-
-        if not request.user.organization:
-            return redirect(reverse_lazy('add_organization'))
-
-        return super().dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         """Handle GET requests: instantiate a blank version of the form."""
 
         context = {}
 
-        projects = Project.objects.filter(is_the_reference_project=False, created_by=request.user)
-        organization = request.user.organization
+        if request.user.organization:
+            projects = Project.objects.filter(is_the_reference_project=False, created_by=request.user)
+            organization = request.user.organization
 
-        context['organization'] = organization
-        context['projects'] = projects
+            context['organization'] = organization
+            context['projects'] = projects
+
+        context['has_org'] = json.dumps(request.user.organization is not None)
+        context['redirect_location'] = 'organization'
 
         return self.render_to_response(context)
+
+
+class DefaultsDashboard(LoginRequiredMixin, TemplateView):
+    template_name = "organizations/defaults.html"
+    login_url = "/"
+
+    def get(self, request, *args, **kwargs):
+        """Handle GET requests: instantiate a blank version of the form."""
+
+        context = {}
+
+        ref_projects = Project.objects.filter(is_the_reference_project=True, organization=request.user.organization)
+
+        if ref_projects.exists():
+            ref_project = ref_projects.first()
+            context['ref_project'] = ref_project
+            context['workstreams'] = Workstream.objects.filter(project__id=ref_project.id)
+            context['deliverables'] = Deliverable.objects.filter(project__id=ref_project.id)
+            context['tasks'] = Task.objects.filter(project__id=ref_project.id)
+
+        context['has_org'] = json.dumps(request.user.organization is not None)
+        context['redirect_location'] = 'defaults'
+
+        return self.render_to_response(context)
+
+
+def update_declined_organization(request):
+    if request.method == 'POST':
+        user = request.user
+        user.declined_organization = True
+        user.save()
+
+        ref_project = Project()
+        ref_project.name = "Reference project"
+        ref_project.description = "Placeholder project for holding an organization's default workstreams"
+        ref_project.is_the_reference_project = True
+
+        ref_project.save()
+
+        message = 'update successful'
+    else:
+        message = 'update unsuccessful'
+    return HttpResponse(message)

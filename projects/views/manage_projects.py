@@ -15,20 +15,21 @@ class ManageProjects(FormView):
     landing_template_name = "projects/index.html"
     form_class = ProjectForm
 
+    def get_form(self, form_class=None):
+        if form_class is None:
+            form_class = self.get_form_class()
+        form = super(ManageProjects, self).get_form()
+
+        # print('test', self.request.user.organization.division_set.all().exists())
+        # if not self.request.user.organization.division_set.all().exists():
+        #     form.fields.remove('division')
+
+        return form
+
     def get_template_names(self):
         if not self.request.user.is_authenticated:
             return self.landing_template_name
         return super().get_template_names()
-
-    # def dispatch(self, request, *args, **kwargs):
-    #     # check if the user already has an organization assigned to them.
-    #     # if not, redirect them to the add_organization_modal to provide one.
-    #     if request.user.organization:
-    #         print('user has organization')
-    #         return super(ManageProjects, self).dispatch(request, *args, **kwargs)
-    #     else:
-    #         print('no organization')
-    #         return HttpResponseRedirect(reverse_lazy('add_organization_modal'))
 
     def get(self, request, *args, **kwargs):
         """Handle GET requests: instantiate a blank version of the form."""
@@ -40,14 +41,19 @@ class ManageProjects(FormView):
             form = ProjectForm(request.POST or None, request.FILES or None)
 
             organization = request.user.organization
-            context['form'] = form
-            context['organization'] = organization
-            context['workstreams'] = Workstream.objects.all()
-            context['projects'] = Project.objects.filter(is_the_reference_project=False, created_by=request.user)
-            context['workstream_columns'] = range(2)
-            context['has_org'] = json.dumps(self.request.user.organization is not None)
+            if organization is None:
+                del form.fields['division']
+            else:
+                context['organization'] = organization
+                if not organization.division_set.all().exists():
+                    del form.fields['division']
 
-            print('test', json.dumps(self.request.user.organization is not None))
+            context['form'] = form
+            context['projects'] = Project.objects.filter(is_the_reference_project=False, created_by=request.user)
+
+            context['has_org'] = json.dumps(self.request.user.organization is not None)
+            context['redirect_location'] = 'manage_projects'
+            context['user_declined_organization'] = json.dumps(request.user.declined_organization)
         return self.render_to_response(context)
 
     def form_valid(self, form):

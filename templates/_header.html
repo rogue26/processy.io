@@ -42,24 +42,22 @@
                     </div>
                 </li>
 
-                <li class="nav-item active">
-                    <a class="nav-link" href="/defaults">Defaults</a>
-                </li>
-
-                <li class="nav-item active">
-                    <a class="nav-link" href="/organization">Organization</a>
-                </li>
-
                 <li class="nav-item dropdown active">
-                    <a class="nav-link dropdown-toggle" href="/" id="content-dropdown" role="button"
+                    <a class="nav-link dropdown-toggle" href="/" id="projects-dropdown" role="button"
                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Content
+                        Organization
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a id="upload-content" class="dropdown-item" href="#">Upload content</a>
-                        <a class="dropdown-item" href="{% url 'content' %}">Manage uploaded content</a>
+                        <a class="dropdown-item" href="{% url 'organization' %}">Organization dashboard</a>
+                        <a class="dropdown-item" href="{% url 'defaults' %}">Default projects</a>
+                        <a class="dropdown-item" href="{% url 'content' %}">Knowledge management</a>
                     </div>
                 </li>
+
+                <li class="nav-item active">
+                    <a class="nav-link" id="upload-content" href="#">Upload content</a>
+                </li>
+
             </ul>
             {% endif %}
             <ul class="navbar-nav">
@@ -72,7 +70,7 @@
 
                 {% else %}
                 <li class="nav-item">
-                    <button id="login-btn" class="btn btn-primary" type="button" name="button">Log in</button>
+                    <button id="login-btn" class="btn btn-primary mr-1" type="button" name="button">Log in</button>
                     <button id="signup-btn" class="btn btn-primary" type="button" name="button">Sign up</button>
                 </li>
 

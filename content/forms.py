@@ -37,3 +37,7 @@ class AddContentForm(BSModalModelForm):
     class Meta:
         model = Content
         exclude = ['timestamp', 'tags', 'uploaded_by']
+
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 4}),
+        }

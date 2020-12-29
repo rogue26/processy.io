@@ -17,9 +17,10 @@ class CustomUserCreationForm(PopRequestMixin, CreateUpdateAjaxMixin, UserCreatio
             user.email = self.cleaned_data["email"]
             email_domain = user.email.split('@')[-1]
 
-            organization = Organization.objects.get(domain=email_domain)
-            if organization:
+            if Organization.objects.filter(domain=email_domain).exists():
+                organization = Organization.objects.get(domain=email_domain)
                 user.organization = organization
+
             user.save()
         else:
             user = super(CreateUpdateAjaxMixin, self).save(commit=False)

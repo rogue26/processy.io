@@ -14,22 +14,19 @@ class ClientForm(forms.ModelForm):
 
 
 class ProjectForm(forms.ModelForm):
-    # start_date = forms.DateField(
-    #     widget=DatePickerInput,
-    #     required=False)
-
     class Meta:
         model = Project
-        exclude = ['timestamp', 'workstream', 'is_the_reference_project', 'created_by']
+        fields = ['internal', 'division', 'client', 'name', 'description', 'start_date']
         labels = {
-            "name": "Project name"
+            "name": "Project name",
+            "internal": "Internal or external project?"
         }
         widgets = {
             'start_date': DateInput(),  # default date-format %m/%d/%Y will be used
-            # 'start_date': DatePickerInput(format='%Y-%m-%d'),  # specify date-frmat
+            'description': forms.Textarea(attrs={'rows': 4}),
         }
         # help_texts = {
-        #     'client': "What is the name of the client?"
+        #     'internal': "Is this project internal or for an external client?"
         # }
 
 

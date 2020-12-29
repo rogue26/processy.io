@@ -22,7 +22,7 @@ class ContentTag(models.Model):
 
 class Content(models.Model):
     name = models.CharField(max_length=50)
-    description = models.CharField(max_length=50, null=True, blank=True)
+    description = models.TextField(max_length=500, null=True, blank=True)
     file = models.FileField(upload_to='knowledge management', null=True, blank=True)
     uploaded_by = models.ForeignKey(CustomUser, null=True, blank=True, on_delete=models.CASCADE)
     tags = models.ManyToManyField(ContentTag, blank=True)

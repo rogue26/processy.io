@@ -143,19 +143,19 @@
 
           // Create workstream button opens modal with id="create-modal"
           $("#add-workstream").modalForm({
-            formURL: "{% url 'add_workstream' project_id=1 %}",
+            formURL: "{% url 'add_workstream' ref_project.id %}",
             modalID: "#create-modal"
           });
 
           // Create deliverable button opens modal with id="create-modal"
           $("#add-deliverable").modalForm({
-            formURL: "{% url 'add_deliverable' project_id=1 %}",
+            formURL: "{% url 'add_deliverable' ref_project.id %}",
             modalID: "#create-modal"
           });
 
           // Create task button opens modal with id="create-modal"
           $("#add-task").modalForm({
-            formURL: "{% url 'add_task' project_id=1 %}",
+            formURL: "{% url 'add_task' ref_project.id %}",
             modalID: "#create-modal"
           });
 
@@ -194,6 +194,44 @@
             }
 
           });
+
+
+       $("#addorg").modalForm({
+            formURL: "{% url 'add_organization_modal' redirect_location %}",
+            modalID: "#add-org-modal"
+          });
+
+          var token = '{{csrf_token}}';
+
+          $('#add-org-modal').on('hidden.bs.modal', function () {
+            console.log("modal hidden");
+
+            $.ajax(
+                    {
+                        headers: { "X-CSRFToken": token },
+                        type:"POST",
+                        url: '{% url "update_declined_organization" %}',
+                        success: function( data )
+                        {
+                            console.log("success");
+                        }
+                     }
+                 )
+
+            })
+
+
+        var js_has_org = {{has_org|safe}}
+
+        window.onload = function(){
+            if (!js_has_org){
+                var a = document.getElementById('addorg');
+                a.click();
+            };
+        };
+
+
+
       });
 
 

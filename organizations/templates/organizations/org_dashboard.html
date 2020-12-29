@@ -10,14 +10,28 @@
         <div class="col-md-3 pl-5">
             <h4 class="mb-3">Organization info</h4>
             <div>
-                <h6><strong>Organization name:</strong></br>{{organization.name}} ({{organization.nickname}})</h6>
+                {% if organization %}
+                <h6><strong>Organization name:</strong></br>{{organization.name}} {% if organization.nickname %}({{organization.nickname}}{% endif %})</h6>
+                {% endif %}
             </div>
             <div>
-                <h6><strong>Domain:</strong></br>{{organization.domain}}</h6>
+                {% if organization.domain %}
+                <h6><strong>Email domain:</strong></br>{{organization.domain}}</h6>
+                {% endif %}
+            </div>
+            <div>
+                {% if organization.division_set.all %}
+                    <h6><strong>Divisions:</strong></br>
+                        {% for division in organization.division_set.all %}
+                            {{division}},
+                        {% endfor %}
+                    </h6>
+                {% endif %}
             </div>
             <div class="row mb-3 mt-3">
                 <div class="col-md-12">
-                    <button id="configure-organization" class="btn btn-secondary text-left btn-block" type="button" name="button"
+                    <button id="configure-organization" class="btn btn-secondary text-left btn-block" type="button"
+                            name="button"
                             style="active">
                         <span class="fa fa-gear mr-2"></span>Configure Organization
                     </button>
@@ -44,6 +58,7 @@
                 </div>
             </div>
         </div>
+        <a id="addorg" href="#"></a>
     </div>
 </div>
 
@@ -54,20 +69,48 @@
 
       $(function () {
 
+       $("#addorg").modalForm({
+            formURL: "{% url 'add_organization_modal' redirect_location %}",
+            modalID: "#add-org-modal"
+          });
+
+          var token = '{{csrf_token}}';
+
+          $('#add-org-modal').on('hidden.bs.modal', function () {
+            console.log("modal hidden");
+
+            $.ajax(
+                    {
+                        headers: { "X-CSRFToken": token },
+                        type:"POST",
+                        url: '{% url "update_declined_organization" %}',
+                        success: function( data )
+                        {
+                            console.log("success");
+                        }
+                     }
+                 )
+
+            })
+
+
+        var js_has_org = {{has_org|safe}}
+
+        window.onload = function(){
+            if (!js_has_org){
+                var a = document.getElementById('addorg');
+                a.click();
+            };
+        };
+
+
         // Create division button opens modal with id="create-modal"
           $("#add-division").modalForm({
-            formURL: "{% url 'add_division' organization_id=organization.id %}",
+            formURL: "{% url 'add_division' %}",
             modalID: "#create-modal"
           });
 
       });
-
-
-
-
-
-
-
 
 </script>
 {% endblock extrascripts %}

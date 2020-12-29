@@ -86,18 +86,34 @@
 {% block extrascripts %}
 
 <script type="text/javascript">
-      $(function () {
+$(function() {
 
-        var js_has_org = {{has_org|safe}}
+    var js_has_org = {{has_org | safe}};
+    var js_user_declined_organization = {{user_declined_organization | safe}};
 
-        window.onload = function(){
-            if (!js_has_org){
-                var a = document.getElementById('addorg');
-                a.click();
-            };
+    window.onload = function() {
+        if (!js_has_org && !js_user_declined_organization) {
+            var a = document.getElementById('addorg');
+            a.click();
         };
+    };
 
-      });
+    $("#addorg").modalForm({
+        formURL: "{% url 'add_organization_modal' redirect_location %}",
+        modalID: "#add-org-modal"
+    });
+
+    var token = '{{csrf_token}}';
+
+    $('#add-org-modal').on('hidden.bs.modal', function() {
+        $.ajax({
+            headers: {"X-CSRFToken": token},
+            type: "POST",
+            url: '{% url "update_declined_organization" %}',
+            success: function(){}
+        })
+    })
+});
 </script>
 
 {% endblock extrascripts %}
