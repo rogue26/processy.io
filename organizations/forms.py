@@ -10,6 +10,10 @@ class AddDivisionForm(BSModalModelForm):
         model = Division
         fields = ['name']
 
+class OrganizationModalForm(BSModalModelForm):
+    class Meta:
+        model = Organization
+        fields = ['name', 'nickname', 'domain', 'letterhead', 'ppt_template']
 
 class OrganizationForm(forms.ModelForm):
     class Meta:

@@ -11,7 +11,7 @@ class CustomUser(AbstractUser):
     first_name = models.CharField(max_length=50, null=True, blank=True)
     last_name = models.CharField(max_length=50, null=True, blank=True)
     email = models.EmailField(_('email address'), unique=True)
-    organization = models.ForeignKey(Organization, on_delete=models.CASCADE, null=True, blank=True)
+    organization = models.ForeignKey(Organization, on_delete=models.SET_NULL, null=True, blank=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []

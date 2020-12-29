@@ -77,11 +77,27 @@
                 {% endif %}
             </div>
         </div>
+        <a id="addorg" href="#"></a>
     </div>
 </div>
 
 {% endblock content %}
 
 {% block extrascripts %}
+
+<script type="text/javascript">
+      $(function () {
+
+        var js_has_org = {{has_org|safe}}
+
+        window.onload = function(){
+            if (!js_has_org){
+                var a = document.getElementById('addorg');
+                a.click();
+            };
+        };
+
+      });
+</script>
 
 {% endblock extrascripts %}

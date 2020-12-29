@@ -4,12 +4,13 @@ import datetime
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.shortcuts import redirect
+from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView, FormView
 
 from bootstrap_modal_forms.generic import BSModalFormView, BSModalCreateView
 
-from .forms import OrganizationForm, AddDivisionForm
+from .forms import OrganizationForm, AddDivisionForm, OrganizationModalForm
 from .models import Organization
 
 from projects.models import Project
@@ -28,6 +29,12 @@ class AddDivision(BSModalCreateView):
         else:
             pass
         return HttpResponseRedirect(reverse_lazy('organization'))
+
+
+class AddOrganizationModal(BSModalCreateView):
+    template_name = 'organizations/add_organization_modal.html'
+    form_class = OrganizationModalForm
+    success_url = reverse_lazy('manage_projects')
 
 
 class AddOrganization(FormView):
@@ -78,6 +85,5 @@ class OrganizationDashboard(LoginRequiredMixin, TemplateView):
 
         context['organization'] = organization
         context['projects'] = projects
-
 
         return self.render_to_response(context)

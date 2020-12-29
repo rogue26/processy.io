@@ -54,11 +54,6 @@
 
       $(function () {
 
-        function codeAddress() {
-            alert('ok')
-        }
-        window.onload = codeAddress;
-
         // Create division button opens modal with id="create-modal"
           $("#add-division").modalForm({
             formURL: "{% url 'add_division' organization_id=organization.id %}",

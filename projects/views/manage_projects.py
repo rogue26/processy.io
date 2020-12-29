@@ -1,5 +1,7 @@
 from django.http import HttpResponseRedirect
 from django.views.generic import FormView
+from django.urls import reverse_lazy
+import json
 
 from ..forms import ProjectForm
 from ..models import Project
@@ -18,6 +20,16 @@ class ManageProjects(FormView):
             return self.landing_template_name
         return super().get_template_names()
 
+    # def dispatch(self, request, *args, **kwargs):
+    #     # check if the user already has an organization assigned to them.
+    #     # if not, redirect them to the add_organization_modal to provide one.
+    #     if request.user.organization:
+    #         print('user has organization')
+    #         return super(ManageProjects, self).dispatch(request, *args, **kwargs)
+    #     else:
+    #         print('no organization')
+    #         return HttpResponseRedirect(reverse_lazy('add_organization_modal'))
+
     def get(self, request, *args, **kwargs):
         """Handle GET requests: instantiate a blank version of the form."""
 
@@ -33,7 +45,9 @@ class ManageProjects(FormView):
             context['workstreams'] = Workstream.objects.all()
             context['projects'] = Project.objects.filter(is_the_reference_project=False, created_by=request.user)
             context['workstream_columns'] = range(2)
+            context['has_org'] = json.dumps(self.request.user.organization is not None)
 
+            print('test', json.dumps(self.request.user.organization is not None))
         return self.render_to_response(context)
 
     def form_valid(self, form):

@@ -102,6 +102,10 @@
             formURL: "{% url 'signup_modal' %}"
           });
 
+          $("#addorg").modalForm({
+            formURL: "{% url 'add_organization_modal' %}"
+          });
+
           var asyncSuccessMessage = [
             "<div ",
             "style='position:fixed;top:0;z-index:10000;width:100%;border-radius:0;' ",
