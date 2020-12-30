@@ -65,7 +65,7 @@
 [![Product Name Screen Shot][product-screenshot]](https://example.com)
 
 Project management, project scoping, and knowledge management are so closely related that a project-oriented 
-organization is unlikely to excel at any of them unless it excels at all of them.
+organization is unlikely to excel at **any** of them unless it excels at **all** of them.
 
 There are many great project management tools out there that are well-suited for their intended purposes. I wanted a 
 tool that more tightly integrated project management, knowledge management, and project scoping.
@@ -153,7 +153,7 @@ See the [open issues](https://github.com/rogue26/processy.io/issues) for a list 
 <!-- CONTRIBUTING -->
 ## Contributing
 
-Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
 1. Fork the Project
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
