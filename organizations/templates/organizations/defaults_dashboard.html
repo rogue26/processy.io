@@ -139,131 +139,95 @@
 
 {% block extrascripts %}
 <script type="text/javascript">
-      $(function () {
+$(function() {
 
-          // Create workstream button opens modal with id="create-modal"
-          $("#add-workstream").modalForm({
-            formURL: "{% url 'add_workstream' project.id %}",
-            modalID: "#create-modal"
-          });
+    // Create workstream button opens modal with id="create-modal"
+    $("#add-workstream").modalForm({
+        formURL: "{% url 'add_workstream' project.id %}",
+        modalID: "#create-modal"
+    });
 
-          // Create deliverable button opens modal with id="create-modal"
-          $("#add-deliverable").modalForm({
-            formURL: "{% url 'add_deliverable' project.id %}",
-            modalID: "#create-modal"
-          });
+    // Create deliverable button opens modal with id="create-modal"
+    $("#add-deliverable").modalForm({
+        formURL: "{% url 'add_deliverable' project.id %}",
+        modalID: "#create-modal"
+    });
 
-          // Create task button opens modal with id="create-modal"
-          $("#add-task").modalForm({
-            formURL: "{% url 'add_task' project.id %}",
-            modalID: "#create-modal"
-          });
+    // Create task button opens modal with id="create-modal"
+    $("#add-task").modalForm({
+        formURL: "{% url 'add_task' project.id %}",
+        modalID: "#create-modal"
+    });
 
-          // Create task button opens modal with id="create-modal"
-          $("#add-workstream-type").modalForm({
-            formURL: "{% url 'add_workstream_type' %}",
-            modalID: "#create-modal"
-          });
+    // Create task button opens modal with id="create-modal"
+    $("#add-workstream-type").modalForm({
+        formURL: "{% url 'add_workstream_type' %}",
+        modalID: "#create-modal"
+    });
 
-          // Create task button opens modal with id="create-modal"
-          $("#add-deliverable-type").modalForm({
-            formURL: "{% url 'add_deliverable_type' %}",
-            modalID: "#create-modal"
-          });
+    // Create task button opens modal with id="create-modal"
+    $("#add-deliverable-type").modalForm({
+        formURL: "{% url 'add_deliverable_type' %}",
+        modalID: "#create-modal"
+    });
 
-          // Create task button opens modal with id="create-modal"
-          $("#add-task-type").modalForm({
-            formURL: "{% url 'add_task_type' %}",
-            modalID: "#create-modal"
-          });
+    // Create task button opens modal with id="create-modal"
+    $("#add-task-type").modalForm({
+        formURL: "{% url 'add_task_type' %}",
+        modalID: "#create-modal"
+    });
 
-          $('input[type=radio][name="options"]').change(function() {
+    $('input[type=radio][name="options"]').change(function() {
 
-            if ($(this).val() == "workstreams") {
-              $('#workstreams-table').show()
-              $('#deliverables-table').hide()
-              $('#tasks-table').hide()
-            } else if ($(this).val() == "deliverables") {
-              $('#workstreams-table').hide()
-              $('#deliverables-table').show()
-              $('#tasks-table').hide()
-            } else if ($(this).val() == "tasks") {
-              $('#workstreams-table').hide()
-              $('#deliverables-table').hide()
-              $('#tasks-table').show()
+        if ($(this).val() == "workstreams") {
+            $('#workstreams-table').show()
+            $('#deliverables-table').hide()
+            $('#tasks-table').hide()
+        } else if ($(this).val() == "deliverables") {
+            $('#workstreams-table').hide()
+            $('#deliverables-table').show()
+            $('#tasks-table').hide()
+        } else if ($(this).val() == "tasks") {
+            $('#workstreams-table').hide()
+            $('#deliverables-table').hide()
+            $('#tasks-table').show()
+        }
+
+    });
+
+
+    $("#addorg").modalForm({
+        formURL: "{% url 'add_organization_modal' redirect_location %}",
+        modalID: "#add-org-modal"
+    });
+
+    var token = '{{csrf_token}}';
+
+    $('#add-org-modal').on('hidden.bs.modal', function() {
+        console.log("modal hidden");
+
+        $.ajax({
+            headers: {
+                "X-CSRFToken": token
+            },
+            type: "POST",
+            url: '{% url "update_declined_organization" %}',
+            success: function(data) {
+                console.log("success");
             }
+        })
 
-          });
+    })
 
+    var js_has_org = {{ has_org|safe }}
 
-       $("#addorg").modalForm({
-            formURL: "{% url 'add_organization_modal' redirect_location %}",
-            modalID: "#add-org-modal"
-          });
-
-          var token = '{{csrf_token}}';
-
-          $('#add-org-modal').on('hidden.bs.modal', function () {
-            console.log("modal hidden");
-
-            $.ajax(
-                    {
-                        headers: { "X-CSRFToken": token },
-                        type:"POST",
-                        url: '{% url "update_declined_organization" %}',
-                        success: function( data )
-                        {
-                            console.log("success");
-                        }
-                     }
-                 )
-
-            })
-
-
-        var js_has_org = {{has_org|safe}}
-
-        window.onload = function(){
-            if (!js_has_org){
-                var a = document.getElementById('addorg');
-                a.click();
-            };
+    window.onload = function() {
+        if (!js_has_org) {
+            var a = document.getElementById('addorg');
+            a.click();
         };
-
-
-
-      });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    };
+});
 
 </script>
 {% endblock extrascripts %}

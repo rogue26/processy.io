@@ -175,7 +175,8 @@ Distributed under the MIT License. See `LICENSE` for more information.
 * [Django Bootstrap Modal Forms](https://github.com/trco/django-bootstrap-modal-forms) is a fantastic, well-constructed 
 Django app that makes it effortless to use Bootstrap 4 modals with ajax within Django.
 
-* [Frappe Gantt](https://github.com/frappe/gantt)
+* [Frappe Gantt](https://github.com/frappe/gantt) is an excellent javascript Gantt chart plugin with everything you 
+need and nothing you don't.
 
 
 
