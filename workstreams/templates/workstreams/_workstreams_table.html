@@ -15,13 +15,13 @@
 
             <!-- Edit button -->
             <button type="button" class="bs-modal btn btn-sm btn-primary"
-                    data-form-url="{% url 'configure_workstream' project_id ws.pk %}">
+                    data-form-url="{% url 'configure_workstream' project.id ws.id %}">
                 <input type="hidden" value="{{ ws.pk }}" name="workstream_id">
                 <span class="fa fa-gears"></span>
             </button>
 
             <!-- Delete button -->
-            <button type="button" class="bs-modal delete-workstream btn btn-sm btn-secondary" data-form-url="{% url 'delete_workstream' project_id ws.id %}">
+            <button type="button" class="bs-modal delete-workstream btn btn-sm btn-secondary" data-form-url="{% url 'delete_workstream' project.id ws.id %}">
                 <span class="fa fa-trash"></span>
             </button>
         </td>

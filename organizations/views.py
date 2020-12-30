@@ -116,11 +116,13 @@ class DefaultsDashboard(LoginRequiredMixin, TemplateView):
 
         if ref_projects.exists():
             ref_project = ref_projects.first()
-            context['ref_project'] = ref_project
+
+            context['project'] = ref_project
             context['workstreams'] = Workstream.objects.filter(project__id=ref_project.id)
             context['deliverables'] = Deliverable.objects.filter(project__id=ref_project.id)
             context['tasks'] = Task.objects.filter(project__id=ref_project.id)
 
+        context['projects'] = Project.objects.filter(is_the_reference_project=False, created_by=request.user)
         context['has_org'] = json.dumps(request.user.organization is not None)
         context['redirect_location'] = 'defaults'
 

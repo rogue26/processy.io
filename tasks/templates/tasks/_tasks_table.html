@@ -23,7 +23,7 @@
 
             <!-- Edit button -->
             <button type="button" class="bs-modal btn btn-sm btn-primary"
-                    data-form-url="{% url 'configure_task' project_id task.pk %}">
+                    data-form-url="{% url 'configure_task' project.id task.id %}">
                 <input type="hidden" value="{{ task.pk }}" name="task_id">
                 <span class="fa fa-gears"></span>
             </button>
@@ -31,7 +31,7 @@
             <!-- Delete button -->
             <button type="button"
                     class="bs-modal delete-task btn btn-sm btn-secondary"
-                    data-form-url="{% url 'delete_task' project_id task.id %}">
+                    data-form-url="{% url 'delete_task' project.id task.id %}">
                 <span class="fa fa-trash"></span>
             </button>
         </td>
