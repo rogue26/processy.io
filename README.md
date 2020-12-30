@@ -3,7 +3,6 @@
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
 
 
 
@@ -11,7 +10,7 @@
 <br />
 <p align="center">
   <a href="https://github.com/rogue26/processy.io">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+    <img src="static/img/logo.png" alt="Logo" width="80" height="80">
   </a>
 
   <h3 align="center">Processy.io</h3>
@@ -65,14 +64,23 @@
 
 [![Product Name Screen Shot][product-screenshot]](https://example.com)
 
-Open-source project and knowledge management
+Project management, project scoping, and knowledge management are so closely related that a project-oriented 
+organization is unlikely to excel at any of them unless it excels at all of them.
+
+There are many great project management tools out there that are well-suited for their intended purposes. I wanted a 
+tool that more tightly integrated project management, knowledge management, and project scoping.
+
+While Processy.io was built with the needs of a project-oriented, consulting-ish organization in mind, the structure 
+that is imposed on tasks, deliverables, and workstreams, as well as the integrated project management tools make it 
+useful for a much broader range of activities.
+
 
 
 ### Built With
 
 * [Django](https://www.djangoproject.com/)
-* [Django Bootstrap Modal Forms](https://github.com/trco/django-bootstrap-modal-forms)
-* []()
+* [JQuery](https://jquery.com)
+* [Bootstrap](https://getbootstrap.com)
 
 
 
@@ -83,31 +91,55 @@ To get a local copy up and running follow these simple steps.
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
-* npm
-  ```sh
-  npm install npm@latest -g
-  ```
+Processy.io is a webapp written in [Python](https://python.org), which is accessed through the browser while running 
+a local server. To run the webapp, you'll need to have python installed on your computer. Python is preinstalled on 
+MacOS and virtually all Linux distributions. You can get the latest Python installation materials for Windows 
+[here](https://www.python.org/downloads/windows/).
+
 
 ### Installation
 
-1. Clone the repo
+1. Navigate to your preferred directory (any directory will do) and clone the repo
    ```sh
    git clone https://github.com/rogue26/processy.io.git
    ```
-2. Install NPM packages
+   Alternatively, you can download the code as a zip file from github.
+2. Create a virtual environment
    ```sh
-   npm install
+   python -m venv env
    ```
+3. Activate the virtual environment. On Windows, type:
+   ```sh
+   env\Scripts\activate.bat
+   ```
+   On Linux or Mac, type:
+   ```sh
+   env/bin/activate
+   ```
+4. Install the required python packages
+   ```sh
+   pip install -r requirements.txt
+   ```
+5. Standard Django startup procedures, i.e.
+   ```sh
+   python manage.py makemigrations
+   python manage.py migrate
+   python manage.py createsuperuser
+   python manage.py runserver
+   ```
+6. Navigate to [localhost:8000](localhost:8000) in your browser.
 
 
 
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+Coming soon.
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+<!-- Use this space to show useful examples of how a project can be used. Additional screenshots, code 
+examples and demos work well in this space. You may also link to more resources. -->
+
+<!-- _For more examples, please refer to the [Documentation](https://example.com)_ -->
 
 
 
@@ -137,22 +169,12 @@ Contributions are what make the open source community such an amazing place to b
 Distributed under the MIT License. See `LICENSE` for more information.
 
 
-
-<!-- CONTACT -->
-## Contact
-
-Your Name - [@twitter_handle](https://twitter.com/twitter_handle) - max.hill@pm.me
-
-Project Link: [https://github.com/rogue26/processy.io](https://github.com/rogue26/processy.io)
-
-
-
 <!-- ACKNOWLEDGEMENTS -->
 ## Acknowledgements
 
-* []()
-* []()
-* []()
+* [Django Bootstrap Modal Forms](https://github.com/trco/django-bootstrap-modal-forms) is a fantastic, well-constructed 
+Django app that makes it effortless to use Bootstrap 4 modals with ajax within Django.
+
 
 
 
@@ -170,5 +192,3 @@ Project Link: [https://github.com/rogue26/processy.io](https://github.com/rogue2
 [issues-url]: https://github.com/rogue26/processy.io/issues
 [license-shield]: https://img.shields.io/github/license/rogue26/processy.io.svg?style=for-the-badge
 [license-url]: https://github.com/rogue26/processy.io/blob/master/LICENSE.txt
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/rogue26
