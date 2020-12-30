@@ -57,16 +57,20 @@ class AddOrganizationModal(BSModalCreateView):
             if not pre_existing_ref_projects.exists():
                 ref_project = Project()
                 ref_project.name = "Reference project"
-                ref_project.description = "Placeholder project for holding an organization's default workstreams"
+                ref_project.description = "Placeholder project for holding an organization's default workstreams."
+                ref_project.client = org.name
                 ref_project.is_the_reference_project = True
 
                 ref_project.save()
             else:
-                # todo: when user has a "personal" reference project and they create an organization,
-                #  they should have the option to make that reference project the organizational reference project
-                #  ... unless we decide to implement both personal and organization reference configurations...
-                #  to deal with later.
-                pass
+                # if a user has a "personal" reference project and they create an organization, that reference project
+                # will be associated with the organization. At the moment, processy doesn't allow for both a personal
+                # and organization reference project under the same account. This is probably the correct behavior,
+                # but this can be revisted later.
+
+                ref_project = pre_existing_ref_projects.first()
+                ref_project.organization = org
+                ref_project.client = org.name
 
         else:
             pass
@@ -131,7 +135,8 @@ def update_declined_organization(request):
 
         ref_project = Project()
         ref_project.name = "Reference project"
-        ref_project.description = "Placeholder project for holding an organization's default workstreams"
+        ref_project.description = "Placeholder project for holding an organization's default workstreams."
+        ref_project.client = user.email
         ref_project.is_the_reference_project = True
 
         ref_project.save()

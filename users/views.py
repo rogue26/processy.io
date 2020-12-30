@@ -1,4 +1,5 @@
 from django.urls import reverse_lazy
+from django.contrib.auth import login
 
 from bootstrap_modal_forms.generic import BSModalLoginView, BSModalCreateView
 
@@ -10,6 +11,14 @@ class SignUpView(BSModalCreateView):
     template_name = 'signup.html'
     success_message = 'Success: Sign up succeeded. You can now Log in.'
     success_url = reverse_lazy('manage_projects')
+
+    def form_valid(self, form):
+        valid = super(SignUpView, self).form_valid(form)
+        if not self.request.is_ajax():
+            login(self.request, self.object)
+        else:
+            pass
+        return valid
 
 
 class CustomLoginView(BSModalLoginView):

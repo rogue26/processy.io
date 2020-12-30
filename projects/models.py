@@ -20,7 +20,7 @@ class Project(models.Model):
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE, null=True, blank=True)
     division = models.ForeignKey(Division, on_delete=models.CASCADE, null=True, blank=True)
     created_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, blank=True)
-    client = models.CharField(max_length=50)
+    client = models.CharField(max_length=50, null=True, blank=True)
     name = models.CharField(max_length=50, blank=True)
     description = models.TextField(max_length=500, null=True, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True, null=True)
