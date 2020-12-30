@@ -20,10 +20,7 @@ class AddDivision(BSModalCreateView):
     template_name = 'organizations/add_division.html'
     form_class = AddDivisionForm
 
-    # success_url = reverse_lazy('organization')
-
     def form_valid(self, form):
-
         if not self.request.is_ajax():
             form.instance.organization = self.request.user.organization
             form.save()
@@ -65,8 +62,8 @@ class AddOrganizationModal(BSModalCreateView):
             else:
                 # if a user has a "personal" reference project and they create an organization, that reference project
                 # will be associated with the organization. At the moment, processy doesn't allow for both a personal
-                # and organization reference project under the same account. This is probably the correct behavior,
-                # but this can be revisted later.
+                # reference project and an organization reference project under the same account. This is probably the
+                # correct behavior, but this can be revisited later.
 
                 ref_project = pre_existing_ref_projects.first()
                 ref_project.organization = org
@@ -104,7 +101,7 @@ class OrganizationDashboard(LoginRequiredMixin, TemplateView):
 
 
 class DefaultsDashboard(LoginRequiredMixin, TemplateView):
-    template_name = "organizations/defaults.html"
+    template_name = "organizations/defaults_dashboard.html"
     login_url = "/"
 
     def get(self, request, *args, **kwargs):
@@ -116,11 +113,13 @@ class DefaultsDashboard(LoginRequiredMixin, TemplateView):
 
         if ref_projects.exists():
             ref_project = ref_projects.first()
-            context['ref_project'] = ref_project
+
+            context['project'] = ref_project
             context['workstreams'] = Workstream.objects.filter(project__id=ref_project.id)
             context['deliverables'] = Deliverable.objects.filter(project__id=ref_project.id)
             context['tasks'] = Task.objects.filter(project__id=ref_project.id)
 
+        context['projects'] = Project.objects.filter(is_the_reference_project=False, created_by=request.user)
         context['has_org'] = json.dumps(request.user.organization is not None)
         context['redirect_location'] = 'defaults'
 

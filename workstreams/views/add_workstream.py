@@ -27,11 +27,12 @@ class AddWorkstream(BSModalFormView):
             # get list of workstream types to add
             workstream_types_to_add = self.request.POST.getlist('workstream_type')
 
+            project = Project.objects.get(id=self.kwargs['project_id'])
             for workstream_type_num in workstream_types_to_add:
                 workstream_type = WorkstreamType.objects.get(id=int(workstream_type_num))
 
                 # if created for the reference project, then set is_the_default_workstream to True
-                if self.kwargs['project_id'] == 1:
+                if project.is_the_reference_project:
                     new_ws = Workstream.objects.create(name=workstream_type.name, description=workstream_type.name,
                                                        category_id=int(workstream_type_num),
                                                        project_id=self.kwargs['project_id'],
@@ -79,7 +80,8 @@ class AddWorkstream(BSModalFormView):
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
-        if self.kwargs['project_id'] == 1:
+        project = Project.objects.get(id=self.kwargs['project_id'])
+        if project.is_the_reference_project:
             return reverse_lazy('defaults')
         else:
             return reverse_lazy('project', kwargs={'project_id': self.kwargs['project_id']})
