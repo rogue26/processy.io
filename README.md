@@ -11,7 +11,7 @@
 <br />
 <p align="center">
   <a href="https://github.com/rogue26/processy.io">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+    <img src="static/img/logo.png" alt="Logo" width="80" height="80">
   </a>
 
   <h3 align="center">Processy.io</h3>
