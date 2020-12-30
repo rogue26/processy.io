@@ -40,4 +40,4 @@ class DeliverableForm(BSModalModelForm):
 
     class Meta:
         model = Deliverable
-        fields = ['name', 'category', 'workstream', 'format', 'scope', 'conditions', 'specifications', 'tasks']
+        fields = ['name', 'category', 'workstream', 'scope', 'conditions', 'specifications', 'tasks']

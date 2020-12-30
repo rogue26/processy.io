@@ -1,4 +1,5 @@
 from django.db import models, transaction
+
 from workstreams.models import Workstream
 from projects.models import Project
 
@@ -11,26 +12,28 @@ class DeliverableType(models.Model):
 
 
 class Deliverable(models.Model):
-    FORMAT_CHOICES = [
-        ('XLS', 'Excel tool'),
-        ('PPT', 'PowerPoint deck'),
-        ('PBI', 'Power BI dashboard'),
-        ('TBL', 'Tableau dashboard'),
-    ]
-
     description = models.CharField(max_length=50, null=True, blank=True)
     category = models.ForeignKey(DeliverableType, on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
-    format = models.CharField(max_length=50, choices=FORMAT_CHOICES)
     scope = models.CharField(max_length=50, blank=True)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     workstream = models.ForeignKey(Workstream, on_delete=models.CASCADE, null=True)
     timestamp = models.DateTimeField(auto_now_add=True, null=True)
 
     is_the_reference_deliverable = models.BooleanField(default=False)
-
+    copied_from = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE,
+                                    related_name='copied_from_set')
     def __str__(self):
         return self.name
+
+    @property
+    def augmented_name(self):
+        return ''.join([self.name, ' (', self.workstream.name, ')'])
+
+    @property
+    def augmented_name2(self):
+        return ''.join([self.name, ' (', self.project.name,' - ',self.workstream.name, ')'])
+
 
     def save(self, *args, **kwargs):
         if not self.is_the_reference_deliverable:

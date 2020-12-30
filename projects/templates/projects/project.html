@@ -4,10 +4,11 @@
 
 {% load widget_tweaks %}
 
-<div class="container mt-3">
-    <div class="row mt-3 mb-5">
-        <div class="col-4 mt-3">
-            <h4 class="mb-5">Project info</h4>
+
+<div class="container-fluid">
+    <div class="row mt-4 mb-3">
+        <div class="col-md-3 pl-5">
+            <h4 class="mb-3">Project info</h4>
             <div>
                 <h6><strong>Project name:</strong> {{project.name}}</h6>
             </div>
@@ -15,118 +16,150 @@
                 <h6><strong>Client name:</strong> {{project.client}}</h6>
             </div>
             <div>
-                <h6><strong>Cluster:</strong> {{project.cluster}}</h6>
+                <h6><strong>Division:</strong> {{project.division}}</h6>
             </div>
-        </div>
-        <div class="col ml-5 mt-3">
-            <div class="row">
-                <button id="configure" class="btn btn-secondary ml-3" type="button" name="button" style="active">
-                    <span class="fa fa-gear mr-2"></span>Configure
-                </button>
-                <div class="dropdown">
-                    <button id="sow" class="btn btn-secondary ml-3 dropdown-toggle" type="button" name="button"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <span class="fa fa-file-text mr-2"></span>Export SOW
+            <div class="row mb-3 mt-3">
+                <div class="col-md-12">
+                    <button id="configure" class="btn btn-secondary text-left btn-block active" type="button"
+                            name="button"
+                            style="active">
+                        <span class="fa fa-gear mr-2"></span>Configure project
                     </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <a class="dropdown-item" href="#">Configure SOW</a>
-                        <a id="output-sow" class="dropdown-item" href="#">Export SOW</a>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <div class="dropdown">
+                        <button id="sow" class="btn btn-secondary text-left btn-block dropdown-toggle" type="button"
+                                name="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="fa fa-file-text mr-2"></span>Export SOW
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="#">Configure SOW</a>
+                            <a id="output-sow" class="dropdown-item" href="#">Export SOW</a>
+                        </div>
                     </div>
                 </div>
-                <div class="dropdown">
-                    <button id="slide-pack" class="btn btn-secondary ml-3 dropdown-toggle" type="button" name="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <span class="fa fa-download mr-2"></span>Slide pack
-                </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <a class="dropdown-item" href="#">Configure slide pack</a>
-                        <a id="output-slides" class="dropdown-item" href="#">Export slides</a>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <div class="dropdown">
+                        <button id="slide-pack" class="btn btn-secondary text-left btn-block dropdown-toggle"
+                                type="button" name="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="fa fa-download mr-2"></span>Slide pack
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="#">Configure slide pack</a>
+                            <a id="output-slides" class="dropdown-item" href="#">Export slides</a>
+                        </div>
                     </div>
                 </div>
-
-                <button id="setup-team" class="btn btn-secondary ml-3" type="button" name="button">
-                    <span class="fa fa-users mr-2"></span>Set up team
-                </button>
-                <button id="view-timeline" class="btn btn-secondary ml-3" type="button" name="button">
-                    <span class="fa fa-calendar mr-2"></span>View timeline
-                </button>
             </div>
-        </div>
-    </div>
-
-    <div id="configure-project">
-        <div class="btn-group btn-group-toggle mb-3" data-toggle="buttons">
-            <label class="btn btn-secondary active">
-                <input type="radio" name="configure-options" id="option1" autocomplete="off" checked
-                       value="workstreams">
-                Workstreams
-            </label>
-            <label class="btn btn-secondary">
-                <input type="radio" name="configure-options" id="option2" autocomplete="off" value="deliverables">
-                Deliverables
-            </label>
-            <label class="btn btn-secondary">
-                <input type="radio" name="configure-options" id="option3" autocomplete="off" value="tasks"> Tasks
-            </label>
-        </div>
-
-        <div id="workstreams-table" class="row">
-            <div class="column">
-                <div class="row">
-                    <h4 class="my-auto">Workstream configurations</h4>
-                    <button id="add-workstream" class="btn btn-secondary ml-3" type="button" name="button">
-                        <span class="fa fa-plus mr-2"></span>Add new workstream
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <button id="setup-team" class="btn btn-secondary text-left btn-block" type="button" name="button">
+                        <span class="fa fa-users mr-2"></span>Set up team
                     </button>
                 </div>
-                <div class="row mt-3">
-                    {% if workstreams %}
-                    {% include "workstreams/_workstreams_table.html" %}
-                    {% else %}
-                    <p class="no-projects text-primary">No workstreams added yet.</p>
-                    {% endif %}
-                </div>
             </div>
-        </div>
-
-        <div id="deliverables-table" class="row" style="display: none;">
-            <div class="column">
-                <div class="row">
-                    <h4 class="my-auto">Deliverable configurations</h4>
-                    <button id="add-deliverable" class="btn btn-secondary ml-3" type="button" name="button">
-                        <span class="fa fa-plus mr-2"></span>Add new deliverables
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <button id="view-timeline" class="btn btn-secondary text-left btn-block" type="button"
+                            name="button">
+                        <span class="fa fa-calendar mr-2"></span>View timeline
                     </button>
                 </div>
-                <div class="row mt-3">
-                    {% if deliverables %}
-                    {% include "deliverables/_deliverables_table.html" %}
-                    {% else %}
-                    <p class="no-projects text-primary">No deliverables added yet.</p>
-                    {% endif %}
-                </div>
             </div>
         </div>
+        <div class="col-md-9">
+            <div id="configure-project-selector">
+                <div class="btn-group d-flex btn-group-toggle pl-5 pr-5 mx-auto" data-toggle="buttons">
+                    <label class="btn btn-secondary active w-100">
+                        <input type="radio" name="options" id="option1" autocomplete="off" value="workstreams">
+                        Workstreams
+                    </label>
+                    <label class="btn btn-secondary w-100">
+                        <input type="radio" name="options" id="option2" autocomplete="off" value="deliverables">
+                        Deliverables
+                    </label>
+                    <label class="btn btn-secondary w-100">
+                        <input type="radio" name="options" id="option3" autocomplete="off" value="tasks">
+                        Tasks
+                    </label>
+                </div>
+            </div>
 
-        <div id="tasks-table" class="row" style="display: none;">
-            <div class="column">
-                <div class="row">
-                    <h4 class="my-auto">Task configurations</h4>
-                    <button id="add-task" class="btn btn-secondary ml-3" type="button" name="button">
-                        <span class="fa fa-plus mr-2"></span>Add new tasks
-                    </button>
-                </div>
-                <div class="row mt-3">
-                    {% if tasks %}
-                    {% include "tasks/_tasks_table.html" %}
-                    {% else %}
-                    <p class="no-projects text-primary">No tasks added yet.</p>
-                    {% endif %}
+            <div class="row mt-3">
+                <div class="col-md-12">
+                    <div id="configure-project-table">
+                        <div id="workstreams-table" class="row">
+                            <div class="column">
+                                <div class="row">
+                                    <h4 class="my-auto">Default workstream configurations</h4>
+                                    <button id="add-workstream" class="btn btn-secondary ml-3" type="button"
+                                            name="button">
+                                        <span class="fa fa-plus mr-2"></span>Add new workstream
+                                    </button>
+                                </div>
+                                <div class="row mt-3">
+                                    {% if workstreams %}
+                                    {% include "workstreams/_workstreams_table.html" %}
+                                    {% else %}
+                                    <p class="no-projects text-primary">No workstreams added yet.</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="deliverables-table" class="row" style="display: none;">
+                            <div class="column mx-auto">
+                                <div class="row">
+                                    <h4 class="my-auto">Default deliverable configurations</h4>
+                                    <button id="add-deliverable" class="btn btn-secondary ml-3" type="button"
+                                            name="button">
+                                        <span class="fa fa-plus mr-2"></span>Add new deliverables
+                                    </button>
+                                </div>
+                                <div class="row mt-3">
+                                    {% if deliverables %}
+                                    {% include "deliverables/_deliverables_table.html" %}
+                                    {% else %}
+                                    <p class="no-projects text-primary">No deliverables added yet.</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="tasks-table" class="row" style="display: none;">
+                            <div class="column mx-auto">
+                                <div class="row">
+                                    <h4 class="my-auto">Default task configurations</h4>
+                                    <button id="add-task" class="btn btn-secondary ml-3" type="button" name="button">
+                                        <span class="fa fa-plus mr-2"></span>Add new tasks
+                                    </button>
+                                </div>
+                                <div class="row mt-3">
+                                    {% if tasks %}
+                                    {% include "tasks/_tasks_table.html" %}
+                                    {% else %}
+                                    <p class="no-projects text-primary">No tasks added yet.</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div id="project-timeline">
+                        <div id="ganttChart"></div>
+                        <br/><br/>
+                        <div id="eventMessage"></div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div id="project-timeline">
-        <div id="ganttChart"></div>
-        <br/><br/>
-        <div id="eventMessage"></div>
     </div>
 </div>
 
@@ -139,15 +172,6 @@
 
 var ganttData = {{ gantt_json|safe }};
 
-            // Log in & Sign up buttons
-          // The formURL is given explicitly
-          $("#login-btn").modalForm({
-            formURL: "{% url 'login_modal' %}"
-          });
-
-          $("#signup-btn").modalForm({
-            formURL: "{% url 'signup_modal' %}"
-          });
 
           // Create workstream button opens modal with id="create-modal"
           $("#add-workstream").modalForm({
@@ -168,33 +192,7 @@ var ganttData = {{ gantt_json|safe }};
           });
 
 
-          var asyncSuccessMessage = [
-            "<div ",
-            "style='position:fixed;top:0;z-index:10000;width:100%;border-radius:0;' ",
-            "class='alert alert-icon alert-success alert-dismissible fade show mb-0' role='alert'>",
-            "Success: Updated.",
-            "<button type='button' class='close' data-dismiss='alert' aria-label='Close'>",
-            "<span aria-hidden='true'>&times;</span>",
-            "</button>",
-            "</div>",
-            "<script>",
-            "$('.alert').fadeTo(2000, 500).slideUp(500, function () {$('.alert').slideUp(500).remove();});",
-            "<\/script>"
-          ].join("");
-
-
-          // Read and Delete buttons open modal with id="modal"
-          // The formURL is retrieved from the data of the element
-          $(".bs-modal").each(function () {
-              $(this).modalForm({formURL: $(this).data("form-url")});
-          });
-
-          // Hide message
-          $(".alert").fadeTo(2000, 500).slideUp(500, function () {
-              $(".alert").slideUp(500);
-          });
-
-          $('input[type=radio][name="configure-options"]').change(function() {
+          $('input[type=radio][name="options"]').change(function() {
 
             if ($(this).val() == "workstreams") {
               $('#workstreams-table').show()
@@ -213,14 +211,15 @@ var ganttData = {{ gantt_json|safe }};
           });
 
             $("#view-timeline").click(function(){
-                $("#configure-project").hide();
+                $("#configure-project-table").hide();
+                $("#configure-project-selector").hide();
                 $("#project-timeline").show();
             });
 
             $("#view-timeline").one("click", function(){
 $("#ganttChart").ganttView({
                     data: ganttData,
-                    slideWidth: 868,
+                    slideWidth: 700,
                     behavior: {
                         onClick: function (data) {
                             var msg = "You clicked on an event: { start: " + data.start.toString("M/d/yyyy") + ", end: " + data.end.toString("M/d/yyyy") + " }";
@@ -239,15 +238,10 @@ $("#ganttChart").ganttView({
                 });
 
 
-
-
-
-
-
-
             $("#configure").click(function(){
               $("#project-timeline").hide();
-              $("#configure-project").show();
+              $("#configure-project-table").show();
+              $("#configure-project-selector").show();
             });
 
             $('#output-sow').click(function(){
@@ -277,7 +271,6 @@ $("#ganttChart").ganttView({
              });
 
       });
-
 
 
 </script>

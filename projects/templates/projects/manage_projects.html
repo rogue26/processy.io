@@ -30,8 +30,10 @@
                         <div>{{ field.label_tag }}</div>
                         {% for choice_id, choice_label in field.field.choices %}
                         <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="id_{{field.label}}_{{choice_id}}" name="{{ field.name }}" value="{{ choice_id }}">
-                            <label class="custom-control-label" for="id_{{field.label}}_{{choice_id}}">{{ choice_label }}</label>
+                            <input type="checkbox" class="custom-control-input" id="id_{{field.label}}_{{choice_id}}"
+                                   name="{{ field.name }}" value="{{ choice_id }}">
+                            <label class="custom-control-label" for="id_{{field.label}}_{{choice_id}}">{{ choice_label
+                                }}</label>
                         </div>
                         {% endfor %}
                         {% else %}
@@ -65,7 +67,7 @@
             </div>
 
         </div>
-        <div class="col-6 rounded-lg bg-light border">
+        <div class="col-6 rounded-lg bg-light border mb-3">
             <div class="ml-3 mr-3 mt-3 mb-3">
                 <h4 class="mb-3">Your projects</h4>
                 {% if projects %}
@@ -75,65 +77,43 @@
                 {% endif %}
             </div>
         </div>
+        <a id="addorg" href="#"></a>
     </div>
 </div>
 
 {% endblock content %}
 
 {% block extrascripts %}
+
 <script type="text/javascript">
-      $(function () {
-          // Log in & Sign up buttons
-          // The formURL is given explicitly
-          $("#login-btn").modalForm({
-            formURL: "{% url 'login_modal' %}"
-          });
+$(function() {
 
-          $("#signup-btn").modalForm({
-            formURL: "{% url 'signup_modal' %}"
-          });
+    var js_has_org = {{has_org | safe}};
+    var js_user_declined_organization = {{user_declined_organization | safe}};
 
-          var asyncSuccessMessage = [
-            "<div ",
-            "style='position:fixed;top:0;z-index:10000;width:100%;border-radius:0;' ",
-            "class='alert alert-icon alert-success alert-dismissible fade show mb-0' role='alert'>",
-            "Success: Updated.",
-            "<button type='button' class='close' data-dismiss='alert' aria-label='Close'>",
-            "<span aria-hidden='true'>&times;</span>",
-            "</button>",
-            "</div>",
-            "<script>",
-            "$('.alert').fadeTo(2000, 500).slideUp(500, function () {$('.alert').slideUp(500).remove();});",
-            "<\/script>"
-          ].join("");
+    window.onload = function() {
+        if (!js_has_org && !js_user_declined_organization) {
+            var a = document.getElementById('addorg');
+            a.click();
+        };
+    };
 
+    $("#addorg").modalForm({
+        formURL: "{% url 'add_organization_modal' redirect_location %}",
+        modalID: "#add-org-modal"
+    });
 
-          // Read and Edit buttons open modal with id="modal"
-          // The formURL is retrieved from the data of the element
-          $(".bs-modal").each(function () {
-              $(this).modalForm({formURL: $(this).data("form-url")});
-          });
+    var token = '{{csrf_token}}';
 
-          // Hide message
-          $(".alert").fadeTo(2000, 500).slideUp(500, function () {
-              $(".alert").slideUp(500);
-          });
-      });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    $('#add-org-modal').on('hidden.bs.modal', function() {
+        $.ajax({
+            headers: {"X-CSRFToken": token},
+            type: "POST",
+            url: '{% url "update_declined_organization" %}',
+            success: function(){}
+        })
+    })
+});
 </script>
+
 {% endblock extrascripts %}

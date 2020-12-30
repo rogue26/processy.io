@@ -1,0 +1,346 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% load widget_tweaks %}
+
+
+<div class="container-fluid">
+    <div class="row mt-4 mb-3">
+        <div class="col-md-3 pl-5">
+            <h4 class="mb-3">Project info</h4>
+            <div>
+                <h6><strong>Project name:</strong> {{project.name}}</h6>
+            </div>
+            <div>
+                <h6><strong>Client name:</strong> {{project.client}}</h6>
+            </div>
+            <div>
+                <h6><strong>Division:</strong> {{project.division}}</h6>
+            </div>
+            <div class="row mb-3 mt-3">
+                <div class="col-md-12">
+                    <button id="configure" class="btn btn-secondary text-left btn-block active" type="button"
+                            name="button"
+                            style="active">
+                        <span class="fa fa-gear mr-2"></span>Configure project
+                    </button>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <div class="dropdown">
+                        <button id="sow" class="btn btn-secondary text-left btn-block dropdown-toggle" type="button"
+                                name="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="fa fa-file-text mr-2"></span>Export SOW
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="#">Configure SOW</a>
+                            <a id="output-sow" class="dropdown-item" href="#">Export SOW</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <div class="dropdown">
+                        <button id="content" class="btn btn-secondary text-left btn-block dropdown-toggle"
+                                type="button" name="button"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="fa fa-lightbulb mr-2"></span>Knowledge management
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a id="view-content" class="dropdown-item" href="#">Project-relevant material</a>
+                            <!--                            <a id="output-slides" class="dropdown-item" href="#">Export slides</a>-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <button id="manage-team" class="btn btn-secondary text-left btn-block" type="button" name="button">
+                        <span class="fa fa-users mr-2"></span>Manage team
+                    </button>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <button id="view-timeline" class="btn btn-secondary text-left btn-block" type="button"
+                            name="button">
+                        <span class="fa fa-calendar mr-2"></span>View timeline
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div id="configure-project-selector">
+                <div class="btn-group d-flex btn-group-toggle pl-5 pr-5 mx-auto" data-toggle="buttons">
+                    <label class="btn btn-secondary active w-100">
+                        <input type="radio" name="options" id="option1" autocomplete="off" value="workstreams">
+                        Workstreams
+                    </label>
+                    <label class="btn btn-secondary w-100">
+                        <input type="radio" name="options" id="option2" autocomplete="off" value="deliverables">
+                        Deliverables
+                    </label>
+                    <label class="btn btn-secondary w-100">
+                        <input type="radio" name="options" id="option3" autocomplete="off" value="tasks">
+                        Tasks
+                    </label>
+                </div>
+            </div>
+            <div id="configure-project-table" class="mt-3">
+                <div id="workstreams-table" class="row">
+                    <div class="col-md-12">
+                        <div class="row mb-3 pl-3">
+                            <h4 class="my-auto">Project workstreams</h4>
+                            <button id="add-workstream" class="btn btn-secondary ml-3 " type="button"
+                                    name="button">
+                                <span class="fa fa-plus mr-2"></span>Add new workstream
+                            </button>
+                        </div>
+
+                        {% if workstreams %}
+                        {% include "workstreams/_workstreams_table.html" %}
+                        {% else %}
+                        <p class="no-projects text-primary">No workstreams added yet.</p>
+                        {% endif %}
+
+                    </div>
+                </div>
+
+                <div id="deliverables-table" class="row" style="display: none;">
+                    <div class="col-md-12">
+                        <div class="row mb-3 pl-3">
+                            <h4 class="my-auto">Project deliverables</h4>
+                            <button id="add-deliverable" class="btn btn-secondary ml-3" type="button"
+                                    name="button">
+                                <span class="fa fa-plus mr-2"></span>Add new deliverables
+                            </button>
+                        </div>
+
+                        {% if deliverables %}
+                        {% include "deliverables/_deliverables_table.html" %}
+                        {% else %}
+                        <p class="no-projects text-primary">No deliverables added yet.</p>
+                        {% endif %}
+
+                    </div>
+                </div>
+
+                <div id="tasks-table" class="row" style="display: none;">
+                    <div class="col-md-12">
+                        <div class="row mb-3 pl-3">
+                            <h4 class="my-auto">Project tasks</h4>
+                            <button id="add-task" class="btn btn-secondary ml-3" type="button" name="button">
+                                <span class="fa fa-plus mr-2"></span>Add new tasks
+                            </button>
+                        </div>
+                        {% if tasks %}
+                        {% include "tasks/_tasks_table.html" %}
+                        {% else %}
+                        <p class="no-projects text-primary">No tasks added yet.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div id="project-content" style="display: none;">
+                <h4 class="mb-3">Project content</h4>
+                {% if content_data %}
+                {% include "content/_project_content_table.html" %}
+                {% else %}
+                <p class="no-projects text-primary">No content found for this project.</p>
+                {% endif %}
+            </div>
+            <div id="project-team" style="display: none;">
+                <div class="row mb-3 pl-3">
+                    <h4 class="mb-3 my-auto">Project team</h4>
+                    <button id="add-team-member" class="btn btn-secondary ml-3 " type="button"
+                            name="button">
+                        <span class="fa fa-plus mr-2"></span>Add team member
+                    </button>
+                </div>
+
+                {% if team_members %}
+                {% include "teams/_team-members-table.html" %}
+                {% else %}
+                <p class="no-projects text-primary">No team members created for this project yet.</p>
+                {% endif %}
+            </div>
+            <div id="project-timeline">
+                <h4 id="timeline-header" class="mb-3" style="display: none;">Project timeline</h4>
+                <div id="ganttChart"></div>
+                <br/><br/>
+                <div id="eventMessage"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}
+
+
+{% block extrascripts %}
+
+<script type="text/javascript">
+
+$(function() {
+
+    var ganttData = {{ gantt_json | safe }};
+
+    // Create workstream button opens modal with id="create-modal"
+    $("#add-workstream").modalForm({
+        formURL: "{% url 'add_workstream' project_id=project_id %}",
+        modalID: "#create-modal"
+    });
+
+    // Create deliverable button opens modal with id="create-modal"
+    $("#add-deliverable").modalForm({
+        formURL: "{% url 'add_deliverable' project_id=project_id %}",
+        modalID: "#create-modal"
+    });
+
+    // Create task button opens modal with id="create-modal"
+    $("#add-task").modalForm({
+        formURL: "{% url 'add_task' project_id=project_id %}",
+        modalID: "#create-modal"
+    });
+
+    // Add team member button opens modal with id="create-modal"
+    $("#add-team-member").modalForm({
+        formURL: "{% url 'add_team_member' project_id=project_id %}",
+        modalID: "#create-modal"
+    });
+
+    $('input[type=radio][name="options"]').change(function() {
+
+        if ($(this).val() == "workstreams") {
+            $('#workstreams-table').show()
+            $('#deliverables-table').hide()
+            $('#tasks-table').hide()
+        } else if ($(this).val() == "deliverables") {
+            $('#workstreams-table').hide()
+            $('#deliverables-table').show()
+            $('#tasks-table').hide()
+        } else if ($(this).val() == "tasks") {
+            $('#workstreams-table').hide()
+            $('#deliverables-table').hide()
+            $('#tasks-table').show()
+        }
+
+    });
+
+    $("#configure").click(function() {
+        $("#configure-project-selector").show();
+        $("#configure-project-table").show();
+        $("#project-content").hide();
+        $("#project-team").hide();
+        $("#timeline-header").hide();
+        $("#project-timeline").hide();
+
+    });
+
+    $("#content").click(function() {
+        $("#configure-project-selector").hide();
+        $("#configure-project-table").hide();
+        $("#project-content").show();
+        $("#project-team").hide();
+        $("#timeline-header").hide();
+        $("#project-timeline").hide();
+    });
+
+    $("#manage-team").click(function() {
+        $("#configure-project-selector").hide();
+        $("#configure-project-table").hide();
+        $("#project-content").hide();
+        $("#project-team").show();
+        $("#timeline-header").hide();
+        $("#project-timeline").hide();
+    });
+
+    $("#view-timeline").click(function() {
+        $("#configure-project-selector").hide();
+        $("#configure-project-table").hide();
+        $("#project-content").hide();
+        $("#project-team").hide();
+        $("#timeline-header").show();
+        $("#project-timeline").show();
+    });
+
+    $("#view-timeline").one("click", function() {
+        $("#ganttChart").ganttView({
+				data: ganttData,
+				slideWidth: 700,
+				behavior: {
+					onClick: function (data) {
+						var msg = "You clicked on an event: { start: " + data.start.toString("M/d/yyyy") + ", end: " + data.end.toString("M/d/yyyy") + " }";
+						$("#eventMessage").text(msg);
+					},
+					onResize: function (data) {
+						var msg = "You resized an event: { start: " + data.start.toString("M/d/yyyy") + ", end: " + data.end.toString("M/d/yyyy") + " }";
+						$("#eventMessage").text(msg);
+					},
+					onDrag: function (data) {
+						var msg = "You dragged an event: { start: " + data.start.toString("M/d/yyyy") + ", end: " + data.end.toString("M/d/yyyy") + " }";
+						$("#eventMessage").text(msg);
+					}
+				}
+			});
+    });
+
+    $('#output-sow').click(function() {
+
+        $('.fa-file-text').removeClass('fa-file-text').addClass('fa-spinner').addClass('fa-spin');
+
+        var project_id = {{ project_id }};
+        $.ajax({
+            type: "GET",
+            url: '{% url "ajax_test" %}',
+            data: {
+                project_id: project_id
+            },
+            success: function(data) {
+                var a = document.createElement('a');
+                var url = data;
+                a.href = url;
+                a.download = 'myfile.csv';
+                document.body.append(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+                $('.fa-spinner').removeClass('fa-spinner').removeClass('fa-spin').addClass('fa-file-text')
+            }
+        })
+    });
+
+    $('.download-content').click(function() {
+        console.log("doing ajax");
+        var content_id = $(this).val();
+        console.log(content_id);
+        $.ajax({
+            type: "GET",
+            url: '{% url "ajax_content_download" %}',
+            data: {
+                content_id: content_id
+            },
+            success: function(data) {
+                var a = document.createElement('a');
+                var url = data;
+                a.href = url;
+                a.download = 'myfile';
+                document.body.append(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+            }
+        })
+    });
+});
+
+
+</script>
+
+{% endblock extrascripts %}

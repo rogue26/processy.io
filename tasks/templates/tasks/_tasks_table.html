@@ -1,35 +1,37 @@
-<table id="tasks-table" class="table">
+<table id="tasks-table" class="table table-striped">
     <thead>
     <tr>
         <th class="text-center" scope="col">#</th>
         <th class="text-center" scope="col">Workstream</th>
         <th class="text-center" scope="col">Deliverable</th>
-        <th class="text-center" scope="col">Name</th>
-        <th class="text-center" scope="col">Hours</th>
+        <th class="text-center" scope="col">Task</th>
+        <th class="text-center" scope="col">Days allocated</th>
         <th class="text-center" scope="col">Status</th>
         <th class="text-center" scope="col">Configure / Delete</th>
     </tr>
     </thead>
     <tbody>
-    {% for t in tasks %}
+    {% for task in tasks %}
     <tr>
         <th class="text-center" scope="row">{{ forloop.counter }}</th>
-        <td class="text-center">{{ t.deliverable.workstream }}</td>
-        <td class="text-center">{{ t.deliverable }}</td>
-        <td class="text-center">{{ t.name }}</td>
-        <td class="text-center">{{ t.baseline_fte_hours }}</td>
-        <td class="text-center">{{ t.status }}</td>
+        <td class="text-center">{{ task.deliverable.workstream }}</td>
+        <td class="text-center">{{ task.deliverable }}</td>
+        <td class="text-center">{{ task.name }}</td>
+        <td class="text-center">{{ task.baseline_fte_days }}</td>
+        <td class="text-center">{{ task.status }}</td>
         <td class="text-center">
 
             <!-- Edit button -->
             <button type="button" class="bs-modal btn btn-sm btn-primary"
-                    data-form-url="{% url 'configure_task' project_id t.pk %}">
-                <input type="hidden" value="{{ t.pk }}" name="task_id">
+                    data-form-url="{% url 'configure_task' project_id task.pk %}">
+                <input type="hidden" value="{{ task.pk }}" name="task_id">
                 <span class="fa fa-gears"></span>
             </button>
 
             <!-- Delete button -->
-            <button type="button" class="bs-modal delete-task btn btn-sm btn-secondary" data-form-url="{% url 'delete_task' project_id t.id %}">
+            <button type="button"
+                    class="bs-modal delete-task btn btn-sm btn-secondary"
+                    data-form-url="{% url 'delete_task' project_id task.id %}">
                 <span class="fa fa-trash"></span>
             </button>
         </td>
