@@ -168,7 +168,7 @@
                 <p class="no-projects text-primary">No team members created for this project yet.</p>
                 {% endif %}
             </div>
-            <div id="project-timeline">
+            <div id="project-timeline" style="display: none;">
                 <h4 id="timeline-header" class="mb-3" style="display: none;">Project timeline</h4>
                 <div class="gantt-target"></div>
             </div>
@@ -236,6 +236,12 @@ $(function() {
         $("#timeline-header").hide();
         $("#project-timeline").hide();
 
+        $("#configure").removeClass('inactive').addClass('active');
+        $("#sow").removeClass('active').addClass('inactive');
+        $("#content").removeClass('active').addClass('inactive');
+        $("#manage-team").removeClass('active').addClass('inactive');
+        $("#view-timeline").removeClass('active').addClass('inactive');
+
     });
 
     $("#content").click(function() {
@@ -245,6 +251,12 @@ $(function() {
         $("#project-team").hide();
         $("#timeline-header").hide();
         $("#project-timeline").hide();
+
+        $("#configure").removeClass('active').addClass('inactive');
+        $("#sow").removeClass('active').addClass('inactive');
+        $("#content").removeClass('inactive').addClass('active');
+        $("#manage-team").removeClass('active').addClass('inactive');
+        $("#view-timeline").removeClass('active').addClass('inactive');
     });
 
     $("#manage-team").click(function() {
@@ -254,6 +266,12 @@ $(function() {
         $("#project-team").show();
         $("#timeline-header").hide();
         $("#project-timeline").hide();
+
+        $("#configure").removeClass('active').addClass('inactive');
+        $("#sow").removeClass('active').addClass('inactive');
+        $("#content").removeClass('active').addClass('inactive');
+        $("#manage-team").removeClass('inactive').addClass('active');
+        $("#view-timeline").removeClass('active').addClass('inactive');
     });
 
     $("#view-timeline").click(function() {
@@ -263,6 +281,12 @@ $(function() {
         $("#project-team").hide();
         $("#timeline-header").show();
         $("#project-timeline").show();
+
+        $("#configure").removeClass('active').addClass('inactive');
+        $("#sow").removeClass('active').addClass('inactive');
+        $("#content").removeClass('active').addClass('inactive');
+        $("#manage-team").removeClass('active').addClass('inactive');
+        $("#view-timeline").removeClass('inactive').addClass('active');
     });
 
     $('#output-sow').click(function() {
@@ -375,7 +399,7 @@ $(function() {
         on_view_change: function(mode) {
             console.log(mode);
         },
-        view_mode: 'Day',
+        view_mode: 'Half Day',
         language: 'en'
     });
 });
