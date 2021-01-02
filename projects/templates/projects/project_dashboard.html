@@ -68,7 +68,7 @@
                 <div class="col-md-12">
                     <button id="view-timeline" class="btn btn-secondary text-left btn-block" type="button"
                             name="button">
-                        <span class="fa fa-calendar mr-2"></span>View timeline
+                        <span class="fa fa-calendar mr-2"></span>Timeline and utilization
                     </button>
                 </div>
             </div>
@@ -168,9 +168,58 @@
                 <p class="no-projects text-primary">No team members created for this project yet.</p>
                 {% endif %}
             </div>
-            <div id="project-timeline" style="display: none;">
-                <h4 id="timeline-header" class="mb-3" style="display: none;">Project timeline</h4>
-                <div class="gantt-target"></div>
+            <div id="project-timeline-utilization" style="display: none;">
+                <div class="btn-group d-flex btn-group-toggle pl-5 pr-5 mx-auto" data-toggle="buttons">
+                    <label class="btn btn-secondary active w-100">
+                        <input type="radio" name="timeline-utilization-options" id="timeline-util-option1"
+                               autocomplete="off"
+                               value="timeline">
+                        Timeline
+                    </label>
+                    <label class="btn btn-secondary w-100">
+                        <input type="radio" name="timeline-utilization-options" id="timeline-util-option2"
+                               autocomplete="off"
+                               value="utilization">
+                        Utilization
+                    </label>
+                </div>
+                <div id="timeline">
+
+                    <div class="row mb-3 mt-3 pl-3">
+                        <h4 id="timeline-header" class="my-auto">Project timeline</h4>
+                        <button class="btn btn-secondary ml-3 " type="button"
+                                name="button">
+                            Apply resource constraints
+                        </button>
+                    </div>
+
+                    <div class="gantt-target"></div>
+
+                </div>
+                <div id="utilization" style="display: none;" data-url="{% url 'utilization_chart' %}">
+
+                    <div class="row mb-3 pl-3">
+                        <h4 id="utilization-header" class="my-auto">Team utilization</h4>
+                        <button class="btn btn-secondary ml-3 " type="button"
+                                name="button">
+                            Apply resource constraints
+                        </button>
+                    </div>
+
+                    {% for tm in project.teammember_set.all%}
+                    <div class="row mb-3">
+                        <div class="col-md-2 pl-3 my-auto">
+                            {{ tm }}
+                        </div>
+                        <div class="col-md-10">
+                            <div id="container" style="height:20vh; width:100%">
+                                <canvas id="utilization_chart_{{tm.id}}" class="team-member-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% endfor%}
+                </div>
             </div>
         </div>
     </div>
@@ -188,25 +237,25 @@ $(function() {
 
     // Create workstream button opens modal with id="create-modal"
     $("#add-workstream").modalForm({
-        formURL: "{% url 'add_workstream' project_id=project_id %}",
+        formURL: "{% url 'add_workstream' project_id=project.id %}",
         modalID: "#create-modal"
     });
 
     // Create deliverable button opens modal with id="create-modal"
     $("#add-deliverable").modalForm({
-        formURL: "{% url 'add_deliverable' project_id=project_id %}",
+        formURL: "{% url 'add_deliverable' project_id=project.id %}",
         modalID: "#create-modal"
     });
 
     // Create task button opens modal with id="create-modal"
     $("#add-task").modalForm({
-        formURL: "{% url 'add_task' project_id=project_id %}",
+        formURL: "{% url 'add_task' project_id=project.id %}",
         modalID: "#create-modal"
     });
 
     // Add team member button opens modal with id="create-modal"
     $("#add-team-member").modalForm({
-        formURL: "{% url 'add_team_member' project_id=project_id %}",
+        formURL: "{% url 'add_team_member' project_id=project.id %}",
         modalID: "#create-modal"
     });
 
@@ -228,13 +277,25 @@ $(function() {
 
     });
 
+    $('input[type=radio][name="timeline-utilization-options"]').change(function() {
+
+        if ($(this).val() == "timeline") {
+            $('#timeline').show()
+            $('#utilization').hide()
+        } else if ($(this).val() == "utilization") {
+            $('#timeline').hide()
+            $('#utilization').show()
+        }
+
+    });
+
     $("#configure").click(function() {
         $("#configure-project-selector").show();
         $("#configure-project-table").show();
         $("#project-content").hide();
         $("#project-team").hide();
         $("#timeline-header").hide();
-        $("#project-timeline").hide();
+        $("#project-timeline-utilization").hide();
 
         $("#configure").removeClass('inactive').addClass('active');
         $("#sow").removeClass('active').addClass('inactive');
@@ -250,7 +311,7 @@ $(function() {
         $("#project-content").show();
         $("#project-team").hide();
         $("#timeline-header").hide();
-        $("#project-timeline").hide();
+        $("#project-timeline-utilization").hide();
 
         $("#configure").removeClass('active').addClass('inactive');
         $("#sow").removeClass('active').addClass('inactive');
@@ -265,7 +326,7 @@ $(function() {
         $("#project-content").hide();
         $("#project-team").show();
         $("#timeline-header").hide();
-        $("#project-timeline").hide();
+        $("#project-timeline-utilization").hide();
 
         $("#configure").removeClass('active').addClass('inactive');
         $("#sow").removeClass('active').addClass('inactive');
@@ -280,7 +341,7 @@ $(function() {
         $("#project-content").hide();
         $("#project-team").hide();
         $("#timeline-header").show();
-        $("#project-timeline").show();
+        $("#project-timeline-utilization").show();
 
         $("#configure").removeClass('active').addClass('inactive');
         $("#sow").removeClass('active').addClass('inactive');
@@ -293,7 +354,7 @@ $(function() {
 
         $('.fa-file-text').removeClass('fa-file-text').addClass('fa-spinner').addClass('fa-spin');
 
-        var project_id = {{ project_id }};
+        var project_id = {{ project.id }};
         $.ajax({
             type: "GET",
             url: '{% url "ajax_test" %}',
@@ -315,6 +376,7 @@ $(function() {
     });
 
     $('.download-content').click(function() {
+
         console.log("doing ajax");
         var content_id = $(this).val();
         console.log(content_id);
@@ -337,55 +399,8 @@ $(function() {
         })
     });
 
-    var tasks = [{
-            start: '2018-10-01',
-            end: '2018-10-08',
-            name: 'Redesign website',
-            id: "Task 0",
-            progress: 20
-        },
-        {
-            start: '2018-10-03',
-            end: '2018-10-06',
-            name: 'Write new content',
-            id: "Task 1",
-            progress: 5,
-            dependencies: 'Task 0'
-        },
-        {
-            start: '2018-10-04',
-            end: '2018-10-08',
-            name: 'Apply new styles',
-            id: "Task 2",
-            progress: 10,
-            dependencies: 'Task 1'
-        },
-        {
-            start: '2018-10-08',
-            end: '2018-10-09',
-            name: 'Review',
-            id: "Task 3",
-            progress: 5,
-            dependencies: 'Task 2'
-        },
-        {
-            start: '2018-10-08',
-            end: '2018-10-10',
-            name: 'Deploy',
-            id: "Task 4",
-            progress: 0,
-            dependencies: 'Task 2'
-        },
-        {
-            start: '2018-10-11',
-            end: '2018-10-11',
-            name: 'Go Live!',
-            id: "Task 5",
-            progress: 0,
-            dependencies: 'Task 4',
-            custom_class: 'bar-milestone'
-        }
-    ]
+    var tasks = {{ gantt_json | safe }}
+
     var gantt_chart = new Gantt(".gantt-target", tasks, {
         on_click: function(task) {
             console.log(task);
@@ -402,7 +417,72 @@ $(function() {
         view_mode: 'Half Day',
         language: 'en'
     });
+
+
+    var project_id = {{ project.id }};
+
+    $.ajax({
+        url: $('#utilization').data("url"),
+        data: {
+            project_id: project_id,
+        },
+        success: function(data) {
+
+            var ctx_array = []
+
+            $('.team-member-chart').each(function(i, item){
+
+                ctx_array[i] = $(this)[0].getContext("2d");
+
+                new Chart(ctx_array[i], {
+                    type: 'line',
+                    data: {
+                        labels: data[i].labels,
+                        datasets: [{
+                            steppedLine: true,
+                            label: 'Utilization',
+                            backgroundColor: '#c0d0dc',
+                            data: data[i].data,
+                        }]
+                    },
+                    options: {
+                        elements: {
+                            point:{
+                                radius: 0
+                            }
+                        },
+                        legend: {
+                            display: false
+                        },
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: {
+                                type: 'timeseries',
+                            },
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: true,
+                                    max:3,
+                                    stepSize: 0.5
+                                }
+                            }],
+                        }
+                    }
+                });
+            });
+        }
+    });
 });
+
+
+
+
+
+
+
+
+
 
 
 </script>

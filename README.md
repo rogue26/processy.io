@@ -178,6 +178,8 @@ Django app that makes it effortless to use Bootstrap 4 modals with ajax within D
 * [Frappe Gantt](https://github.com/frappe/gantt) is an excellent javascript Gantt chart plugin with everything you 
 need and nothing you don't.
 
+* [Chart.js](https://chartjs.org) needs no introduction.
+
 
 
 

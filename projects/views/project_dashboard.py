@@ -1,5 +1,5 @@
 import json
-import datetime
+from datetime import timedelta, datetime
 
 from django.db.models import Max, Q
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -11,58 +11,29 @@ from workstreams.models import Workstream
 from deliverables.models import Deliverable
 from tasks.models import Task
 from content.models import Content
-from organizations.models import Organization
 from teams.models import TeamMember
 
 
-# def set_child_task_start_end(child_tasks):
-#     for task in child_tasks:
-#
-#         if not task.parent_tasks.exists():
-#             # todo: set this to something more sensible
-#             task.start = datetime.datetime.now()
-#         else:
-#             task.start = task.parent_tasks.all().aggregate(Max('end'))['end__max']
-#
-#         # set end time
-#         task.end = task.start + datetime.timedelta(days=float(task.baseline_fte_days))
-#         task.save()
-#
-#         # get child tasks and continue
-#         new_child_tasks = Task.objects.filter(parent_tasks=task)
-#
-#         if new_child_tasks:
-#             set_child_task_start_end(new_child_tasks)
-#
-#
-# def create_gantt_json(workstreams):
-#     gantt_dict = []
-#     for workstream in workstreams:
-#
-#         for i, task in enumerate(Task.objects.filter(deliverable__workstream=workstream)):
-#             task_dict = \
-#                 {
-#                     'id': i + 1,
-#                     'name': workstream.name,
-#                     'series':
-#                         [
-#                             {
-#                                 'name': task.name,
-#                                 'start': datetime.datetime(
-#                                     task.start.year,
-#                                     task.start.month,
-#                                     task.start.day).isoformat(),
-#                                 'end': datetime.datetime(
-#                                     task.end.year,
-#                                     task.end.month,
-#                                     task.end.day).isoformat(),
-#                                 'color': "#f0f0f0"
-#                             }
-#                         ]
-#                 }
-#
-#             gantt_dict.append(task_dict)
-#     return json.dumps(gantt_dict)
+def create_gantt_json(project):
+    project.setup_gantt()
+
+    gantt_data = []
+    for task in project.task_set.all():
+        gantt_data.append(
+            {
+                'start': datetime(task.start.year, task.start.month, task.start.day).isoformat(),
+                'end': datetime(task.end.year, task.end.month, task.end.day).isoformat(),
+                'name': task.name,
+                'id': "Task " + str(task.id),
+                'progress': 0,
+                'dependencies': ["Task " + str(parent_task.id) for parent_task in task.parent_tasks.all()]
+            }
+        )
+
+    # todo:  do the sorting in python - can't do it in order_by because start is a method
+    # sorted(Author.objects.all(), key=lambda a: a.full_name)
+
+    return json.dumps(gantt_data, indent=4)
 
 
 class ProjectsDashboard(LoginRequiredMixin, TemplateView):
@@ -76,28 +47,19 @@ class ProjectsDashboard(LoginRequiredMixin, TemplateView):
 
         project = Project.objects.get(id=self.kwargs['project_id'])
 
-        project.setup_gantt()
-
-        organization = request.user.organization
-
-        workstreams = list(Workstream.objects.filter(project__id=self.kwargs['project_id']))
-        deliverables = list(Deliverable.objects.filter(project__id=self.kwargs['project_id']))
-        tasks = list(Task.objects.filter(project__id=self.kwargs['project_id']))
-
-        all_project_tasks = Task.objects.filter(project=project)
-        initial_tasks = all_project_tasks.filter(parent_tasks__isnull=True)
-
-        # set_child_task_start_end(initial_tasks)
+        workstreams = Workstream.objects.filter(project=project)
+        deliverables = Deliverable.objects.filter(project=project)
+        tasks = Task.objects.filter(project=project)
+        team_members = TeamMember.objects.filter(project=project)
 
         context['project'] = project
         context['projects'] = Project.objects.filter(is_the_reference_project=False, created_by=request.user)
         context['workstreams'] = workstreams
         context['deliverables'] = deliverables
         context['tasks'] = tasks
-        context['project_id'] = self.kwargs['project_id']
-        context['organization'] = organization
-        # context['gantt_json'] = create_gantt_json(workstreams)
-        context['team_members'] = TeamMember.objects.filter(project=project)
+        context['organization'] = request.user.organization
+        context['gantt_json'] = create_gantt_json(project)
+        context['team_members'] = team_members
 
         # get content and related workstreams, deliverables, and tasks
 

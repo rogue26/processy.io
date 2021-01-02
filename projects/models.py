@@ -42,6 +42,14 @@ class Project(models.Model):
             return super(Project, self).save(*args, **kwargs)
 
     @property
+    def start(self):
+        return min(task.start for task in self.task_set.all())
+
+    @property
+    def end(self):
+        return max(task.end for task in self.task_set.all())
+
+    @property
     def duration(self):
         tasks = self.task_set.all()
 

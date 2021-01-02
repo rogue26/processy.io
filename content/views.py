@@ -33,12 +33,14 @@ class AddContent(BSModalFormView):
 
         form = super(AddContent, self).get_form()
 
+        # TODO: project id gt 1 no longer relevant
         form.fields['tasks'].queryset = \
             Task.objects.filter(
                 project__created_by=self.request.user,  # todo - replace with projects user was involved with
                 project_id__gt=1
             )
 
+        # TODO: project id gt 1 no longer relevant
         form.fields['deliverables'].queryset = \
             Deliverable.objects.filter(
                 project__created_by=self.request.user,  # todo - replace with projects user was involved with
@@ -51,7 +53,6 @@ class AddContent(BSModalFormView):
         """Handle GET requests: instantiate a blank version of the form."""
 
         context = self.get_context_data()
-        # context['project_id'] = self.kwargs['project_id']
         return self.render_to_response(context)
 
     def form_valid(self, form):
