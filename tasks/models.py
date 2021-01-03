@@ -140,11 +140,19 @@ class Task(models.Model):
 
         :return: latest
         """
-        task_ends = [task.end for task in self.parent_tasks]
+        print()
+        print('calculating earliest possible start for task', self)
 
-        latest = max(task_ends)
+        # if the task has parent tasks, find the latest ending date.
+        print(self.parent_tasks.all())
+        if self.parent_tasks.all().exists():
+            task_ends = [task.end for task in self.parent_tasks.all()]
+            earliest_start = max(task_ends)
 
-        return latest
+        else:  # use the project start date as the earliest possible date
+            earliest_start = self.project.start
+
+        return earliest_start
 
     @property
     def leading_gap(self):

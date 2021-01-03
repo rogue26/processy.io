@@ -14,28 +14,6 @@ from content.models import Content
 from teams.models import TeamMember
 
 
-def create_gantt_json(project):
-    project.setup_gantt()
-
-    gantt_data = []
-    for task in project.task_set.all():
-        gantt_data.append(
-            {
-                'start': datetime(task.start.year, task.start.month, task.start.day).isoformat(),
-                'end': datetime(task.end.year, task.end.month, task.end.day).isoformat(),
-                'name': task.name,
-                'id': "Task " + str(task.id),
-                'progress': 0,
-                'dependencies': ["Task " + str(parent_task.id) for parent_task in task.parent_tasks.all()]
-            }
-        )
-
-    # todo:  do the sorting in python - can't do it in order_by because start is a method
-    # sorted(Author.objects.all(), key=lambda a: a.full_name)
-
-    return json.dumps(gantt_data, indent=4)
-
-
 class ProjectsDashboard(LoginRequiredMixin, TemplateView):
     template_name = "projects/project_dashboard.html"
     login_url = '/'
@@ -58,7 +36,6 @@ class ProjectsDashboard(LoginRequiredMixin, TemplateView):
         context['deliverables'] = deliverables
         context['tasks'] = tasks
         context['organization'] = request.user.organization
-        context['gantt_json'] = create_gantt_json(project)
         context['team_members'] = team_members
 
         # get content and related workstreams, deliverables, and tasks

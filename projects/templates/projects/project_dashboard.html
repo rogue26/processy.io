@@ -189,7 +189,7 @@
                         <h4 id="timeline-header" class="my-auto">Project timeline</h4>
                         <button class="btn btn-secondary ml-3 " type="button"
                                 name="button">
-                            Apply resource constraints
+                            <span class="fa fa-calendar-check mr-2"></span>Apply resource constraints
                         </button>
                     </div>
 
@@ -198,11 +198,11 @@
                 </div>
                 <div id="utilization" style="display: none;" data-url="{% url 'utilization_chart' %}">
 
-                    <div class="row mb-3 pl-3">
+                    <div class="row mb-3 mt-3 pl-3">
                         <h4 id="utilization-header" class="my-auto">Team utilization</h4>
                         <button class="btn btn-secondary ml-3 " type="button"
                                 name="button">
-                            Apply resource constraints
+                            <span class="fa fa-calendar-check mr-2"></span>Apply resource constraints
                         </button>
                     </div>
 
@@ -377,9 +377,8 @@ $(function() {
 
     $('.download-content').click(function() {
 
-        console.log("doing ajax");
         var content_id = $(this).val();
-        console.log(content_id);
+
         $.ajax({
             type: "GET",
             url: '{% url "ajax_content_download" %}',
@@ -399,26 +398,6 @@ $(function() {
         })
     });
 
-    var tasks = {{ gantt_json | safe }}
-
-    var gantt_chart = new Gantt(".gantt-target", tasks, {
-        on_click: function(task) {
-            console.log(task);
-        },
-        on_date_change: function(task, start, end) {
-            console.log(task, start, end);
-        },
-        on_progress_change: function(task, progress) {
-            console.log(task, progress);
-        },
-        on_view_change: function(mode) {
-            console.log(mode);
-        },
-        view_mode: 'Half Day',
-        language: 'en'
-    });
-
-
     var project_id = {{ project.id }};
 
     $.ajax({
@@ -428,8 +407,30 @@ $(function() {
         },
         success: function(data) {
 
-            var ctx_array = []
+            var json = JSON.parse(data);
 
+            var gantt_data = json.gantt_data
+            var utilization_data = json.utilization_schedule
+
+            var gantt_chart = new Gantt(".gantt-target", gantt_data, {
+                on_click: function(task) {
+                    console.log(task);
+                },
+                on_date_change: function(task, start, end) {
+                    console.log(task, start, end);
+                },
+                on_progress_change: function(task, progress) {
+                    console.log(task, progress);
+                },
+                on_view_change: function(mode) {
+                    console.log(mode);
+                },
+                view_mode: 'Day',
+                language: 'en'
+            });
+
+
+            var ctx_array = []
             $('.team-member-chart').each(function(i, item){
 
                 ctx_array[i] = $(this)[0].getContext("2d");
@@ -437,12 +438,12 @@ $(function() {
                 new Chart(ctx_array[i], {
                     type: 'line',
                     data: {
-                        labels: data[i].labels,
+                        labels: utilization_data[i].labels,
                         datasets: [{
                             steppedLine: true,
                             label: 'Utilization',
                             backgroundColor: '#c0d0dc',
-                            data: data[i].data,
+                            data: utilization_data[i].data,
                         }]
                     },
                     options: {
@@ -457,9 +458,6 @@ $(function() {
                         responsive: true,
                         maintainAspectRatio: false,
                         scales: {
-                            x: {
-                                type: 'timeseries',
-                            },
                             yAxes: [{
                                 ticks: {
                                     beginAtZero: true,
@@ -467,6 +465,14 @@ $(function() {
                                     stepSize: 0.5
                                 }
                             }],
+                            xAxes: [{
+                                type: 'time',
+                                time: {
+                                    unit: 'day'
+                                }
+
+                            }],
+
                         }
                     }
                 });

@@ -77,16 +77,12 @@
           var token = '{{csrf_token}}';
 
           $('#add-org-modal').on('hidden.bs.modal', function () {
-            console.log("modal hidden");
-
             $.ajax(
                     {
                         headers: { "X-CSRFToken": token },
                         type:"POST",
                         url: '{% url "update_declined_organization" %}',
-                        success: function( data )
-                        {
-                            console.log("success");
+                        success: function( data ){
                         }
                      }
                  )
