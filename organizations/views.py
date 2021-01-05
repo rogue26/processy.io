@@ -12,8 +12,9 @@ from projects.models import Project
 from .forms import OrganizationForm, AddDivisionForm, OrganizationModalForm
 
 from workstreams.models import Workstream
-from deliverables.models import Deliverable
+from deliverables.models import Deliverable, DeliverableType
 from tasks.models import Task
+from content.models import ContentType
 
 
 class AddDivision(BSModalCreateView):
@@ -79,51 +80,36 @@ class OrganizationDashboard(LoginRequiredMixin, TemplateView):
     template_name = "organizations/org_dashboard.html"
     login_url = '/'
 
-    # add_org_template_name = "organizations/add_organization.html"
-    form_class = OrganizationForm
+    def get_context_data(self, **kwargs):
+        context = super(OrganizationDashboard, self).get_context_data(**kwargs)
 
-    def get(self, request, *args, **kwargs):
-        """Handle GET requests: instantiate a blank version of the form."""
-
-        context = {}
-
-        if request.user.organization:
-            projects = Project.objects.filter(is_the_reference_project=False, created_by=request.user)
-            organization = request.user.organization
-
-            context['organization'] = organization
-            context['projects'] = projects
-
-        context['has_org'] = json.dumps(request.user.organization is not None)
-        context['redirect_location'] = 'organization'
-
-        return self.render_to_response(context)
-
-
-class DefaultsDashboard(LoginRequiredMixin, TemplateView):
-    template_name = "organizations/defaults_dashboard.html"
-    login_url = "/"
-
-    def get(self, request, *args, **kwargs):
-        """Handle GET requests: instantiate a blank version of the form."""
-
-        context = {}
-
-        ref_projects = Project.objects.filter(is_the_reference_project=True, organization=request.user.organization)
-
+        ref_projects = Project.objects.filter(is_the_reference_project=True,
+                                              organization=self.request.user.organization)
         if ref_projects.exists():
             ref_project = ref_projects.first()
-
             context['project'] = ref_project
             context['workstreams'] = Workstream.objects.filter(project__id=ref_project.id)
             context['deliverables'] = Deliverable.objects.filter(project__id=ref_project.id)
             context['tasks'] = Task.objects.filter(project__id=ref_project.id)
 
-        context['projects'] = Project.objects.filter(is_the_reference_project=False, created_by=request.user)
-        context['has_org'] = json.dumps(request.user.organization is not None)
-        context['redirect_location'] = 'defaults'
+        if self.request.user.organization:
+            organization = self.request.user.organization
+            context['organization'] = organization
+            context['deliverable_types'] = DeliverableType.objects.filter(organization=organization)
+            context['content_types'] = ContentType.objects.filter(organization=organization)
+            context['org_form'] = OrganizationForm()
+            context['org_form'].fields['name'].initial = organization.name
+            context['org_form'].fields['nickname'].initial = organization.nickname
+            context['org_form'].fields['domain'].initial = organization.domain
 
-        return self.render_to_response(context)
+            non_ref_projects = Project.objects.filter(is_the_reference_project=False,
+                                                      organization=organization)
+            context['non_ref_projects'] = non_ref_projects
+
+
+        context['has_org'] = json.dumps(self.request.user.organization is not None)
+        context['redirect_location'] = 'organization'
+        return context
 
 
 def update_declined_organization(request):

@@ -2,8 +2,10 @@
     <thead>
     <tr>
         <th class="text-center" scope="col">Name</th>
-        <th class="text-center" scope="col">Project availability</th>
-        <th class="text-center" scope="col">Current tasks</th>
+        <th class="text-center" scope="col">Project availability<span class="fa fa-question-circle text-secondary ml-2" data-toggle="tooltip" data-placement="right"
+                  title="Tooltip on right"></span></th>
+        <th class="text-center" scope="col">Current tasks<span class="fa fa-question-circle text-secondary ml-2" data-toggle="tooltip" data-placement="right"
+                  title="Tooltip on right"></span></th>
         <th class="text-center" scope="col">Configure / Delete</th>
     </tr>
     </thead>
@@ -14,7 +16,9 @@
         <td class="text-center">{{ team_member.project_availability }}</td>
         <td class="text-center">
             {% for task in team_member.task_set.all %}
-                {{ task }}
+                <div class="row">
+                    {{ task }}
+                </div>
             {% endfor %}
         </td>
 

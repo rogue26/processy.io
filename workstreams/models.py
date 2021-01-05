@@ -33,11 +33,11 @@ class Workstream(models.Model):
 
     @property
     def augmented_name(self):
-        return ''.join([self.name, ' (', self.workstream.project.name, ')'])
+        return ''.join([self.name, ' (', self.project.name, ')'])
 
     @property
     def augmented_name2(self):
-        return ''.join([self.name, ' (', self.workstream.project.name, ')'])
+        return ''.join([self.name, ' (', self.project.name, ')'])
 
     def save(self, *args, **kwargs):
         if not self.is_the_reference_workstream:

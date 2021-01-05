@@ -8,11 +8,7 @@ from django.http import JsonResponse
 from projects.models import Project
 from datetime import timedelta, datetime
 from teams.models import TeamMember
-
-
-def daterange(start_date, end_date):
-    for n in range(int((end_date - start_date).days)):
-        yield start_date + timedelta(n)
+from projects.utils import daterange
 
 
 def jsonify_dates(dates):
@@ -54,8 +50,6 @@ def create_utilization_schedules(project, resource_constrained=True):
         tm_data = {'labels': jsonify_dates(project_dates), 'data': utilization_schedule, }
         utilization_schedules.append(tm_data)
 
-
-
     return utilization_schedules
 
 
@@ -71,6 +65,7 @@ def optimize_utilization_schedules(project):
     all_tasks = project.task_set.all()
     tasks_with_leading_gaps = [task for task in all_tasks if task.leading_gap > timedelta(1)]
 
+    # Shift earlier any tasks that can be shifted according to logic described above.
     for task in tasks_with_leading_gaps:
         dates_in_leading_gap = [date for date in daterange(task.earliest_possible_start, task.start)]
         dates_owner_utilized = list(task.team_member.calc_utilization_schedule().keys())
@@ -86,6 +81,10 @@ def optimize_utilization_schedules(project):
             if len(group) > 0.5 * float(task.baseline_fte_days):  # then shift task forward
                 task.set_task_days_forward(group[0] - timedelta(1))
                 break
+
+    # Stretch days where resource is still overallocated
+    for team_member in project.teammember_set.all():
+        team_member.stretch_overallocated_days()
 
 
 def timeline_utilization(request):

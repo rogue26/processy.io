@@ -6,12 +6,16 @@ from .models import TeamMember
 from tasks.models import Task
 
 
-class TeamMemberForm(BSModalModelForm):
+class TaskModelChoiceField(forms.ModelMultipleChoiceField):
+    def label_from_instance(self, obj):
+        return obj.augmented_name
 
-    tasks = forms.ModelMultipleChoiceField(
+
+class TeamMemberForm(BSModalModelForm):
+    tasks = TaskModelChoiceField(
         queryset=Task.objects.all(),
         widget=forms.CheckboxSelectMultiple,
-        required=True)
+        required=False)
 
     class Meta:
         model = TeamMember

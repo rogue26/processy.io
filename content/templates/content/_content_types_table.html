@@ -1,0 +1,36 @@
+<table id="deliverables-table" class="table table-striped">
+    <thead>
+    <tr>
+        <th class="text-center" scope="col">Content type</th>
+        <th class="text-center" scope="col">Metadata
+            <span class="fa fa-question-circle text-secondary ml-2" data-toggle="tooltip" data-placement="right"
+                  title="Tooltip on right"></span>
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for ct in content_types %}
+    <tr>
+        <th class="text-center my-auto" scope="row" style="vertical-align:middle">{{ ct }}</th>
+        <td class="text-center" style="vertical-align:middle">
+            {% for detail in ct.contentdetail_set.all %}
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="float-left">
+                        <a detail-id="{{detail.id}}" class="edit-st" href="#" data-editable>{{ st }}</a><a href="#" detail-id="{{detail.id}}" class="remove-st" delete-item><span class="fa fa-minus-circle ml-2"></span></a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            <div id="add-new-st-{{ ct.id }}" class="row">
+                <div class="col-md-12">
+                    <div class="float-left">
+                        <a id="add-new-spectype" href="#" class="add-new-st" contenttype-id="{{ct.id}}" add-new><span class="fa fa-plus mr-2"></span><strong>Add new</strong></a>
+                    </div>
+                </div>
+            </div>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>

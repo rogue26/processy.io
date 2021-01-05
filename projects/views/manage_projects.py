@@ -31,16 +31,14 @@ class ManageProjects(FormView):
             return self.landing_template_name
         return super().get_template_names()
 
-    def get(self, request, *args, **kwargs):
-        """Handle GET requests: instantiate a blank version of the form."""
-
-        context = {}
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
 
         if self.request.user.is_authenticated:
             # create object of form
-            form = ProjectForm(request.POST or None, request.FILES or None)
+            form = ProjectForm(self.request.POST or None, self.request.FILES or None)
 
-            organization = request.user.organization
+            organization = self.request.user.organization
             if organization is None:
                 del form.fields['division']
             else:
@@ -49,12 +47,14 @@ class ManageProjects(FormView):
                     del form.fields['division']
 
             context['form'] = form
-            context['projects'] = Project.objects.filter(is_the_reference_project=False, created_by=request.user)
+            context['non_ref_projects'] = Project.objects.filter(is_the_reference_project=False,
+                                                                 created_by=self.request.user)
 
             context['has_org'] = json.dumps(self.request.user.organization is not None)
             context['redirect_location'] = 'manage_projects'
-            context['user_declined_organization'] = json.dumps(request.user.declined_organization)
-        return self.render_to_response(context)
+            context['user_declined_organization'] = json.dumps(self.request.user.declined_organization)
+
+        return context
 
     def form_valid(self, form):
         if not self.request.is_ajax():

@@ -23,7 +23,7 @@
     {% endblock stylesheets %}
 
     <!-- Font awesome -->
-    <script src="https://use.fontawesome.com/20f26afc77.js"></script>
+    <script src="https://kit.fontawesome.com/4dfe33d863.js" crossorigin="anonymous"></script>
 
     <title>Processy.io</title>
     <link rel="shortcut icon" href="{%  static 'img/favicon.ico' %}">
@@ -62,6 +62,7 @@
 
 <script type="text/javascript">
 $(function() {
+    $('[data-toggle="tooltip"]').tooltip()
 
     $("#upload-content").modalForm({
         formURL: "{% url 'add_content' %}"

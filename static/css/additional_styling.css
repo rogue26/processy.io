@@ -2,3 +2,10 @@
     margin-bottom:10px;
     border-radius:10px !important;
 }
+
+.table-plain tbody tr,
+.table-plain tbody tr:hover,
+.table-plain tbody td {
+  background-color:transparent;
+  border:none;
+}

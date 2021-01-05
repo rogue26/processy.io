@@ -31,7 +31,7 @@ class ProjectsDashboard(LoginRequiredMixin, TemplateView):
         team_members = TeamMember.objects.filter(project=project)
 
         context['project'] = project
-        context['projects'] = Project.objects.filter(is_the_reference_project=False, created_by=request.user)
+        context['non_ref_projects'] = Project.objects.filter(is_the_reference_project=False, created_by=request.user)
         context['workstreams'] = workstreams
         context['deliverables'] = deliverables
         context['tasks'] = tasks

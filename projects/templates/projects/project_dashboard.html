@@ -260,7 +260,6 @@ $(function() {
     });
 
     $('input[type=radio][name="options"]').change(function() {
-
         if ($(this).val() == "workstreams") {
             $('#workstreams-table').show()
             $('#deliverables-table').hide()
@@ -274,7 +273,6 @@ $(function() {
             $('#deliverables-table').hide()
             $('#tasks-table').show()
         }
-
     });
 
     $('input[type=radio][name="timeline-utilization-options"]').change(function() {
@@ -302,7 +300,6 @@ $(function() {
         $("#content").removeClass('active').addClass('inactive');
         $("#manage-team").removeClass('active').addClass('inactive');
         $("#view-timeline").removeClass('active').addClass('inactive');
-
     });
 
     $("#content").click(function() {

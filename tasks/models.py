@@ -6,6 +6,8 @@ from deliverables.models import Deliverable
 from projects.models import Project
 from teams.models import TeamMember
 
+from projects.utils import daterange
+
 
 class ComplexityDriver(models.Model):
     name = models.CharField(max_length=50)
@@ -87,11 +89,6 @@ class Task(models.Model):
                 is_the_reference_task=True, category=self.category).update(is_the_reference_task=False)
             return super(Task, self).save(*args, **kwargs)
 
-    @staticmethod
-    def daterange(start_date, end_date):
-        for n in range(int((end_date - start_date).days)):
-            yield start_date + timedelta(n)
-
     def set_task_days_forward(self, parent_end):
 
         if not parent_end:
@@ -101,7 +98,7 @@ class Task(models.Model):
 
         self.taskday_set.all().delete()
         task_days = []
-        for date in Task.daterange(parent_end, task_end):
+        for date in daterange(parent_end, task_end):
             task_days.append(TaskDay(date=date, allocation=1, task=self))
 
         TaskDay.objects.bulk_create(task_days)
@@ -112,7 +109,7 @@ class Task(models.Model):
 
         self.taskday_set.all().delete()
         task_days = []
-        for date in Task.daterange(task_start, child_start):
+        for date in daterange(task_start, child_start):
             task_days.append(TaskDay(date=date, allocation=1, task=self))
 
         TaskDay.objects.bulk_create(task_days)
@@ -140,11 +137,8 @@ class Task(models.Model):
 
         :return: latest
         """
-        print()
-        print('calculating earliest possible start for task', self)
 
         # if the task has parent tasks, find the latest ending date.
-        print(self.parent_tasks.all())
         if self.parent_tasks.all().exists():
             task_ends = [task.end for task in self.parent_tasks.all()]
             earliest_start = max(task_ends)
@@ -171,12 +165,6 @@ class Task(models.Model):
         """
         return self.parent_tasks_set.all()
 
-    def stretch(self, n_days):
-        # increase date for all other task_days in task by n-1
-
-        # add n-1 task_days following this one
-        pass
-
 
 class TaskDay(models.Model):
     date = models.DateField(null=True, blank=True)
@@ -196,6 +184,24 @@ class TaskDay(models.Model):
 
     def shift_date(self, delta):
         self.date += delta
+        self.save()
+
+    def stretch(self, n_days):
+        # set allocation for this taskday to 1/n_days
+        self.allocation = 1 / n_days
+
+        # increase date for all subsequent task_days in task by n-1
+        for td in self.task.taskday_set.all():
+            if td.date > self.date:
+                td.shift_date(n_days - 1)
+
+        # add n-1 task_days following this one
+        task_days = []
+        for date in daterange(self.date, self.date + timedelta(n_days - 1)):
+            task_days.append(TaskDay(date=date, allocation=1 / n_days, task=self.task))
+
+        TaskDay.objects.bulk_create(task_days)
+
         self.save()
 
 

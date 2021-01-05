@@ -8,16 +8,17 @@
     </tr>
     </thead>
     <tbody>
-    {% for project in projects %}
+    {% for project in non_ref_projects %}
     <tr>
         <td class="text-center">{{ project.division }}</td>
         <td class="text-center">{{ project.client }}</td>
         <td class="text-center">{{ project.name }}</td>
         <td class="text-center">
             <!-- Edit project buttons -->
-            <form action="/project/{{ project.id }}">
-                <input type="submit" class="edit-project btn btn-sm btn-primary fa" value="&#xf040"/>
-            </form>
+            <button class="btn btn-sm btn-primary" onclick="location.href='{% url 'project' project.id %}'"
+                    type="button">
+                <span class="fa fa-edit"></span>
+            </button>
         </td>
     </tr>
     {% endfor %}

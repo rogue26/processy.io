@@ -1,0 +1,68 @@
+<table id="deliverables-table" class="table table-striped">
+    <thead>
+    <tr>
+        <th class="text-center" scope="col">Deliverable type
+            <span class="fa fa-question-circle text-secondary ml-2" data-toggle="tooltip" data-placement="right"
+                  title="Tooltip on right"></span>
+        </th>
+        <th class="text-center" scope="col">Specification types
+            <span class="fa fa-question-circle text-secondary ml-2" data-toggle="tooltip" data-placement="right"
+                  title="Tooltip on right"></span>
+        </th>
+        <th class="text-center" scope="col">Condition types
+            <span class="fa fa-question-circle text-secondary ml-2" data-toggle="tooltip" data-placement="right"
+                  title="Tooltip on right"></span>
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for dt in deliverable_types %}
+    <tr>
+        <th class="text-center my-auto" scope="row" style="vertical-align:middle">{{ dt }}</th>
+        <td class="text-center" style="vertical-align:middle">
+            {% for st in dt.specificationtype_set.all %}
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="float-left">
+                        <a st-id="{{st.id}}" class="edit-st" href="#" data-editable>{{ st }}</a>
+                        <a href="#" st-id="{{st.id}}" class="remove-st" delete-item><span
+                                class="fa fa-minus-circle ml-2"></span></a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            <div id="add-new-st-{{ dt.id }}" class="row">
+                <div class="col-md-12">
+                    <div class="float-left">
+                        <a id="add-new-spectype" href="#" class="add-new-st" dt-id="{{dt.id}}" add-new><span
+                                class="fa fa-plus mr-2"></span><strong>Add new</strong></a>
+                    </div>
+                </div>
+            </div>
+        </td>
+        <td class="text-center" style="vertical-align:middle">
+            {% for ct in dt.conditiontype_set.all %}
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="float-left">
+                        <a ct-id="{{ct.id}}" class="edit-ct" href="#" data-editable>{{ ct }}</a>
+                        <a href="#" ct-id="{{ct.id}}" class="remove-ct" delete-item>
+                            <span class="fa fa-minus-circle ml-2"></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            <div id="add-new-ct-{{ dt.id }}" class="row">
+                <div class="col-md-12">
+                    <div class="float-left">
+                        <a id="add-new-condtype" href="#" class="add-new-ct" dt-id="{{dt.id}}" add-new><span
+                                class="fa fa-plus mr-2"></span><strong>Add new</strong></a>
+                    </div>
+                </div>
+            </div>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>

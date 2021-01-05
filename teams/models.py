@@ -23,8 +23,21 @@ class TeamMember(models.Model):
         teammember_task_days = [td.date for task in teammember_tasks for td in task.taskday_set.all()]
         return Counter(teammember_task_days)
 
+    def stretch_overallocated_days(self):
+        overallocated_days = {key: value for key, value in self.calc_utilization_schedule().items() if value > 1}
+
+        for date, allocation in overallocated_days.items():
+            # get taskdays for that day for this teammember
+            tasks = self.task_set.all()
+            overallocated_taskdays = [td for task in tasks for td in task.taskday_set.all() if td.date == date]
+
+            # stretch those taskdays
+            for td in overallocated_taskdays:
+                td.stretch(allocation)
+
+
     def __str__(self):
         if self.user is not None:
-            return self.user
+            return self.user.email
         else:
             return ' '.join([self.first_name, self.last_name])

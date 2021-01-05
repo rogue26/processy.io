@@ -12,6 +12,6 @@ class DeleteDeliverable(BSModalDeleteView):
 
     def get_success_url(self):
         if self.kwargs['project_id'] == 1:
-            return reverse_lazy('defaults')
+            return reverse_lazy('organization')
         else:
             return reverse_lazy('project', kwargs={'project_id': self.kwargs['project_id']})

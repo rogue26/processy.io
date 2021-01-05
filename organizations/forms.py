@@ -26,3 +26,9 @@ class OrganizationForm(forms.ModelForm):
     class Meta:
         model = Organization
         fields = ['name', 'nickname', 'domain', 'letterhead', 'ppt_template']
+        labels = {
+            "domain": "Email domain",
+            "nickname": "Nickname (optional)",
+            "letterhead": "Letterhead (optional)",
+            "ppt_template": "Powerpoint template (optional)"
+        }
