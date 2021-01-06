@@ -20,7 +20,7 @@ class ConfigureTask(BSModalFormView):
 
         form = super(ConfigureTask, self).get_form()
         form.fields['deliverable'].queryset = Deliverable.objects.filter(project_id=self.kwargs['project_id'])
-        form.fields['prerequisite_tasks'].queryset = \
+        form.fields['parent_tasks'].queryset = \
             Task.objects \
                 .filter(project_id=self.kwargs['project_id']) \
                 .exclude(id=self.kwargs['task_id'])
@@ -31,11 +31,11 @@ class ConfigureTask(BSModalFormView):
 
         current_task = Task.objects.get(id=self.kwargs['task_id'])
 
-        context["selected_prerequisite_tasks"] = \
-            [_.pk for _ in current_task.prerequisite_tasks.all()]
+        context["selected_parent_tasks"] = \
+            [_.pk for _ in current_task.parent_tasks.all()]
 
         context["selected_required_resources"] = \
-            [_.pk for _ in current_task.prerequisite_tasks.all()]
+            [_.pk for _ in current_task.parent_tasks.all()]
 
         return context
 
@@ -53,10 +53,10 @@ class ConfigureTask(BSModalFormView):
         initial['category'] = current_task.category
 
         initial['baseline_fte_days'] = current_task.baseline_fte_days
-        initial['start_time'] = current_task.start_time
-        initial['end_time'] = current_task.end_time
+        initial['start'] = current_task.start
+        initial['end'] = current_task.end
         initial['deliverable'] = current_task.deliverable
-        initial['status'] = current_task.status
+        # initial['status'] = current_task.status
         initial['team_member'] = current_task.team_member
 
         # note - manytomany and foreignkey fields are set by passing the list of currently checked
@@ -93,7 +93,7 @@ class ConfigureTask(BSModalFormView):
             task.deliverable = Deliverable.objects.get(id=updated_form_data.get('deliverable'))
             task.resources_required.set(Resource.objects.filter(pk__in=updated_form_data.getlist('resources_required')))
 
-            task.prerequisite_tasks.set(Task.objects.filter(pk__in=updated_form_data.getlist('prerequisite_tasks')))
+            task.parent_tasks.set(Task.objects.filter(pk__in=updated_form_data.getlist('parent_tasks')))
 
             task.complexity_drivers.set(
                 ComplexityDriver.objects.filter(pk__in=updated_form_data.getlist('complexity_drivers')))
@@ -105,7 +105,8 @@ class ConfigureTask(BSModalFormView):
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
-        if self.kwargs['project_id'] == 1:
-            return reverse_lazy('defaults')
+        project = Project.objects.get(id=self.kwargs['project_id'])
+        if project.is_the_reference_project:
+            return reverse_lazy('organization')
         else:
             return reverse_lazy('project', kwargs={'project_id': self.kwargs['project_id']})

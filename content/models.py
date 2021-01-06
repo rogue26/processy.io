@@ -4,13 +4,23 @@ from users.models import CustomUser
 from tasks.models import Task
 from deliverables.models import Deliverable
 from workstreams.models import Workstream
+from organizations.models import Organization
 
 
 class ContentType(models.Model):
     name = models.CharField(max_length=50)
+    organization = models.ForeignKey(Organization, null=True, blank=True, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
+
+
+class ContentDetail(models.Model):
+    detail = models.CharField(max_length=50)
+    content_type = models.ForeignKey(ContentType, null=True, blank=True, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.detail
 
 
 class ContentTag(models.Model):

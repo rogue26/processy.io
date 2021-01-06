@@ -1,26 +1,57 @@
 import io
+import datetime
 
 from django.http import HttpResponse
 from django.core.files.base import ContentFile
 
 from docx import Document
 
-from projects.models import ScopeOfWork
+from projects.models import ScopeOfWork, Project
+
+
+def project_scope_details():
+    pass
+
+
+def project_approach_details():
+    pass
+
+
+def project_deliverables_details():
+    pass
+
+
+def project_team_details():
+    pass
+
+
+def project_investment_details():
+    pass
 
 
 def ajax_test(request):
     if request.method == 'GET':
         project_id = request.GET['project_id']
 
-        # buffer = StringIO()
-        #
-        # document = Document()
-        # document.add_heading('Document Title', 0)
-        # document.add_paragraph('A plain paragraph having some ')
+        project = Project.objects.get(id=project_id)
 
-        # with open('foobar.docx', 'rb') as f:
-        #     source_stream = StringIO(f.read())
-        # document = Document(source_stream)
+        replace_dict = \
+            {
+                # "organization_name": project.organization.name,
+                # "organization_address": project.organization.address,
+                # "client_name": project.client.name,
+                # "client_description": project.client.description,
+                # "client_address": project.client.address,
+                # "client_nickname": project.client.nickname(),
+                # "project_name": project.name,
+                # "today_date": datetime.date.today(),
+                # "project_objectives": None,  # loop through each workstream objective as bullet point
+                # "regional_scope": None,
+                # "product_scope": None,
+                # "business_unit_scope": None,
+                # "channel_scope": None,
+
+            }
 
         document = Document()
         document.add_heading('Document Title', 0)

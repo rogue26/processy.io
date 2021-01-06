@@ -52,7 +52,7 @@
 
                 $('.fa-file-text').removeClass('fa-file-text').addClass('fa-spinner').addClass('fa-spin');
 
-                var project_id = {{ project_id }};
+                var project_id = {{ project.id }};
                 $.ajax(
                     {
                         type:"GET",

@@ -8,4 +8,4 @@ from ..forms import AddTaskTypeForm
 class AddTaskType(BSModalCreateView):
     template_name = 'tasks/add_task_type.html'
     form_class = AddTaskTypeForm
-    success_url = reverse_lazy('defaults')
+    success_url = reverse_lazy('organization')

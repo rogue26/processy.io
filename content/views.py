@@ -9,6 +9,7 @@ from django.urls import reverse_lazy
 from django.shortcuts import redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView, FormView
+from django.db.models import Q
 
 from bootstrap_modal_forms.generic import BSModalFormView, BSModalCreateView
 
@@ -16,11 +17,25 @@ from organizations.forms import OrganizationForm, AddDivisionForm
 from organizations.models import Organization
 
 from projects.models import Project
+from workstreams.models import Workstream
 
 
 class AddContentType(BSModalFormView):
     template_name = 'content/add_content_type.html'
     form_class = AddContentTypeForm
+    success_url = reverse_lazy('organization')
+
+    def form_valid(self, form):
+        if not self.request.is_ajax():
+
+            # add organization to the contenttype object
+            new_contenttype = form.save()
+            new_contenttype.organization = self.request.user.organization
+            new_contenttype.save()
+
+        else:
+            pass
+        return HttpResponseRedirect(reverse_lazy('organization'))
 
 
 class AddContent(BSModalFormView):
@@ -34,16 +49,14 @@ class AddContent(BSModalFormView):
         form = super(AddContent, self).get_form()
 
         form.fields['tasks'].queryset = \
-            Task.objects.filter(
-                project__created_by=self.request.user,  # todo - replace with projects user was involved with
-                project_id__gt=1
-            )
+            Task.objects \
+                .filter(team_member__user=self.request.user, project__is_the_reference_project=False)
 
         form.fields['deliverables'].queryset = \
-            Deliverable.objects.filter(
-                project__created_by=self.request.user,  # todo - replace with projects user was involved with
-                project_id__gt=1
-            )
+            Deliverable.objects.filter(Q(task__team_member__user=self.request.user))
+
+        form.fields['workstreams'].queryset = \
+            Workstream.objects.filter(Q(deliverable__task__team_member__user=self.request.user))
 
         return form
 
@@ -51,7 +64,6 @@ class AddContent(BSModalFormView):
         """Handle GET requests: instantiate a blank version of the form."""
 
         context = self.get_context_data()
-        # context['project_id'] = self.kwargs['project_id']
         return self.render_to_response(context)
 
     def form_valid(self, form):

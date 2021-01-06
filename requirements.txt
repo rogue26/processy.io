@@ -6,3 +6,4 @@ django-heroku==0.3.1
 django-widget-tweaks==1.4.8
 gunicorn==20.0.4
 django-debug-toolbar==3.2
+more_itertools==8.6.0

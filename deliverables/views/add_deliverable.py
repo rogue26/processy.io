@@ -5,7 +5,7 @@ from bootstrap_modal_forms.generic import BSModalFormView
 
 from ..forms import DeliverableTypeForm
 from ..models import DeliverableType, Deliverable
-
+from projects.models import Project
 
 class AddDeliverable(BSModalFormView):
     template_name = 'deliverables/add_deliverable.html'
@@ -15,7 +15,7 @@ class AddDeliverable(BSModalFormView):
         """Handle GET requests: instantiate a blank version of the form."""
 
         context = self.get_context_data()
-        context['project_id'] = self.kwargs['project_id']
+        context['project'] = Project.objects.get(id=self.kwargs['project_id'])
         return self.render_to_response(context)
 
     def form_valid(self, form):
@@ -36,7 +36,9 @@ class AddDeliverable(BSModalFormView):
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
-        if self.kwargs['project_id'] == 1:
-            return reverse_lazy('defaults')
+
+        project = Project.objects.get(id=self.kwargs['project_id'])
+        if project.is_the_reference_project:
+            return reverse_lazy('organization')
         else:
             return reverse_lazy('project', kwargs={'project_id': self.kwargs['project_id']})

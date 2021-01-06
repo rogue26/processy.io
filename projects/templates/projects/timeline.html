@@ -13,8 +13,6 @@
     $(function() {
         "use strict";
 
-
-
         // shifts dates closer to Date.now()
         var offset = new Date().setHours(0, 0, 0, 0) -
             new Date({{ gantt_json|safe }}[0].values[0].from).setDate(35);

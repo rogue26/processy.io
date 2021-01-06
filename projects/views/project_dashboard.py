@@ -1,5 +1,5 @@
 import json
-import datetime
+from datetime import timedelta, datetime
 
 from django.db.models import Max, Q
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -11,58 +11,7 @@ from workstreams.models import Workstream
 from deliverables.models import Deliverable
 from tasks.models import Task
 from content.models import Content
-from organizations.models import Organization
 from teams.models import TeamMember
-
-
-def set_child_task_start_end(child_tasks):
-    for task in child_tasks:
-
-        if not task.prerequisite_tasks.exists():
-            # todo: set this to something more sensible
-            task.start_time = datetime.datetime.now()
-        else:
-            task.start_time = task.prerequisite_tasks.all().aggregate(Max('end_time'))['end_time__max']
-
-        # set end time
-        task.end_time = task.start_time + datetime.timedelta(days=float(task.baseline_fte_days))
-        task.save()
-
-        # get child tasks and continue
-        new_child_tasks = Task.objects.filter(prerequisite_tasks=task)
-
-        if new_child_tasks:
-            set_child_task_start_end(new_child_tasks)
-
-
-def create_gantt_json(workstreams):
-    gantt_dict = []
-    for workstream in workstreams:
-
-        for i, task in enumerate(Task.objects.filter(deliverable__workstream=workstream)):
-            task_dict = \
-                {
-                    'id': i + 1,
-                    'name': workstream.name,
-                    'series':
-                        [
-                            {
-                                'name': task.name,
-                                'start': datetime.datetime(
-                                    task.start_time.year,
-                                    task.start_time.month,
-                                    task.start_time.day).isoformat(),
-                                'end': datetime.datetime(
-                                    task.end_time.year,
-                                    task.end_time.month,
-                                    task.end_time.day).isoformat(),
-                                'color': "#f0f0f0"
-                            }
-                        ]
-                }
-
-            gantt_dict.append(task_dict)
-    return json.dumps(gantt_dict)
 
 
 class ProjectsDashboard(LoginRequiredMixin, TemplateView):
@@ -75,26 +24,19 @@ class ProjectsDashboard(LoginRequiredMixin, TemplateView):
         context = {}
 
         project = Project.objects.get(id=self.kwargs['project_id'])
-        organization = request.user.organization
 
-        workstreams = list(Workstream.objects.filter(project__id=self.kwargs['project_id']))
-        deliverables = list(Deliverable.objects.filter(project__id=self.kwargs['project_id']))
-        tasks = list(Task.objects.filter(project__id=self.kwargs['project_id']))
-
-        all_project_tasks = Task.objects.filter(project=project)
-        initial_tasks = all_project_tasks.filter(prerequisite_tasks__isnull=True)
-
-        set_child_task_start_end(initial_tasks)
+        workstreams = Workstream.objects.filter(project=project)
+        deliverables = Deliverable.objects.filter(project=project)
+        tasks = Task.objects.filter(project=project)
+        team_members = TeamMember.objects.filter(project=project)
 
         context['project'] = project
-        context['projects'] = Project.objects.filter(is_the_reference_project=False, created_by=request.user)
+        context['non_ref_projects'] = Project.objects.filter(is_the_reference_project=False, created_by=request.user)
         context['workstreams'] = workstreams
         context['deliverables'] = deliverables
         context['tasks'] = tasks
-        context['project_id'] = self.kwargs['project_id']
-        context['organization'] = organization
-        context['gantt_json'] = create_gantt_json(workstreams)
-        context['team_members'] = TeamMember.objects.filter(project=project)
+        context['organization'] = request.user.organization
+        context['team_members'] = team_members
 
         # get content and related workstreams, deliverables, and tasks
 

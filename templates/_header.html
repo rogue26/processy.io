@@ -36,27 +36,19 @@
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a id="add-project" class="dropdown-item" href="#">Create new</a>
                         <div class="dropdown-divider"></div>
-                        {% for project in projects %}
-                        <a class="dropdown-item" href="/project/{{ project.id }}">{{project.client}} - {{project.name}}</a>
+                        {% for project in non_ref_projects %}
+                        <a class="dropdown-item" href="/project/{{ project.id }}">{{project.client}} -
+                            {{project.name}}</a>
                         {% endfor %}
                     </div>
                 </li>
-
-                <li class="nav-item dropdown active">
-                    <a class="nav-link dropdown-toggle" href="/" id="organization-dropdown" role="button"
-                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Organization
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="{% url 'organization' %}">Organization dashboard</a>
-                        <a class="dropdown-item" href="{% url 'defaults' %}">Default workstreams</a>
-                        <a class="dropdown-item" href="{% url 'content' %}">Knowledge management</a>
-                    </div>
+                <li class="nav-item active ml-3">
+                    <a class="nav-link" id="upload-content" href="#">Contribute content</a>
+                </li>
+                <li class="nav-item active ml-3">
+                    <a class="nav-link" id="organization" href="{% url 'organization' %}">Organization dashboard</a>
                 </li>
 
-                <li class="nav-item active">
-                    <a class="nav-link" id="upload-content" href="#">Upload content</a>
-                </li>
 
             </ul>
             {% endif %}

@@ -1,14 +1,14 @@
-from django.urls import reverse_lazy
 from django.http import HttpResponseRedirect
+from django.urls import reverse_lazy
+
 from bootstrap_modal_forms.generic import BSModalCreateView
 
-from ..forms import AddDeliverableTypeForm
+from ..forms import AddDivisionForm
 
 
-class AddDeliverableType(BSModalCreateView):
-    template_name = 'deliverables/add_deliverable_type.html'
-    form_class = AddDeliverableTypeForm
-    success_url = reverse_lazy('organization')
+class AddDivision(BSModalCreateView):
+    template_name = 'organizations/add_division.html'
+    form_class = AddDivisionForm
 
     def form_valid(self, form):
         if not self.request.is_ajax():

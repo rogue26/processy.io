@@ -34,7 +34,7 @@ class TaskForm(BSModalModelForm):
         widget=forms.CheckboxSelectMultiple,
         required=False)
 
-    prerequisite_tasks = TaskModelChoiceField(
+    parent_tasks = TaskModelChoiceField(
         queryset=Task.objects.all(),
         widget=forms.CheckboxSelectMultiple,
         required=False)
@@ -46,6 +46,5 @@ class TaskForm(BSModalModelForm):
 
     class Meta:
         model = Task
-        fields = ['name', 'category', 'status', 'team_member', 'deliverable', 'description', 'baseline_fte_days',
-                  'start_time', 'end_time', 'percent_complete', 'resources_required',
-                  'prerequisite_tasks', 'complexity_drivers']
+        fields = ['name', 'category', 'team_member', 'deliverable', 'description', 'baseline_fte_days',
+                  'percent_complete', 'resources_required', 'parent_tasks', 'complexity_drivers']

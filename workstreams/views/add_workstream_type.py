@@ -8,4 +8,4 @@ from ..forms import AddWorkstreamTypeForm
 class AddWorkstreamType(BSModalCreateView):
     template_name = 'workstreams/add_workstream_type.html'
     form_class = AddWorkstreamTypeForm
-    success_url = reverse_lazy('defaults')
+    success_url = reverse_lazy('organization')
