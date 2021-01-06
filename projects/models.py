@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.db import transaction, models
 
 from users.models import CustomUser
@@ -46,11 +46,11 @@ class Project(models.Model):
 
     @property
     def start(self):
-        return min(task.start for task in self.task_set.all())
+        return min([task.start for task in self.task_set.all()])
 
     @property
     def end(self):
-        return max(task.end for task in self.task_set.all())
+        return max([task.end for task in self.task_set.all()])
 
     @property
     def duration(self):
@@ -125,7 +125,8 @@ class Project(models.Model):
         # adjusting their TaskDays earlier when necessary to prevent them from overlapping with tasks for which they
         # are prerequisites
         no_child_tasks = [task for task in all_tasks if not task.children]
-        Project.recursive_set_dates_backward(no_child_tasks, child_start=datetime.today())
+
+        Project.recursive_set_dates_backward(no_child_tasks, child_start=datetime.utcnow().today())
 
         # the recursion arbitrarily sets "today" as the end point for the childless tasks. (We don't know the actual
         # end date unless we do a "forward" construction of the gantt chart, but we'd end up just having to do
@@ -135,10 +136,7 @@ class Project(models.Model):
 
         for task in all_tasks:
             for taskday in task.taskday_set.all():
-                taskday.shift_date(duration)
-
-        for i, task in enumerate(self.task_set.all()):
-            print(i, task, task.start, task.end)
+                taskday.shift_date(duration + timedelta(1))
 
         # if optimize:
         #     for team_member in self.team_members:

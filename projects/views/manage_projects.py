@@ -20,7 +20,6 @@ class ManageProjects(FormView):
             form_class = self.get_form_class()
         form = super(ManageProjects, self).get_form()
 
-        # print('test', self.request.user.organization.division_set.all().exists())
         # if not self.request.user.organization.division_set.all().exists():
         #     form.fields.remove('division')
 
