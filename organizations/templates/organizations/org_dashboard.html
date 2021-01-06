@@ -321,7 +321,7 @@ $(function() {
 
     // Create deliverable button opens modal with id="create-modal"
     $("#add-deliverable").modalForm({
-        formURL: "{% url 'add_deliverable' project.id %}",
+        formURL: "{% url 'add_deliverable' projectid %}",
         modalID: "#create-modal"
     });
 

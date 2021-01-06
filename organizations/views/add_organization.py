@@ -34,10 +34,10 @@ class AddOrganizationModal(BSModalCreateView):
                 ref_project = Project()
                 ref_project.name = "Reference project"
                 ref_project.description = "Placeholder project for holding an organization's default workstreams."
+                ref_project.organization = org
                 ref_project.client = org.name
                 ref_project.is_the_reference_project = True
 
-                ref_project.save()
             else:
                 # if a user has a "personal" reference project and they create an organization, that reference project
                 # will be associated with the organization. At the moment, processy doesn't allow for both a personal
@@ -48,6 +48,7 @@ class AddOrganizationModal(BSModalCreateView):
                 ref_project.organization = org
                 ref_project.client = org.name
 
+            ref_project.save()
         else:
             pass
 
