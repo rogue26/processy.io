@@ -79,7 +79,7 @@ def optimize_utilization_schedules(project):
 
         for group in continuous_dates:
             if len(group) > 0.5 * float(task.baseline_fte_days):  # then shift task forward
-                task.set_task_days_forward(group[0] - timedelta(1))
+                task.set_task_days_forward(group[0])
                 break
 
     # Stretch days where resource is still overallocated
