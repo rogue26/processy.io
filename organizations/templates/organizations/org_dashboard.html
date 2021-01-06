@@ -321,7 +321,7 @@ $(function() {
 
     // Create deliverable button opens modal with id="create-modal"
     $("#add-deliverable").modalForm({
-        formURL: "{% url 'add_deliverable' projectid %}",
+        formURL: "{% url 'add_deliverable' project.id %}",
         modalID: "#create-modal"
     });
 
@@ -356,12 +356,12 @@ $(function() {
 
     var js_has_org = {{ has_org | safe }}
 
-    window.onload = function() {
+    $(document).ready(function() {
         if (!js_has_org) {
             var a = document.getElementById('addorg');
             a.click();
         };
-    };
+    });
 
     $('input[type=radio][name="ws-del-task-options"]').change(function() {
         if ($(this).val() == "workstreams") {

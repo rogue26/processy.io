@@ -91,12 +91,12 @@ $(function() {
     var js_has_org = {{has_org | safe}};
     var js_user_declined_organization = {{user_declined_organization | safe}};
 
-    window.onload = function() {
+    $(document).ready( function() {
         if (!js_has_org && !js_user_declined_organization) {
             var a = document.getElementById('addorg');
             a.click();
         };
-    };
+    });
 
     $("#addorg").modalForm({
         formURL: "{% url 'add_organization_modal' redirect_location %}",
