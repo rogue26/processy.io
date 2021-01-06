@@ -87,7 +87,8 @@ class ConfigureDeliverable(BSModalFormView):
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
-        if self.kwargs['project_id'] == 1:
+        project = Project.objects.get(id=self.kwargs['project_id'])
+        if project.is_the_reference_project:
             return reverse_lazy('organization')
         else:
             return reverse_lazy('project', kwargs={'project_id': self.kwargs['project_id']})

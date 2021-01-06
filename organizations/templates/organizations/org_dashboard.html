@@ -69,6 +69,14 @@
             </div>
             <div class="row mb-3 mt-3">
                 <div class="col-md-12">
+                    <button id="define-workstream-types-button" class="btn btn-secondary text-left btn-block" type="button"
+                            name="button">
+                        <span class="fa fa-project-diagram mr-2"></span>Define workstream types
+                    </button>
+                </div>
+            </div>
+            <div class="row mb-3 mt-3">
+                <div class="col-md-12">
                     <button id="define-deliverables-button" class="btn btn-secondary text-left btn-block" type="button"
                             name="button">
                         <span class="fa fa-cube mr-2"></span>Define deliverable types
@@ -176,7 +184,7 @@
                                     </div>
 
                                     {% if workstreams %}
-                                    {% include "workstreams/_workstreams_table.html" %}
+                                    {% include "workstreams/_workstream_types_table.html" %}
                                     {% else %}
                                     <p class="no-projects text-primary">No reference workstreams added yet.</p>
                                     {% endif %}
@@ -184,7 +192,7 @@
                                 </div>
                             </div>
 
-                            <div id="deliverables-table" class="row" style="display: none;">
+                            <div id="ref_deliverables_table" class="row" style="display: none;">
                                 <div class="col-md-12">
                                     <div class="row mb-3 pl-3">
                                         <h4 class="my-auto">Reference deliverables</h4>
@@ -221,6 +229,21 @@
                             </div>
                         </div>
                     </div>
+                    <div id="define-workstream-types" style="display: none;">
+                        <div class="row mb-3 pl-3">
+                            <h4 class="my-auto">Workstream types</h4>
+                            <button id="add-workstream-type" class="btn btn-secondary ml-3 " type="button"
+                                    name="button">
+                                <span class="fa fa-plus mr-2"></span>Add new workstream type
+                            </button>
+                        </div>
+
+                        {% if workstream_types %}
+                        {% include "workstreams/_workstream_types_table.html" %}
+                        {% else %}
+                        <p class="no-projects text-primary">No workstream types added yet.</p>
+                        {% endif %}
+                    </div>
                     <div id="define-deliverables" style="display: none;">
                         <div class="row mb-3 pl-3">
                             <h4 class="my-auto">Deliverable types</h4>
@@ -237,7 +260,19 @@
                         {% endif %}
                     </div>
                     <div id="define-tasks" style="display: none;">
-                        <h4 class="mb-3">Task types</h4>
+                        <div class="row mb-3 pl-3">
+                            <h4 class="my-auto">Task types</h4>
+                            <button id="add-task-type" class="btn btn-secondary ml-3 " type="button"
+                                    name="button">
+                                <span class="fa fa-plus mr-2"></span>Add new task type
+                            </button>
+                        </div>
+
+                        {% if task_types %}
+                        {% include "tasks/_task_types_table.html" %}
+                        {% else %}
+                        <p class="no-projects text-primary">No task types added yet.</p>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -296,6 +331,12 @@ $(function() {
         modalID: "#create-modal"
     });
 
+    // Create task type button opens modal with id="create-modal"
+    $("#add-task-type").modalForm({
+        formURL: "{% url 'add_task_type' %}",
+        modalID: "#create-modal"
+    });
+
     // Create task button opens modal with id="create-modal"
     $("#add-workstream-type").modalForm({
         formURL: "{% url 'add_workstream_type' %}",
@@ -324,17 +365,19 @@ $(function() {
 
     $('input[type=radio][name="ws-del-task-options"]').change(function() {
         if ($(this).val() == "workstreams") {
-            $('#workstreams-table').show()
-            $('#deliverables-table').hide()
-            $('#tasks-table').hide()
+            $('#workstreams-table').show();
+            $('#ref_deliverables_table').hide();
+            $('#tasks-table').hide();
+
         } else if ($(this).val() == "deliverables") {
-            $('#workstreams-table').hide()
-            $('#deliverables-table').show()
-            $('#tasks-table').hide()
+            $('#workstreams-table').hide();
+            $('#ref_deliverables_table').show();
+            $('#tasks-table').hide();
+
         } else if ($(this).val() == "tasks") {
-            $('#workstreams-table').hide()
-            $('#deliverables-table').hide()
-            $('#tasks-table').show()
+            $('#workstreams-table').hide();
+            $('#ref_deliverables_table').hide();
+            $('#tasks-table').show();
         }
     });
 
@@ -353,6 +396,7 @@ $(function() {
         $("#knowledge-management").hide();
         $("#organization-settings").hide();
         $("#define-workstreams").hide();
+        $("#define-workstream-types").hide();
         $("#define-deliverables").hide();
         $("#define-tasks").hide();
 
@@ -360,6 +404,7 @@ $(function() {
         $("#knowledge-management-button").removeClass('active').addClass('inactive');
         $("#organization-settings-button").removeClass('active').addClass('inactive');
         $("#define-workstreams-button").removeClass('active').addClass('inactive');
+        $("#define-workstream-types-button").removeClass('active').addClass('inactive');
         $("#define-deliverables-button").removeClass('active').addClass('inactive');
         $("#define-tasks-button").removeClass('active').addClass('inactive');
     });
@@ -369,6 +414,7 @@ $(function() {
         $("#knowledge-management").show();
         $("#organization-settings").hide();
         $("#define-workstreams").hide();
+        $("#define-workstream-types").hide();
         $("#define-deliverables").hide();
         $("#define-tasks").hide();
 
@@ -376,6 +422,7 @@ $(function() {
         $("#knowledge-management-button").removeClass('inactive').addClass('active');
         $("#organization-settings-button").removeClass('active').addClass('inactive');
         $("#define-workstreams-button").removeClass('active').addClass('inactive');
+        $("#define-workstream-types-button").removeClass('active').addClass('inactive');
         $("#define-deliverables-button").removeClass('active').addClass('inactive');
         $("#define-tasks-button").removeClass('active').addClass('inactive');
     });
@@ -385,6 +432,7 @@ $(function() {
         $("#knowledge-management").hide();
         $("#organization-settings").show();
         $("#define-workstreams").hide();
+        $("#define-workstream-types").hide();
         $("#define-deliverables").hide();
         $("#define-tasks").hide();
 
@@ -392,6 +440,7 @@ $(function() {
         $("#knowledge-management-button").removeClass('active').addClass('inactive');
         $("#organization-settings-button").removeClass('inactive').addClass('active');
         $("#define-workstreams-button").removeClass('active').addClass('inactive');
+        $("#define-workstream-types-button").removeClass('active').addClass('inactive');
         $("#define-deliverables-button").removeClass('active').addClass('inactive');
         $("#define-tasks-button").removeClass('active').addClass('inactive');
     });
@@ -401,6 +450,7 @@ $(function() {
         $("#knowledge-management").hide();
         $("#organization-settings").hide();
         $("#define-workstreams").show();
+        $("#define-workstream-types").hide();
         $("#define-deliverables").hide();
         $("#define-tasks").hide();
 
@@ -408,6 +458,25 @@ $(function() {
         $("#knowledge-management-button").removeClass('active').addClass('inactive');
         $("#organization-settings-button").removeClass('active').addClass('inactive');
         $("#define-workstreams-button").removeClass('inactive').addClass('active');
+        $("#define-workstream-types-button").removeClass('active').addClass('inactive');
+        $("#define-deliverables-button").removeClass('active').addClass('inactive');
+        $("#define-tasks-button").removeClass('active').addClass('inactive');
+    });
+
+    $("#define-workstream-types-button").click(function() {
+        $("#organization-projects").hide();
+        $("#knowledge-management").hide();
+        $("#organization-settings").hide();
+        $("#define-workstreams").hide();
+        $("#define-workstream-types").show();
+        $("#define-deliverables").hide();
+        $("#define-tasks").hide();
+
+        $("#organization-projects-button").removeClass('active').addClass('inactive');
+        $("#knowledge-management-button").removeClass('active').addClass('inactive');
+        $("#organization-settings-button").removeClass('active').addClass('inactive');
+        $("#define-workstreams-button").removeClass('active').addClass('inactive');
+        $("#define-workstream-types-button").removeClass('inactive').addClass('active');
         $("#define-deliverables-button").removeClass('active').addClass('inactive');
         $("#define-tasks-button").removeClass('active').addClass('inactive');
     });
@@ -417,6 +486,7 @@ $(function() {
         $("#knowledge-management").hide();
         $("#organization-settings").hide();
         $("#define-workstreams").hide();
+        $("#define-workstream-types").hide();
         $("#define-deliverables").show();
         $("#define-tasks").hide();
 
@@ -424,6 +494,7 @@ $(function() {
         $("#knowledge-management-button").removeClass('active').addClass('inactive');
         $("#organization-settings-button").removeClass('active').addClass('inactive');
         $("#define-workstreams-button").removeClass('active').addClass('inactive');
+        $("#define-workstream-types-button").removeClass('active').addClass('inactive');
         $("#define-deliverables-button").removeClass('inactive').addClass('active');
         $("#define-tasks-button").removeClass('active').addClass('inactive');
     });
@@ -433,6 +504,7 @@ $(function() {
         $("#knowledge-management").hide();
         $("#organization-settings").hide();
         $("#define-workstreams").hide();
+        $("#define-workstream-types").hide();
         $("#define-deliverables").hide();
         $("#define-tasks").show();
 
@@ -440,30 +512,46 @@ $(function() {
         $("#knowledge-management-button").removeClass('active').addClass('inactive');
         $("#organization-settings-button").removeClass('active').addClass('inactive');
         $("#define-workstreams-button").removeClass('active').addClass('inactive');
+        $("#define-workstream-types-button").removeClass('active').addClass('inactive');
         $("#define-deliverables-button").removeClass('active').addClass('inactive');
         $("#define-tasks-button").removeClass('inactive').addClass('active');
     });
 
+    //////////////////////////////////////////////////////////////
     // Convert text to fillable field and handle the ajax call to save the new value in the database, etc.
     // inspiration: https://stackoverflow.com/questions/33267797
     $('body').on('click', '[data-editable]', function(){
 
         var $el = $(this);
 
-        var modeltype
+        var modeltype;
         var deliverabletype_id;
         var identifier;
+        var class_id;
+        var ajax_url = '{% url "add_type" %}';
 
 
         if ($(this).hasClass('edit-st')) {
             modeltype = "specificationtype";
             identifier = "st-id";
             modelid = $(this).attr('st-id');
+            class_id = 'edit-st';
         } else if ($(this).hasClass('edit-ct')) {
             modeltype = "conditiontype";
             identifier = "ct-id";
             modelid = $(this).attr('ct-id');
-        }
+            class_id = 'edit-ct';
+        } else if ($(this).hasClass('edit-wt')) {
+            modeltype = "workstreamtype";
+            identifier = "wt-id";
+            modelid = $(this).attr('wt-id');
+            class_id = 'edit-wt';
+        } else if ($(this).hasClass('edit-tt')) {
+            modeltype = "tasktype";
+            identifier = "tt-id";
+            modelid = $(this).attr('tt-id');
+            class_id = 'edit-tt';
+        };
 
         var $input = $('<input/>').val( $el.text() );
 
@@ -472,14 +560,20 @@ $(function() {
         var save = function(){
             var newval = $(this).val()
 
-            var $a = $("<a " + identifier + "=" + modelid + " class=\"edit-st\" href=\"#\" data-editable/>").text( $input.val() );
+            var $a = $("<a/>").text( $input.val() );
+            $a.attr("identifier",modelid);
+            $a.attr("href","#");
+            $a.addClass(class_id);
+            $a.attr("data-editable");
+            $a.text($input.val());
+
             $input.replaceWith( $a );
 
             // ajax stuff to update the database
             $.ajax({
                 headers: {"X-CSRFToken": token},
                 type: "POST",
-                url: '{% url "update_spectype_condtype" %}',
+                url: '{% url "update_type" %}',
                 data: {
                     modeltype: modeltype,
                     modelid: modelid,
@@ -492,7 +586,8 @@ $(function() {
         $input.one('blur', save).focus();
     });
 
-    // Add new spec type or condition type
+    //////////////////////////////////////////////////////////////
+    // Add new type
     $('body').on('click', '[add-new]', function(){
 
         var $el = $(this);
@@ -500,18 +595,35 @@ $(function() {
         var modeltype;
         var identifier;
         var modelid;
+        var deliverabletype_id;
+        var ajax_url = '{% url "add_type" %}';
+        var class_id;
 
         if ($(this).hasClass('add-new-st')) {
             modeltype = "specificationtype";
             identifier = "st-id";
             deliverabletype_id = $(this).attr('dt-id');
             deletebutton_identifier = "remove-st";
+            class_id = 'edit-st';
+
         } else if ($(this).hasClass('add-new-ct')) {
             modeltype = "conditiontype";
             identifier = "ct-id";
             deliverabletype_id = $(this).attr('dt-id');
             deletebutton_identifier = "remove-ct";
-        }
+            class_id = 'edit-ct';
+
+        } else if ($(this).hasClass('add-new-wt')) {
+            modeltype = "workstreamtype";
+            identifier = "wt-id";
+            deletebutton_identifier = "remove-wt";
+            class_id = 'edit-wt';
+        } else if ($(this).hasClass('add-new-tt')) {
+            modeltype = "tasktype";
+            identifier = "tt-id";
+            deletebutton_identifier = "remove-tt";
+            class_id = 'edit-tt';
+        };
 
         var $input = $('<input/>');
         $newfield = $input
@@ -531,21 +643,25 @@ $(function() {
 
             var newval = $input.val();
 
-            var $a = $("<a class=\"edit-st\" href=\"#\" data-editable/>").text( $input.val() );
+            var $a = $("<a/>").text( $input.val() );
+            $a.attr("href","#");
+            $a.addClass(class_id);
+            $a.attr("data-editable");
+            $a.text($input.val());
+
             $input.replaceWith( $a );
 
             // ajax stuff to update the database
             $.ajax({
                 headers: {"X-CSRFToken": token},
                 type: "POST",
-                url: '{% url "add_spectype_condtype" %}',
+                url: ajax_url,
                 data: {
                     modeltype: modeltype,
                     deliverabletype_id: deliverabletype_id,
                     newval: newval
                 },
                 success: function(data) {
-                    console.log(data);
                     $a.attr(identifier,data)
                     $newdeleteicon.attr(identifier,data)
                 }
@@ -554,6 +670,7 @@ $(function() {
         $input.one('blur', save).focus();
     });
 
+    //////////////////////////////////////////////////////////////
     // Delete spec type or condition type
     $('body').on('click', '[delete-item]', function(){
         var $el = $(this);
@@ -561,6 +678,7 @@ $(function() {
         var modeltype;
         var identifier;
         var modelid;
+        var ajax_url = '{% url "delete_type" %}';
 
         if ($(this).hasClass('remove-st')) {
             modeltype = "specificationtype";
@@ -568,9 +686,13 @@ $(function() {
         } else if ($(this).hasClass('remove-ct')) {
             modeltype = "conditiontype";
             modelid = $(this).attr('ct-id');
-        }
-
-        console.log('deleting item ',modelid);
+        } else if ($(this).hasClass('remove-wt')) {
+            modeltype = "workstreamtype";
+            modelid = $(this).attr('wt-id');
+        } else if ($(this).hasClass('remove-tt')) {
+            modeltype = "tasktype";
+            modelid = $(this).attr('tt-id');
+        };
 
         $el.parents().eq(2).remove();
 
@@ -578,13 +700,12 @@ $(function() {
         $.ajax({
             headers: {"X-CSRFToken": token},
             type: "POST",
-            url: '{% url "delete_spectype_condtype" %}',
+            url: ajax_url,
             data: {
                 modeltype: modeltype,
                 modelid: modelid,
             },
             success: function(data) {
-                console.log(data);
             }
         })
     });

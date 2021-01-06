@@ -1,9 +1,11 @@
 from django.db import models, transaction
 from projects.models import Project
+from organizations.models import Organization
 
 
 class WorkstreamType(models.Model):
     name = models.CharField(max_length=50)
+    organization = models.ForeignKey(Organization, null=True, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
@@ -19,7 +21,6 @@ class Workstream(models.Model):
     objective = models.CharField(max_length=50, blank=True)
     motivation = models.CharField(max_length=50, blank=True)
     owner = models.CharField(max_length=50, blank=True)
-    # deliverables = models.ManyToManyField(Deliverable, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True, null=True)
     category = models.ForeignKey(WorkstreamType, on_delete=models.CASCADE)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)

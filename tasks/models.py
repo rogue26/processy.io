@@ -5,6 +5,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from deliverables.models import Deliverable
 from projects.models import Project
 from teams.models import TeamMember
+from organizations.models import Organization
 
 from projects.utils import daterange
 
@@ -34,6 +35,7 @@ class Resource(models.Model):
 
 class TaskType(models.Model):
     name = models.CharField(max_length=50)
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.name
