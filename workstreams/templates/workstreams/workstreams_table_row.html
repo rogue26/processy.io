@@ -1,0 +1,18 @@
+<tr>
+    <td class="text-center">{{ workstream.name }}</td>
+    <td class="text-center">
+
+        <!-- Edit button -->
+        <button type="button" class="bs-modal btn btn-sm btn-primary"
+                data-form-url="{% url 'configure_workstream' workstream.project.id workstream.id %}">
+            <input type="hidden" value="{{ workstream.pk }}" name="workstream_id">
+            <span class="fa fa-gears"></span>
+        </button>
+
+        <!-- Delete button -->
+        <button type="button" class="bs-modal delete-workstream btn btn-sm btn-secondary"
+                data-form-url="{% url 'delete_workstream' workstream.project.id workstream.id %}">
+            <span class="fa fa-trash"></span>
+        </button>
+    </td>
+</tr>

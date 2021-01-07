@@ -54,7 +54,7 @@ class Task(models.Model):
 
     complexity_drivers = models.ManyToManyField(ComplexityDriver, through='ComplexityRelationship')
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    deliverable = models.ForeignKey(Deliverable, on_delete=models.CASCADE, null=True)
+    deliverable = models.ForeignKey(Deliverable, on_delete=models.CASCADE, null=True, blank=True)
 
     percent_complete = models.DecimalField(max_digits=3, decimal_places=2, null=True, blank=True)
 

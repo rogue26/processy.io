@@ -22,7 +22,7 @@ class Deliverable(models.Model):
     name = models.CharField(max_length=50)
     scope = models.CharField(max_length=50, blank=True)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    workstream = models.ForeignKey(Workstream, on_delete=models.CASCADE, null=True)
+    workstream = models.ForeignKey(Workstream, on_delete=models.CASCADE, null=True, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True, null=True)
     created_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, blank=True)
 

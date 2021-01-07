@@ -1,6 +1,6 @@
 import json
 
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import TemplateView
 
 from ..forms import OrganizationForm
@@ -15,6 +15,9 @@ from content.models import ContentType
 class OrganizationDashboard(LoginRequiredMixin, TemplateView):
     template_name = "organizations/org_dashboard.html"
     login_url = '/'
+
+    # def test_func(self):
+    #     return self.request.user.groups.filter(name='YourGroupName').exists()
 
     def get_context_data(self, **kwargs):
         context = super(OrganizationDashboard, self).get_context_data(**kwargs)

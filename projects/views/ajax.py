@@ -3,7 +3,7 @@ import datetime
 
 from django.http import HttpResponse
 from django.core.files.base import ContentFile
-
+from django.shortcuts import render
 from docx import Document
 
 from projects.models import ScopeOfWork, Project

@@ -235,11 +235,40 @@
 
 $(function() {
 
+    // asyncSettings.successMessage
+    var asyncSuccessMessage = [
+        "<div ",
+        "style='position:fixed;top:0;z-index:10000;width:100%;border-radius:0;' ",
+        "class='alert alert-icon alert-success alert-dismissible fade show mb-0' role='alert'>",
+        "Success: Workstream was added.",
+        "<button type='button' class='close' data-dismiss='alert' aria-label='Close'>",
+        "<span aria-hidden='true'>&times;</span>",
+        "</button>",
+        "</div>",
+        "<script>",
+        "$('.alert').fadeTo(2000, 500).slideUp(500, function () {$('.alert').slideUp(500).remove();});",
+        "<\/script>"
+    ].join();
+
     // Create workstream button opens modal with id="create-modal"
-    $("#add-workstream").modalForm({
-        formURL: "{% url 'add_workstream' project_id=project.id %}",
-        modalID: "#create-modal"
-    });
+    function createWorkstreamModalForm() {
+        $("#add-workstream").each(function () {
+            $(this).modalForm({
+                formURL: "{% url 'add_workstream' project_id=project.id %}",
+                modalID: "#create-modal",
+                asyncUpdate: true,
+                asyncSettings: {
+                    closeOnSubmit: true,
+                    successMessage: asyncSuccessMessage,
+                    dataUrl: "{% url 'workstreams:update_workstreams_table' project.id %}",
+                    dataElementId: "#workstreams-table",
+                    dataKey: "table",
+                    addModalFormFunction: createWorkstreamModalForm
+                }
+            });
+        });
+    }
+    createWorkstreamModalForm();
 
     // Create deliverable button opens modal with id="create-modal"
     $("#add-deliverable").modalForm({

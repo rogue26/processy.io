@@ -39,42 +39,50 @@ class AddWorkstream(BSModalFormView):
                                                        is_the_reference_workstream=True)
                     new_ws.save()
                 else:
-                    # copy the reference workstream for this workstream category
-                    new_ws = Workstream.objects.filter(is_the_reference_workstream=True,
-                                                       category=workstream_type).first()
-                    reference_ws_id = new_ws.id
-                    old_deliverables = Deliverable.objects.filter(workstream_id=new_ws.id)
+                    # attempt to copy the reference workstream for this workstream category
+                    #
+                    try:
+                        new_ws = Workstream.objects.filter(is_the_reference_workstream=True,
+                                                           category=workstream_type).first()
+                        reference_ws_id = new_ws.id
+                        old_deliverables = Deliverable.objects.filter(workstream_id=new_ws.id)
 
-                    new_ws.pk = None
-                    new_ws.project = Project.objects.get(id=self.kwargs['project_id'])
-                    new_ws.is_the_reference_workstream = False
-                    new_ws.save()
+                        new_ws.pk = None
+                        new_ws.project = Project.objects.get(id=self.kwargs['project_id'])
+                        new_ws.is_the_reference_workstream = False
+                        new_ws.save()
 
-                    new_ws.copied_from_id = reference_ws_id
-                    new_ws.save()
+                        new_ws.copied_from_id = reference_ws_id
+                        new_ws.save()
 
-                    # now copy over all deliverables associated with the reference workstream
-                    for old_deliverable in old_deliverables:
-                        old_tasks = Task.objects.filter(deliverable_id=old_deliverable.id)
-                        reference_deliverable_id = old_deliverable.id
-                        old_deliverable.pk = None
-                        old_deliverable.project = Project.objects.get(id=self.kwargs['project_id'])
-                        old_deliverable.is_the_reference_deliverable = False
-                        old_deliverable.workstream = new_ws
-                        old_deliverable.save()
-                        old_deliverable.copied_from_id = reference_deliverable_id
-                        old_deliverable.save()
+                        # now copy over all deliverables associated with the reference workstream
+                        for old_deliverable in old_deliverables:
+                            old_tasks = Task.objects.filter(deliverable_id=old_deliverable.id)
+                            reference_deliverable_id = old_deliverable.id
+                            old_deliverable.pk = None
+                            old_deliverable.project = Project.objects.get(id=self.kwargs['project_id'])
+                            old_deliverable.is_the_reference_deliverable = False
+                            old_deliverable.workstream = new_ws
+                            old_deliverable.save()
+                            old_deliverable.copied_from_id = reference_deliverable_id
+                            old_deliverable.save()
 
-                        # copy over all tasks associated with this deliverable in the reference configuration
-                        for old_task in old_tasks:
-                            reference_task_id = old_task.id
-                            old_task.pk = None
-                            old_task.project = Project.objects.get(id=self.kwargs['project_id'])
-                            old_task.is_the_reference_task = False
-                            old_task.deliverable = old_deliverable
-                            old_task.save()
-                            old_task.copied_from_id = reference_task_id
-                            old_task.save()
+                            # copy over all tasks associated with this deliverable in the reference configuration
+                            for old_task in old_tasks:
+                                reference_task_id = old_task.id
+                                old_task.pk = None
+                                old_task.project = Project.objects.get(id=self.kwargs['project_id'])
+                                old_task.is_the_reference_task = False
+                                old_task.deliverable = old_deliverable
+                                old_task.save()
+                                old_task.copied_from_id = reference_task_id
+                                old_task.save()
+                    except:
+                        new_ws = Workstream.objects.create(name=workstream_type.name, description=workstream_type.name,
+                                                           category_id=int(workstream_type_num),
+                                                           project_id=self.kwargs['project_id'],
+                                                           is_the_reference_workstream=False)
+                        new_ws.save()
         else:
             pass
         return HttpResponseRedirect(self.get_success_url())
