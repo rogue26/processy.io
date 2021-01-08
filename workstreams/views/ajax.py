@@ -7,12 +7,12 @@ from django.template.loader import render_to_string
 from workstreams.models import Workstream
 
 
-def update_workstreams_table(request):
+def update_workstreams_table(request, project_id):
     data = dict()
     if request.method == 'GET':
-        workstreams = Workstream.objects.filter(project_id=request.GET['project_id'])
+        workstreams = Workstream.objects.filter(project_id=project_id)
         data['table'] = render_to_string(
-            '_workstreams_table.html',
+            'workstreams/_workstreams_table.html',
             {'workstreams': workstreams},
             request=request
         )

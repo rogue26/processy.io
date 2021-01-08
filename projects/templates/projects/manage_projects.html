@@ -98,7 +98,7 @@ $(function() {
     });
 
     $("#addorg").modalForm({
-        formURL: "{% url 'add_organization_modal' redirect_location %}",
+        formURL: "{% url 'organizations:add_organization_modal' redirect_location %}",
         modalID: "#add-org-modal"
     });
 
@@ -108,7 +108,7 @@ $(function() {
         $.ajax({
             headers: {"X-CSRFToken": token},
             type: "POST",
-            url: '{% url "update_declined_organization" %}',
+            url: '{% url "organizations:update_declined_organization" %}',
             success: function(){}
         })
     })

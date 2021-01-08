@@ -1,3 +1,5 @@
+import traceback
+
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 
@@ -23,7 +25,8 @@ class AddWorkstream(BSModalFormView):
         return self.render_to_response(context)
 
     def form_valid(self, form):
-        if not self.request.is_ajax():
+        if not self.request.is_ajax() or self.request.POST.get('asyncUpdate') == 'True':
+
             # get list of workstream types to add
             workstream_types_to_add = self.request.POST.getlist('workstream_type')
 
@@ -90,6 +93,6 @@ class AddWorkstream(BSModalFormView):
     def get_success_url(self):
         project = Project.objects.get(id=self.kwargs['project_id'])
         if project.is_the_reference_project:
-            return reverse_lazy('organization')
+            return reverse_lazy('organizations:organization')
         else:
-            return reverse_lazy('project', kwargs={'project_id': self.kwargs['project_id']})
+            return reverse_lazy('projects:project', kwargs={'project_id': self.kwargs['project_id']})

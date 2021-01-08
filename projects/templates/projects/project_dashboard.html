@@ -196,7 +196,7 @@
                     <div class="gantt-target"></div>
 
                 </div>
-                <div id="utilization" style="display: none;" data-url="{% url 'utilization_chart' %}">
+                <div id="utilization" style="display: none;" data-url="{% url 'projects:utilization_chart' %}">
 
                     <div class="row mb-3 mt-3 pl-3">
                         <h4 id="utilization-header" class="my-auto">Team utilization</h4>
@@ -235,32 +235,17 @@
 
 $(function() {
 
-    // asyncSettings.successMessage
-    var asyncSuccessMessage = [
-        "<div ",
-        "style='position:fixed;top:0;z-index:10000;width:100%;border-radius:0;' ",
-        "class='alert alert-icon alert-success alert-dismissible fade show mb-0' role='alert'>",
-        "Success: Workstream was added.",
-        "<button type='button' class='close' data-dismiss='alert' aria-label='Close'>",
-        "<span aria-hidden='true'>&times;</span>",
-        "</button>",
-        "</div>",
-        "<script>",
-        "$('.alert').fadeTo(2000, 500).slideUp(500, function () {$('.alert').slideUp(500).remove();});",
-        "<\/script>"
-    ].join();
-
     // Create workstream button opens modal with id="create-modal"
     function createWorkstreamModalForm() {
         $("#add-workstream").each(function () {
             $(this).modalForm({
-                formURL: "{% url 'add_workstream' project_id=project.id %}",
+                formURL: "{% url 'workstreams:add_workstream' project_id=project.id %}",
                 modalID: "#create-modal",
                 asyncUpdate: true,
                 asyncSettings: {
                     closeOnSubmit: true,
-                    successMessage: asyncSuccessMessage,
-                    dataUrl: "{% url 'workstreams:update_workstreams_table' project.id %}",
+                    successMessage: 'Success',
+                    dataUrl: "{% url 'workstreams:update_workstreams_table' project_id=project.id %}",
                     dataElementId: "#workstreams-table",
                     dataKey: "table",
                     addModalFormFunction: createWorkstreamModalForm
@@ -272,19 +257,19 @@ $(function() {
 
     // Create deliverable button opens modal with id="create-modal"
     $("#add-deliverable").modalForm({
-        formURL: "{% url 'add_deliverable' project_id=project.id %}",
+        formURL: "{% url 'deliverables:add_deliverable' project_id=project.id %}",
         modalID: "#create-modal"
     });
 
     // Create task button opens modal with id="create-modal"
     $("#add-task").modalForm({
-        formURL: "{% url 'add_task' project_id=project.id %}",
+        formURL: "{% url 'tasks:add_task' project_id=project.id %}",
         modalID: "#create-modal"
     });
 
     // Add team member button opens modal with id="create-modal"
     $("#add-team-member").modalForm({
-        formURL: "{% url 'add_team_member' project_id=project.id %}",
+        formURL: "{% url 'teams:add_team_member' project_id=project.id %}",
         modalID: "#create-modal"
     });
 
@@ -383,7 +368,7 @@ $(function() {
         var project_id = {{ project.id }};
         $.ajax({
             type: "GET",
-            url: '{% url "ajax_test" %}',
+            url: '{% url "projects:ajax_test" %}',
             data: {
                 project_id: project_id
             },
@@ -407,7 +392,7 @@ $(function() {
 
         $.ajax({
             type: "GET",
-            url: '{% url "ajax_content_download" %}',
+            url: '{% url "content:ajax_content_download" %}',
             data: {
                 content_id: content_id
             },

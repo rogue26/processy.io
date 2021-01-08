@@ -3,6 +3,7 @@ from django.conf.urls import url
 
 from . import views
 
+app_name = 'deliverables'
 urlpatterns = [
     path('add_deliverable_type/', views.AddDeliverableType.as_view(), name='add_deliverable_type'),
     path('add_deliverable/<int:project_id>/', views.AddDeliverable.as_view(), name='add_deliverable'),

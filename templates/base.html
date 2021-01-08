@@ -65,27 +65,27 @@ $(function() {
     $('[data-toggle="tooltip"]').tooltip()
 
     $("#upload-content").modalForm({
-        formURL: "{% url 'add_content' %}"
+        formURL: "{% url 'content:add_content' %}"
     });
 
     $("#add-project").modalForm({
-        formURL: "{% url 'add_project' %}"
+        formURL: "{% url 'projects:add_project' %}"
     });
 
     $("#login-btn").modalForm({
-        formURL: "{% url 'login_modal' %}"
+        formURL: "{% url 'users:login_modal' %}"
     });
 
     $("#log-in-link").modalForm({
-        formURL: "{% url 'login_modal' %}"
+        formURL: "{% url 'users:login_modal' %}"
     });
 
     $("#signup-btn").modalForm({
-        formURL: "{% url 'signup_modal' %}"
+        formURL: "{% url 'users:signup_modal' %}"
     });
 
     $("#sign-up-link").modalForm({
-        formURL: "{% url 'signup_modal' %}"
+        formURL: "{% url 'users:signup_modal' %}"
     });
 
     var asyncSuccessMessage = [

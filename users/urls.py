@@ -20,6 +20,7 @@ from django.conf.urls.static import static
 
 from .views import SignUpView, CustomLoginView
 
+app_name = 'users'
 urlpatterns = [
 
     path('signup/', SignUpView.as_view(), name='signup_modal'),

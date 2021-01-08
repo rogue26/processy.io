@@ -3,6 +3,7 @@ from django.conf.urls import url
 
 from . import views
 
+app_name = 'organizations'
 urlpatterns = [
     path('add_organization_modal/<slug:redirect_location>', views.AddOrganizationModal.as_view(), name='add_organization_modal'),
     path('add_division/', views.AddDivision.as_view(), name='add_division'),

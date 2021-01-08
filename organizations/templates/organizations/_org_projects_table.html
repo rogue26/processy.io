@@ -15,7 +15,7 @@
         <td class="text-center">{{ project.name }}</td>
         <td class="text-center">
             <!-- Edit project buttons -->
-            <button class="btn btn-sm btn-primary" onclick="location.href='{% url 'project' project.id %}'"
+            <button class="btn btn-sm btn-primary" onclick="location.href='{% url 'projects:project' project.id %}'"
                     type="button">
                 <span class="fa fa-edit"></span>
             </button>

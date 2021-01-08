@@ -12,7 +12,7 @@
 
         <!-- Delete button -->
         <button type="button" class="bs-modal delete-deliverable btn btn-sm btn-secondary"
-                data-form-url="{% url 'delete_deliverable' deliverable.project.id deliverable.id %}">
+                data-form-url="{% url 'deliverables:delete_deliverable' deliverable.project.id deliverable.id %}">
             <span class="fa fa-trash"></span>
         </button>
     </td>

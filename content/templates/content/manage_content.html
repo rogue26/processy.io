@@ -56,7 +56,7 @@
                 $.ajax(
                     {
                         type:"GET",
-                        url: '{% url "ajax_test" %}',
+                        url: '{% url "projects:ajax_test" %}',
                         data:{project_id: project_id},
                         success: function( data )
                         {

@@ -70,7 +70,8 @@
             </div>
             <div class="row mb-3 mt-3">
                 <div class="col-md-12">
-                    <button id="define-workstream-types-button" class="btn btn-secondary text-left btn-block" type="button"
+                    <button id="define-workstream-types-button" class="btn btn-secondary text-left btn-block"
+                            type="button"
                             name="button">
                         <span class="fa fa-project-diagram mr-2"></span>Define workstream types
                     </button>
@@ -239,7 +240,12 @@
                     <div id="define-deliverables" style="display: none;">
                         <div class="row mb-3 pl-3">
                             <h4 class="my-auto">Deliverable types</h4>
+                            <button id="add-deliverable-type" class="btn btn-secondary ml-3 " type="button"
+                                    name="button">
+                                <span class="fa fa-plus mr-2"></span>Add deliverable type
+                            </button>
                         </div>
+
                         {% include "deliverables/_deliverable_types_table.html" %}
                     </div>
                     <div id="define-tasks" style="display: none;">
@@ -263,57 +269,57 @@
 $(function() {
 
     $("#addorg").modalForm({
-        formURL: "{% url 'add_organization_modal' redirect_location %}",
+        formURL: "{% url 'organizations:add_organization_modal' redirect_location %}",
         modalID: "#add-org-modal"
     });
 
     // Create division button opens modal with id="create-modal"
     $("#add-division").modalForm({
-        formURL: "{% url 'add_division' %}",
+        formURL: "{% url 'organizations:add_division' %}",
         modalID: "#create-modal"
     });
 
     $("#add-deliverable-type").modalForm({
-        formURL: "{% url 'add_deliverable_type' %}",
+        formURL: "{% url 'deliverables:add_deliverable_type' %}",
         modalID: "#create-modal"
     });
 
     $("#add-content-type").modalForm({
-        formURL: "{% url 'add_content_type' %}",
+        formURL: "{% url 'content:add_content_type' %}",
         modalID: "#create-modal"
     });
 
     $("#upload-content-button").modalForm({
-        formURL: "{% url 'add_content' %}"
+        formURL: "{% url 'content:add_content' %}"
     });
 
     // Create workstream button opens modal with id="create-modal"
     $("#add-workstream").modalForm({
-        formURL: "{% url 'add_workstream' project.id %}",
+        formURL: "{% url 'workstreams:add_workstream' project.id %}",
         modalID: "#create-modal"
     });
 
     // Create deliverable button opens modal with id="create-modal"
     $("#add-deliverable").modalForm({
-        formURL: "{% url 'add_deliverable' project.id %}",
+        formURL: "{% url 'deliverables:add_deliverable' project.id %}",
         modalID: "#create-modal"
     });
 
     // Create task button opens modal with id="create-modal"
     $("#add-task").modalForm({
-        formURL: "{% url 'add_task' project.id %}",
+        formURL: "{% url 'tasks:add_task' project.id %}",
         modalID: "#create-modal"
     });
 
     // Create task type button opens modal with id="create-modal"
     $("#add-task-type").modalForm({
-        formURL: "{% url 'add_task_type' %}",
+        formURL: "{% url 'tasks:add_task_type' %}",
         modalID: "#create-modal"
     });
 
     // Create task button opens modal with id="create-modal"
     $("#add-workstream-type").modalForm({
-        formURL: "{% url 'add_workstream_type' %}",
+        formURL: "{% url 'workstreams:add_workstream_type' %}",
         modalID: "#create-modal"
     });
 
@@ -323,7 +329,7 @@ $(function() {
         $.ajax({
             headers: {"X-CSRFToken": token},
             type: "POST",
-            url: '{% url "update_declined_organization" %}',
+            url: '{% url "organizations:update_declined_organization" %}',
             success: function(data) {}
         })
     })
@@ -502,7 +508,7 @@ $(function() {
         var deliverabletype_id;
         var identifier;
         var class_id;
-        var ajax_url = '{% url "add_type" %}';
+        var ajax_url = '{% url "organizations:add_type" %}';
 
 
         if ($(this).hasClass('edit-st')) {
@@ -547,7 +553,7 @@ $(function() {
             $.ajax({
                 headers: {"X-CSRFToken": token},
                 type: "POST",
-                url: '{% url "update_type" %}',
+                url: '{% url "organizations:update_type" %}',
                 data: {
                     modeltype: modeltype,
                     modelid: modelid,
@@ -570,7 +576,7 @@ $(function() {
         var identifier;
         var modelid;
         var deliverabletype_id;
-        var ajax_url = '{% url "add_type" %}';
+        var ajax_url = '{% url "organizations:add_type" %}';
         var class_id;
 
         if ($(this).hasClass('add-new-st')) {
@@ -652,7 +658,7 @@ $(function() {
         var modeltype;
         var identifier;
         var modelid;
-        var ajax_url = '{% url "delete_type" %}';
+        var ajax_url = '{% url "organizations:delete_type" %}';
 
         if ($(this).hasClass('remove-st')) {
             modeltype = "specificationtype";
@@ -685,6 +691,7 @@ $(function() {
     });
 
 });
+
 
 
 

@@ -2,6 +2,7 @@ from django.urls import path
 
 from . import views
 
+app_name = 'projects'
 urlpatterns = [
     path('ajax/ajax-test/', views.ajax_test, name='ajax_test'),
     path('project/<int:project_id>', views.ProjectsDashboard.as_view(), name='project'),
