@@ -1,0 +1,35 @@
+<table id="workstream-types-table" class="table table-striped">
+    <thead>
+    <tr>
+        <th class="text-center" scope="col">Workstream type
+            <span class="fa fa-question-circle text-secondary ml-2" data-toggle="tooltip" data-placement="right"
+                  title="Tooltip on right"></span>
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td class="text-center" style="vertical-align:middle">
+            {% for wt in workstream_types.all %}
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="float-left">
+                        <a wt-id="{{wt.id}}" class="edit-wt" href="#" data-editable>{{ wt }}</a>
+                        <a href="#" wt-id="{{wt.id}}" class="remove-wt" delete-item><span
+                                class="fa fa-minus-circle ml-2"></span></a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            <div id="add-new-wt-{{ wt.id }}" class="row">
+                <div class="col-md-12">
+                    <div class="float-left">
+                        <a id="add-new-spectype" href="#" class="add-new-wt" wt-id="{{wt.id}}" add-new><span
+                                class="fa fa-plus mr-2"></span><strong>Add new</strong></a>
+                    </div>
+                </div>
+            </div>
+        </td>
+    </tr>
+    </tbody>
+</table>

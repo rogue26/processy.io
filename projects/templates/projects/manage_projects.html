@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
-
+{% load project_tags %}
 {% load widget_tweaks %}
 <div class="container mt-3">
     <div class="row">
@@ -24,7 +24,7 @@
                     {% endif %}
 
                     {% for field in form.visible_fields %}
-                    <div class="form-group">
+                    <div class="form-group" id={% form_group_id field %} {% form_group_style field %}>
                         {% if field.field.widget.input_type == "checkbox" %}
                         <div>{{ field.label_tag }}</div>
                         {% for choice_id, choice_label in field.field.choices %}
@@ -70,13 +70,14 @@
             <div class="ml-3 mr-3 mt-3 mb-3">
                 <h4 class="mb-3">Your projects</h4>
                 {% if non_ref_projects %}
-                {% include "projects/_projects_table.html" %}
+                {% include "projects/tables/projects_table.html" %}
                 {% else %}
                 <p class="no-projects text-primary">No projects added yet.</p>
                 {% endif %}
             </div>
         </div>
-        <a id="addorg" href="#"></a>
+        <a id="addorg" class="asyncModal" href="#" data-form-url="{{form_url}}" data-data-url="{{data_url}}"
+           data-modal-id="{{modal_id}}" data-data-element-id="{{data_element_id}}"></a>
     </div>
 </div>
 
@@ -89,6 +90,7 @@ $(function() {
 
     var js_has_org = {{has_org | safe}};
     var js_user_declined_organization = {{user_declined_organization | safe}};
+    var token = '{{csrf_token}}';
 
     $(document).ready( function() {
         if (!js_has_org && !js_user_declined_organization) {
@@ -96,13 +98,6 @@ $(function() {
             a.click();
         };
     });
-
-    $("#addorg").modalForm({
-        formURL: "{% url 'organizations:add_organization_modal' redirect_location %}",
-        modalID: "#add-org-modal"
-    });
-
-    var token = '{{csrf_token}}';
 
     $('#add-org-modal').on('hidden.bs.modal', function() {
         $.ajax({

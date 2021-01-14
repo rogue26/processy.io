@@ -64,12 +64,64 @@
 $(function() {
     $('[data-toggle="tooltip"]').tooltip()
 
+    $("#id_internal").change(function() {
+        if ($(this).val() == 'internal') {
+            $("#id_client_group").hide();
+        } else if ($(this).val() == 'external') {
+            $("#id_client_group").show();
+        }
+    });
+
+    $(document).on("change", "#id_internal_modal", function (e) {
+        if ($(this).val() == 'internal') {
+            $("#id_client_group_modal").hide();
+        } else if ($(this).val() == 'external') {
+            $("#id_client_group_modal").show();
+        }
+    });
+
+    var asyncSuccessMessage = [
+        "<div ",
+        "style='position:fixed;top:0;z-index:10000;width:100%;border-radius:0;' ",
+        "class='alert alert-icon alert-success alert-dismissible fade show mb-0' role='alert'>",
+        "Success.",
+        "<button type='button' class='close' data-dismiss='alert' aria-label='Close'>",
+        "<span aria-hidden='true'>&times;</span>",
+        "</button>",
+        "</div>",
+        "<script>",
+        "$('.alert').fadeTo(2000, 500).slideUp(500, function () {$('.alert').slideUp(500).remove();});",
+        "<\/script>"
+    ].join("");
+
+
+    // Create async modal form with attributes attached to clicked element
+    function createAsyncModalForm() {
+
+        $(".asyncModal").each(function () {
+            $(this).modalForm({
+                formURL: $(this).data("form-url"),
+                modalID: $(this).data("modal-id"),
+                asyncUpdate: true,
+                asyncSettings: {
+                    closeOnSubmit: true,
+                    successMessage: asyncSuccessMessage,
+                    dataUrl: $(this).data("data-url"),
+                    dataElementId: $(this).data("data-element-id"),
+                    dataKey: "data",
+                    addModalFormFunction: createAsyncModalForm
+                }
+            });
+        });
+    }
+    createAsyncModalForm();
+
     $("#upload-content").modalForm({
-        formURL: "{% url 'content:add_content' %}"
+        formURL: "{% url 'modals:add_content' %}"
     });
 
     $("#add-project").modalForm({
-        formURL: "{% url 'projects:add_project' %}"
+        formURL: "{% url 'modals:add_project' %}"
     });
 
     $("#login-btn").modalForm({
@@ -86,27 +138,6 @@ $(function() {
 
     $("#sign-up-link").modalForm({
         formURL: "{% url 'users:signup_modal' %}"
-    });
-
-    var asyncSuccessMessage = [
-        "<div ",
-        "style='position:fixed;top:0;z-index:10000;width:100%;border-radius:0;' ",
-        "class='alert alert-icon alert-success alert-dismissible fade show mb-0' role='alert'>",
-        "Success: Updated.",
-        "<button type='button' class='close' data-dismiss='alert' aria-label='Close'>",
-        "<span aria-hidden='true'>&times;</span>",
-        "</button>",
-        "</div>",
-        "<script>",
-        "$('.alert').fadeTo(2000, 500).slideUp(500, function () {$('.alert').slideUp(500).remove();});",
-        "<\/script>"
-    ].join("");
-
-    // The formURL is retrieved from the data of the element
-    $(".bs-modal").each(function() {
-        $(this).modalForm({
-            formURL: $(this).data("form-url")
-        });
     });
 
     // Hide message

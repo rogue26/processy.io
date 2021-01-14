@@ -37,14 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'widget_tweaks',
-    'projects',
-    'workstreams',
-    'deliverables',
-    'tasks',
     'users',
+    'projects',
     'organizations',
-    'content',
-    'teams'
+    'modals',
 ]
 
 STATICFILES_FINDERS = [

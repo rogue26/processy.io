@@ -1,0 +1,624 @@
+{% extends 'base.html' %}
+{% load organization_tags %}
+
+{% block content %}
+{% load static %}
+{% load widget_tweaks %}
+
+
+<div class="container-fluid">
+    <div class="row mt-4 mb-3">
+        <div class="col-md-3 pl-5">
+            <h4 class="mb-3">Organization dashboard</h4>
+            <div>
+                {% if organization %}
+                <h6><strong>Organization name:</strong></br>{{organization.name}}
+                    {% if organization.nickname %}({{organization.nickname}}{% endif %})</h6>
+                {% endif %}
+            </div>
+            <div>
+                {% if organization.domain %}
+                <h6><strong>Email domain:</strong></br>{{organization.domain}}</h6>
+                {% endif %}
+            </div>
+            <div>
+                {% if organization.division_set.all %}
+                <h6><strong>Divisions:</strong></br>
+                    {% for division in organization.division_set.all %}
+                    {{division}},
+                    {% endfor %}
+                    <a id="add-division" href="#"><span class="fa fa-plus ml-2 mr-2"></span><strong>Add
+                        division</strong></a>
+                </h6>
+                {% endif %}
+            </div>
+            <div class="row mb-3 mt-3">
+                <div class="col-md-12">
+                    <button id="organization-projects-button" class="btn btn-secondary text-left btn-block active"
+                            type="button"
+                            name="button"
+                            style="active">
+                        <span class="fa fa-handshake mr-2"></span>View all projects
+                    </button>
+                </div>
+            </div>
+            <div class="row mb-3 mt-3">
+                <div class="col-md-12">
+                    <button id="knowledge-management-button" class="btn btn-secondary text-left btn-block"
+                            type="button"
+                            name="button">
+                        <span class="fa fa-lightbulb mr-2"></span>Knowledge management
+                    </button>
+                </div>
+            </div>
+            <div class="row mb-3 mt-3">
+                <div class="col-md-12">
+                    <button id="organization-settings-button" class="btn btn-secondary text-left btn-block"
+                            type="button"
+                            name="button">
+                        <span class="fa fa-building mr-2"></span>Organization settings
+                    </button>
+                </div>
+            </div>
+            <div class="row mb-3 mt-3">
+                <div class="col-md-12">
+                    <button id="define-workstreams-button" class="btn btn-secondary text-left btn-block" type="button"
+                            name="button">
+                        <span class="fa fa-project-diagram mr-2"></span>Define reference workstreams
+                    </button>
+                </div>
+            </div>
+            <div class="row mb-3 mt-3">
+                <div class="col-md-12">
+                    <button id="define-component-types-button" class="btn btn-secondary text-left btn-block"
+                            type="button"
+                            name="button">
+                        <span class="fa fa-cube mr-2"></span>Define project component types
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="organization-projects">
+                        <h4 class="mb-3">Organization projects</h4>
+                        {% if non_ref_projects %}
+                        {% show_nonref_projects %}
+                        {% else %}
+                        <p class="no-projects text-primary">No projects added yet.</p>
+                        {% endif %}
+                    </div>
+                    <div id="knowledge-management" style="display: none;">
+                        <div class="btn-group d-flex btn-group-toggle pl-5 pr-5 mx-auto" data-toggle="buttons">
+                            <label class="btn btn-secondary active w-100">
+                                <input type="radio" name="knowledge-management-options"
+                                       id="knowledge-management-option1"
+                                       autocomplete="off"
+                                       value="content">
+                                Uploaded content
+                            </label>
+                            <label class="btn btn-secondary w-100">
+                                <input type="radio" name="knowledge-management-options"
+                                       id="knowledge-management-option2"
+                                       autocomplete="off"
+                                       value="metadata">
+                                Content type and metadata
+                            </label>
+                        </div>
+                        <div id="uploaded-content">
+                            <div class="row mb-3 mt-3 pl-3">
+                                <h4 class="my-auto">Uploaded content</h4>
+                                <button id="upload-content-button" class="btn btn-secondary ml-3 " type="button"
+                                        name="button">
+                                    <span class="fa fa-plus mr-2"></span>Contribute content
+                                </button>
+                            </div>
+                            {% if content %}
+                            {% include "organizations/tables/content_table.html" %}
+                            {% else %}
+                            <p class="no-projects text-primary">No content added yet.</p>
+                            {% endif %}
+                        </div>
+                        <div id="content-metadata" style="display: none;">
+                            <div class="row mb-3 mt-3 pl-3">
+                                <h4 class="my-auto">Content types and metadata</h4>
+                                <button id="add-content-type" class="btn btn-secondary ml-3 " type="button"
+                                        name="button">
+                                    <span class="fa fa-plus mr-2"></span>Add content type
+                                </button>
+                            </div>
+                            {% include "organizations/tables/content_types_table.html" %}
+                        </div>
+
+                    </div>
+                    <div id="organization-settings" style="display: none;">
+                        <div class="row mb-3 pl-3">
+                            <h4 class="my-auto">Organization settings</h4>
+                        </div>
+                        {% include "organizations/organization_settings_form.html" %}
+                    </div>
+                    <div id="define-workstreams" style="display: none;">
+                        <div id="configure-project-selector" class="mb-3">
+                            <div class="btn-group d-flex btn-group-toggle pl-5 pr-5 mx-auto" data-toggle="buttons">
+                                <label class="btn btn-secondary active w-100">
+                                    <input type="radio" name="project-options" id="project-option1" autocomplete="off"
+                                           value="workstreams">
+                                    Workstreams
+                                </label>
+                                <label class="btn btn-secondary w-100">
+                                    <input type="radio" name="project-options" id="project-option2" autocomplete="off"
+                                           value="deliverables">
+                                    Deliverables
+                                </label>
+                                <label class="btn btn-secondary w-100">
+                                    <input type="radio" name="project-options" id="project-option3" autocomplete="off"
+                                           value="tasks">
+                                    Tasks
+                                </label>
+                            </div>
+                        </div>
+                        <div id="configure-project-table">
+                            <div id="workstreams-table" class="row">
+                                <div class="col-md-12">
+                                    <div class="row mb-3 pl-3">
+                                        <h4 class="my-auto">Reference workstreams</h4>
+                                        <button id="add-workstream" class="btn btn-secondary ml-3 " type="button"
+                                                name="button">
+                                            <span class="fa fa-plus mr-2"></span>Add new reference workstream
+                                        </button>
+                                    </div>
+
+                                    {% if workstreams %}
+                                    {% include "organizations/tables/workstream_types_table.html" %}
+                                    {% else %}
+                                    <p class="no-projects text-primary">No reference workstreams added yet.</p>
+                                    {% endif %}
+
+                                </div>
+                            </div>
+                            <div id="ref_deliverables_table" class="row" style="display: none;">
+                                <div class="col-md-12">
+                                    <div class="row mb-3 pl-3">
+                                        <h4 class="my-auto">Reference deliverables</h4>
+                                        <button id="add-deliverable" class="btn btn-secondary ml-3" type="button"
+                                                name="button">
+                                            <span class="fa fa-plus mr-2"></span>Add new reference deliverables
+                                        </button>
+                                    </div>
+
+                                    {% if deliverables %}
+                                    {% include "projects/tables/deliverables_table.html" %}
+                                    {% else %}
+                                    <p class="no-projects text-primary">No reference deliverables added yet.</p>
+                                    {% endif %}
+
+                                </div>
+                            </div>
+                            <div id="tasks-table" class="row" style="display: none;">
+                                <div class="col-md-12">
+                                    <div class="row mb-3 pl-3">
+                                        <h4 class="my-auto">Reference tasks</h4>
+                                        <button id="add-task" class="btn btn-secondary ml-3" type="button"
+                                                name="button">
+                                            <span class="fa fa-plus mr-2"></span>Add new reference tasks
+                                        </button>
+                                    </div>
+                                    {% if tasks %}
+                                    {% include "projects/tables/tasks_table.html" %}
+                                    {% else %}
+                                    <p class="no-projects text-primary">No reference tasks added yet.</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="define-component-types" style="display: none;">
+                        <div id="configure-type-selector" class="mb-3">
+                            <div class="btn-group d-flex btn-group-toggle pl-5 pr-5 mx-auto" data-toggle="buttons">
+                                <label class="btn btn-secondary active w-100">
+                                    <input type="radio" name="type-options" id="type-option1" autocomplete="off"
+                                           value="workstream_types">
+                                    Workstream types
+                                </label>
+                                <label class="btn btn-secondary w-100">
+                                    <input type="radio" name="type-options" id="type-option2" autocomplete="off"
+                                           value="deliverable_types">
+                                    Deliverable types
+                                </label>
+                                <label class="btn btn-secondary w-100">
+                                    <input type="radio" name="type-options" id="type-option3" autocomplete="off"
+                                           value="task_types">
+                                    Task types
+                                </label>
+                            </div>
+                        </div>
+
+                        <div id="define-workstream-types">
+                            <div class="row mb-3 pl-3">
+                                <h4 class="my-auto">Workstream types</h4>
+                            </div>
+                            {% include "organizations/tables/workstream_types_table.html" %}
+                        </div>
+                        <div id="define-deliverable-types" style="display: none;">
+                            <div class="row mb-3 pl-3">
+                                <h4 class="my-auto">Deliverable types</h4>
+                                <button id="add-deliverable-type" class="btn btn-secondary ml-3 asyncModal"
+                                        type="button"
+                                        name="button" data-form-url="{{deliverable_type_form_url}}"
+                                        data-data-url="{{deliverable_type_data_url}}"
+                                        data-modal-id="{{deliverable_type_modal_id}}"
+                                        data-data-element-id="{{deliverable_type_data_element_id}}">
+                                    <span class="fa fa-plus mr-2"></span>Add deliverable type
+                                </button>
+                            </div>
+
+                            {% include "organizations/tables/deliverable_types_table.html" %}
+                        </div>
+                        <div id="define-task-types" style="display: none;">
+                            <div class="row mb-3 pl-3">
+                                <h4 class="my-auto">Task types</h4>
+                            </div>
+                            {% include "organizations/tables/task_types_table.html" %}
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <a id="addorg" class="asyncModal" href="#" data-form-url="{{form_url}}" data-data-url="{{data_url}}"
+           data-modal-id="{{modal_id}}" data-data-element-id="{{data_element_id}}"></a>
+    </div>
+</div>
+
+{% endblock content %}
+
+{% block extrascripts %}
+<script type="text/javascript">
+
+$(function() {
+
+    var js_has_org = {{ has_org | safe }}
+
+    $(document).ready(function() {
+        if (!js_has_org) {
+            var a = document.getElementById('addorg');
+            a.click();
+        };
+    });
+
+    var token = '{{csrf_token}}';
+
+    $('#add-org-modal').on('hidden.bs.modal', function() {
+        $.ajax({
+            headers: {"X-CSRFToken": token},
+            type: "POST",
+            url: '{% url "organizations:update_declined_organization" %}',
+            success: function(data) {}
+        })
+    })
+
+    $('input[type=radio][name="project-options"]').change(function() {
+        if ($(this).val() == "workstreams") {
+            $('#workstreams-table').show();
+            $('#ref_deliverables_table').hide();
+            $('#tasks-table').hide();
+
+        } else if ($(this).val() == "deliverables") {
+            $('#workstreams-table').hide();
+            $('#ref_deliverables_table').show();
+            $('#tasks-table').hide();
+
+        } else if ($(this).val() == "tasks") {
+            $('#workstreams-table').hide();
+            $('#ref_deliverables_table').hide();
+            $('#tasks-table').show();
+        }
+    });
+
+    $('input[type=radio][name="type-options"]').change(function() {
+        if ($(this).val() == "workstream_types") {
+            $('#define-workstream-types').show();
+            $('#define-deliverable-types').hide();
+            $('#define-task-types').hide();
+
+        } else if ($(this).val() == "deliverable_types") {
+            $('#define-workstream-types').hide();
+            $('#define-deliverable-types').show();
+            $('#define-task-types').hide();
+
+        } else if ($(this).val() == "task_types") {
+            $('#define-workstream-types').hide();
+            $('#define-deliverable-types').hide();
+            $('#define-task-types').show();
+        }
+    });
+
+    $('input[type=radio][name="knowledge-management-options"]').change(function() {
+        if ($(this).val() == "content") {
+            $('#uploaded-content').show()
+            $('#content-metadata').hide()
+        } else if ($(this).val() == "metadata") {
+            $('#uploaded-content').hide()
+            $('#content-metadata').show()
+        }
+    });
+
+    $("#organization-projects-button").click(function() {
+        $("#organization-projects").show();
+        $("#knowledge-management").hide();
+        $("#organization-settings").hide();
+        $("#define-workstreams").hide();
+        $("#define-component-types").hide();
+
+        $("#organization-projects-button").removeClass('inactive').addClass('active');
+        $("#knowledge-management-button").removeClass('active').addClass('inactive');
+        $("#organization-settings-button").removeClass('active').addClass('inactive');
+        $("#define-workstreams-button").removeClass('active').addClass('inactive');
+        $("#define-component-types-button").removeClass('active').addClass('inactive');
+    });
+
+    $("#knowledge-management-button").click(function() {
+        $("#organization-projects").hide();
+        $("#knowledge-management").show();
+        $("#organization-settings").hide();
+        $("#define-workstreams").hide();
+        $("#define-component-types").hide();
+
+        $("#organization-projects-button").removeClass('active').addClass('inactive');
+        $("#knowledge-management-button").removeClass('inactive').addClass('active');
+        $("#organization-settings-button").removeClass('active').addClass('inactive');
+        $("#define-workstreams-button").removeClass('active').addClass('inactive');
+        $("#define-component-types-button").removeClass('active').addClass('inactive');
+    });
+
+    $("#organization-settings-button").click(function() {
+        $("#organization-projects").hide();
+        $("#knowledge-management").hide();
+        $("#organization-settings").show();
+        $("#define-workstreams").hide();
+        $("#define-component-types").hide();
+
+        $("#organization-projects-button").removeClass('active').addClass('inactive');
+        $("#knowledge-management-button").removeClass('active').addClass('inactive');
+        $("#organization-settings-button").removeClass('inactive').addClass('active');
+        $("#define-workstreams-button").removeClass('active').addClass('inactive');
+        $("#define-component-types-button").removeClass('active').addClass('inactive');
+    });
+
+    $("#define-workstreams-button").click(function() {
+        $("#organization-projects").hide();
+        $("#knowledge-management").hide();
+        $("#organization-settings").hide();
+        $("#define-workstreams").show();
+        $("#define-component-types").hide();
+
+        $("#organization-projects-button").removeClass('active').addClass('inactive');
+        $("#knowledge-management-button").removeClass('active').addClass('inactive');
+        $("#organization-settings-button").removeClass('active').addClass('inactive');
+        $("#define-workstreams-button").removeClass('inactive').addClass('active');
+        $("#define-component-types-button").removeClass('active').addClass('inactive');
+    });
+
+    $("#define-component-types-button").click(function() {
+        $("#organization-projects").hide();
+        $("#knowledge-management").hide();
+        $("#organization-settings").hide();
+        $("#define-workstreams").hide();
+        $("#define-component-types").show();
+
+        $("#organization-projects-button").removeClass('active').addClass('inactive');
+        $("#knowledge-management-button").removeClass('active').addClass('inactive');
+        $("#organization-settings-button").removeClass('active').addClass('inactive');
+        $("#define-workstreams-button").removeClass('active').addClass('inactive');
+        $("#define-component-types-button").removeClass('inactive').addClass('active');
+    });
+
+
+    //////////////////////////////////////////////////////////////
+    // Convert text to fillable field and handle the ajax call to save the new value in the database, etc.
+    // inspiration: https://stackoverflow.com/questions/33267797
+    $('body').on('click', '[data-editable]', function(){
+
+        var $el = $(this);
+
+        var modeltype;
+        var deliverabletype_id;
+        var identifier;
+        var class_id;
+        var ajax_url = '{% url "organizations:add_type" %}';
+
+
+        if ($(this).hasClass('edit-st')) {
+            modeltype = "specificationtype";
+            identifier = "st-id";
+            modelid = $(this).attr('st-id');
+            class_id = 'edit-st';
+        } else if ($(this).hasClass('edit-ct')) {
+            modeltype = "conditiontype";
+            identifier = "ct-id";
+            modelid = $(this).attr('ct-id');
+            class_id = 'edit-ct';
+        } else if ($(this).hasClass('edit-wt')) {
+            console.log('huh?');
+            modeltype = "workstreamtype";
+            identifier = "wt-id";
+            modelid = $(this).attr('wt-id');
+            class_id = 'edit-wt';
+        } else if ($(this).hasClass('edit-tt')) {
+            modeltype = "tasktype";
+            identifier = "tt-id";
+            modelid = $(this).attr('tt-id');
+            class_id = 'edit-tt';
+        };
+
+        var $input = $('<input/>').val( $el.text() );
+        $input.width( 300 )
+
+        $el.replaceWith( $input );
+        var save = function(){
+
+            var newval = $(this).val()
+
+            var $a = $("<a/>").text( $input.val() );
+            $a.attr(identifier,modelid);
+            $a.attr("href","#");
+            $a.addClass(class_id);
+            $a.text($input.val());
+            $a.attr("data-editable","");
+
+            $input.replaceWith( $a );
+
+
+            // ajax stuff to update the database
+            $.ajax({
+                headers: {"X-CSRFToken": token},
+                type: "POST",
+                url: '{% url "organizations:update_type" %}',
+                data: {
+                    modeltype: modeltype,
+                    modelid: modelid,
+                    newval: newval
+                },
+                success: function(data) {
+                }
+            })
+        };
+        $input.one('blur', save).focus();
+    });
+
+    //////////////////////////////////////////////////////////////
+    // Add new type
+    $('body').on('click', '[add-new]', function(){
+
+        var $el = $(this);
+
+        var modeltype;
+        var identifier;
+        var modelid;
+        var deliverabletype_id;
+        var ajax_url = '{% url "organizations:add_type" %}';
+        var class_id;
+
+        if ($(this).hasClass('add-new-st')) {
+            modeltype = "specificationtype";
+            identifier = "st-id";
+            deliverabletype_id = $(this).attr('dt-id');
+            deletebutton_identifier = "remove-st";
+            class_id = 'edit-st';
+
+        } else if ($(this).hasClass('add-new-ct')) {
+            modeltype = "conditiontype";
+            identifier = "ct-id";
+            deliverabletype_id = $(this).attr('dt-id');
+            deletebutton_identifier = "remove-ct";
+            class_id = 'edit-ct';
+
+        } else if ($(this).hasClass('add-new-wt')) {
+            modeltype = "workstreamtype";
+            identifier = "wt-id";
+            deletebutton_identifier = "remove-wt";
+            class_id = 'edit-wt';
+        } else if ($(this).hasClass('add-new-tt')) {
+            modeltype = "tasktype";
+            identifier = "tt-id";
+            deletebutton_identifier = "remove-tt";
+            class_id = 'edit-tt';
+        };
+
+        var $input = $('<input/>');
+        $newfield = $input
+                        .insertBefore( $el.parents().eq(2) )
+                        .wrap( "<div class=\"row\"></div>" )
+                        .wrap( "<div class=\"col-md-12\"></div>" )
+                        .wrap( "<div class=\"float-left\"></div>" );
+
+        var $newdeleteicon = $('<a href="#" class=' + deletebutton_identifier + ' delete-item></a>');
+        $newdeleteicon.insertAfter($newfield);
+        $newdeleteicon.html('<span class="fa fa-minus-circle ml-2"></span>');
+
+        $(this).hide();
+
+        var save = function(){
+            $el.show();
+
+            var newval = $input.val();
+
+            var $a = $("<a/>").text( $input.val() );
+            $a.attr("href","#");
+            $a.addClass(class_id);
+            $a.attr("data-editable");
+            $a.text($input.val());
+
+            $input.replaceWith( $a );
+
+            // ajax stuff to update the database
+            $.ajax({
+                headers: {"X-CSRFToken": token},
+                type: "POST",
+                url: ajax_url,
+                data: {
+                    modeltype: modeltype,
+                    deliverabletype_id: deliverabletype_id,
+                    newval: newval
+                },
+                success: function(data) {
+                    $a.attr(identifier,data)
+                    $newdeleteicon.attr(identifier,data)
+                }
+            })
+        };
+        $input.one('blur', save).focus();
+    });
+
+    //////////////////////////////////////////////////////////////
+    // Delete spec type or condition type
+    $('body').on('click', '[delete-item]', function(){
+        var $el = $(this);
+
+        var modeltype;
+        var identifier;
+        var modelid;
+        var ajax_url = '{% url "organizations:delete_type" %}';
+
+        if ($(this).hasClass('remove-st')) {
+            modeltype = "specificationtype";
+            modelid = $(this).attr('st-id');
+        } else if ($(this).hasClass('remove-ct')) {
+            modeltype = "conditiontype";
+            modelid = $(this).attr('ct-id');
+        } else if ($(this).hasClass('remove-wt')) {
+            modeltype = "workstreamtype";
+            modelid = $(this).attr('wt-id');
+        } else if ($(this).hasClass('remove-tt')) {
+            modeltype = "tasktype";
+            modelid = $(this).attr('tt-id');
+        };
+
+        $el.parents().eq(2).remove();
+
+        // ajax stuff to update the database
+        $.ajax({
+            headers: {"X-CSRFToken": token},
+            type: "POST",
+            url: ajax_url,
+            data: {
+                modeltype: modeltype,
+                modelid: modelid,
+            },
+            success: function(data) {
+            }
+        })
+    });
+
+});
+
+
+
+
+
+
+
+
+</script>
+{% endblock extrascripts %}

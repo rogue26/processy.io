@@ -1,0 +1,19 @@
+{% load project_tags %}
+
+<table id="team-members-table" class="table table-striped">
+    <thead>
+    <tr>
+        <th class="text-center" scope="col">Name</th>
+        <th class="text-center" scope="col">Project availability<span class="fa fa-question-circle text-secondary ml-2" data-toggle="tooltip" data-placement="right"
+                  title="Tooltip on right"></span></th>
+        <th class="text-center" scope="col">Current tasks<span class="fa fa-question-circle text-secondary ml-2" data-toggle="tooltip" data-placement="right"
+                  title="Tooltip on right"></span></th>
+        <th class="text-center" scope="col">Configure / Delete</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for team_member in team_members %}
+        {% render_teammember_row team_member %}
+    {% endfor %}
+    </tbody>
+</table>

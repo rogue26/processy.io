@@ -1,0 +1,29 @@
+<tr>
+    <th class="text-center">{{ team_member }}</th>
+    <td class="text-center">{{ team_member.project_availability }}</td>
+    <td class="text-center">
+        {% for task in team_member.task_set.all %}
+        <div class="row">
+            {{ task }}
+        </div>
+        {% endfor %}
+    </td>
+
+    <td class="text-center">
+
+        <!-- Edit button -->
+        <button type="button" class="bs-modal btn btn-sm btn-primary asyncModal" data-form-url="{{edit_form_url}}"
+                data-data-url="{{data_url}}" data-modal-id="{{modal_id}}" data-data-element-id="{{data_element_id}}">
+            <input type="hidden" value="{{ team_member.id }}" name="team_member_id">
+            <span class="fa fa-gears"></span>
+        </button>
+
+        <!-- Delete button -->
+        <button type="button"
+                class="bs-modal delete-team-member btn btn-sm btn-secondary asyncModal"
+                data-form-url="{{delete_form_url}}" data-data-url="{{data_url}}" data-modal-id="{{modal_id}}"
+                data-data-element-id="{{data_element_id}}">
+            <span class="fa fa-trash"></span>
+        </button>
+    </td>
+</tr>

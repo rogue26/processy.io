@@ -1,0 +1,16 @@
+{% load project_tags %}
+
+<table id="projects-table" class="table table-striped">
+    <thead>
+    <tr>
+        <th class="text-center" scope="col">Project</th>
+        <th class="text-center" scope="col">Client</th>
+        <th class="text-center" scope="col">Edit</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for project in non_ref_projects %}
+        {% render_project_row project %}
+    {% endfor %}
+    </tbody>
+</table>

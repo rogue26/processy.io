@@ -1,15 +1,17 @@
 from django.urls import path
 from django.conf.urls import url
 
-from . import views
+from .views import ajax, OrganizationDashboard, ContentDashboard
 
 app_name = 'organizations'
 urlpatterns = [
-    path('add_organization_modal/<slug:redirect_location>', views.AddOrganizationModal.as_view(), name='add_organization_modal'),
-    path('add_division/', views.AddDivision.as_view(), name='add_division'),
-    path('organization/', views.OrganizationDashboard.as_view(), name='organization'),
-    url(r'update_declined_organization/', views.update_declined_organization, name="update_declined_organization"),
-    url(r'update_type/', views.update_type, name="update_type"),
-    url(r'add_type/', views.add_type, name="add_type"),
-    url(r'delete_type/', views.delete_type, name="delete_type")
+    path('organization/', OrganizationDashboard.as_view(), name='organization'),
+    url(r'update_declined_organization/', ajax.update_declined_organization, name="update_declined_organization"),
+    url(r'update_type/', ajax.update_type, name="update_type"),
+    url(r'add_type/', ajax.add_type, name="add_type"),
+    url(r'delete_type/', ajax.delete_type, name="delete_type"),
+    url(r'content_download/', ajax.content_download, name="content_download"),
+    url(r'ajax_add_organization/', ajax.ajax_add_organization, name="ajax_add_organization"),
+    url(r'ajax_add_deliverable_type/', ajax.ajax_add_deliverable_type, name="ajax_add_deliverable_type"),
+    path('content/', ContentDashboard.as_view(), name='content'),
 ]

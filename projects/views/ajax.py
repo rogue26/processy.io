@@ -1,11 +1,14 @@
 import io
-import datetime
 
+from django.http import JsonResponse
+from django.template.loader import render_to_string
 from django.http import HttpResponse
 from django.core.files.base import ContentFile
-from django.shortcuts import render
+from django.db.models import Q
+
 from docx import Document
 
+from projects.models import Workstream, Deliverable, Task, TeamMember
 from projects.models import ScopeOfWork, Project
 
 
@@ -85,3 +88,63 @@ def ajax_test(request):
         return HttpResponse(sow.file.url)
     else:
         return HttpResponse("unsuccesful")
+
+
+def update_projects_table(request):
+    data = dict()
+    if request.method == 'GET':
+        projects = Project.objects.filter(Q(team_member__user=request.user))
+        data['data'] = render_to_string(
+            'projects/tables/projects_table.html',
+            {'projects': projects},
+            request=request
+        )
+        return JsonResponse(data)
+
+
+def update_workstreams_table(request, project_id):
+    data = dict()
+    if request.method == 'GET':
+        workstreams = Workstream.objects.filter(project_id=project_id)
+        data['data'] = render_to_string(
+            'projects/tables/workstreams_table.html',
+            {'workstreams': workstreams},
+            request=request
+        )
+        return JsonResponse(data)
+
+
+def update_deliverables_table(request, project_id):
+    data = dict()
+    if request.method == 'GET':
+        deliverables = Deliverable.objects.filter(project_id=project_id)
+        data['data'] = render_to_string(
+            'projects/tables/deliverables_table.html',
+            {'deliverables': deliverables},
+            request=request
+        )
+        return JsonResponse(data)
+
+
+def update_tasks_table(request, project_id):
+    data = dict()
+    if request.method == 'GET':
+        tasks = Task.objects.filter(project_id=project_id)
+        data['data'] = render_to_string(
+            'projects/tables/tasks_table.html',
+            {'tasks': tasks},
+            request=request
+        )
+        return JsonResponse(data)
+
+
+def update_team_members_table(request, project_id):
+    data = dict()
+    if request.method == 'GET':
+        team_members = TeamMember.objects.filter(project_id=project_id)
+        data['data'] = render_to_string(
+            'projects/tables/team_members_table.html',
+            {'team_members': team_members},
+            request=request
+        )
+        return JsonResponse(data)

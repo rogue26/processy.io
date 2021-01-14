@@ -9,3 +9,9 @@
   background-color:transparent;
   border:none;
 }
+
+.btn {
+    white-space:normal !important;
+    word-wrap: break-word;
+    word-break: normal;
+}

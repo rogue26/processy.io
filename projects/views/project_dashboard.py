@@ -1,42 +1,46 @@
-import json
-from datetime import timedelta, datetime
-
-from django.db.models import Max, Q
+from django.db.models import Q
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView
+from django.urls import reverse_lazy
 
 from ..models import Project
 
-from workstreams.models import Workstream
-from deliverables.models import Deliverable
-from tasks.models import Task
-from content.models import Content
-from teams.models import TeamMember
+from projects.models import Workstream
+from projects.models import Deliverable
+from projects.models import Task
+from organizations.models import Content
+from projects.models import TeamMember
 
 
 class ProjectsDashboard(LoginRequiredMixin, TemplateView):
     template_name = "projects/project_dashboard.html"
     login_url = '/'
 
-    def get(self, request, *args, **kwargs):
-        """Handle GET requests: instantiate a blank version of the form."""
-
-        context = {}
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
 
         project = Project.objects.get(id=self.kwargs['project_id'])
 
-        workstreams = Workstream.objects.filter(project=project)
-        deliverables = Deliverable.objects.filter(project=project)
-        tasks = Task.objects.filter(project=project)
-        team_members = TeamMember.objects.filter(project=project)
-
         context['project'] = project
-        context['non_ref_projects'] = Project.objects.filter(is_the_reference_project=False, created_by=request.user)
-        context['workstreams'] = workstreams
-        context['deliverables'] = deliverables
-        context['tasks'] = tasks
-        context['organization'] = request.user.organization
-        context['team_members'] = team_members
+        context['non_ref_projects'] = Project.objects.filter(is_the_reference_project=False,
+                                                             created_by=self.request.user)
+        context['workstreams'] = Workstream.objects.filter(project=project)
+        context['deliverables'] = Deliverable.objects.filter(project=project)
+        context['tasks'] = Task.objects.filter(project=project)
+        context['organization'] = self.request.user.organization
+        context['team_members'] = TeamMember.objects.filter(project=project)
+
+        context['workstream_form_url'] = reverse_lazy('modals:add_workstream', kwargs={'project_id': project.id})
+        context['workstream_data_url'] = reverse_lazy('projects:update_workstreams_table', kwargs={'project_id': project.id})
+        context['workstream_data_element_id'] = "#workstreams-table"
+        context['deliverable_form_url'] = reverse_lazy('modals:add_deliverable', kwargs={'project_id': project.id})
+        context['deliverable_data_url'] = reverse_lazy('projects:update_deliverables_table', kwargs={'project_id': project.id})
+        context['deliverable_data_element_id'] = "#deliverables-table"
+        context['task_form_url'] = reverse_lazy('modals:add_task', kwargs={'project_id': project.id})
+        context['task_data_url'] = reverse_lazy('projects:update_tasks_table', kwargs={'project_id': project.id})
+        context['task_data_element_id'] = "#tasks-table"
+
+        context['modal_id'] = "#create-modal"
 
         # get content and related workstreams, deliverables, and tasks
 
@@ -61,4 +65,5 @@ class ProjectsDashboard(LoginRequiredMixin, TemplateView):
         content_data = zip(content_items, project_workstreams, project_deliverables, project_tasks)
 
         context['content_data'] = content_data
-        return self.render_to_response(context)
+
+        return context
