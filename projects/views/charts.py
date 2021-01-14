@@ -1,13 +1,13 @@
 import json
+from datetime import timedelta, datetime
 
 import more_itertools as mit
 
-from django.shortcuts import render
-from django.db.models import Sum
 from django.http import JsonResponse
+
 from projects.models import Project
-from datetime import timedelta, datetime
-from teams.models import TeamMember
+
+from projects.models import TeamMember
 from projects.utils import daterange
 
 

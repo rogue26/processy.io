@@ -1,0 +1,26 @@
+<table id="projects-table" class="table table-striped">
+    <thead>
+    <tr>
+        <th class="text-center" scope="col">Division</th>
+        <th class="text-center" scope="col">Client</th>
+        <th class="text-center" scope="col">Project</th>
+        <th class="text-center" scope="col">Edit</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for project in non_ref_projects %}
+    <tr>
+        <td class="text-center">{{ project.division }}</td>
+        <td class="text-center">{{ project.client }}</td>
+        <td class="text-center">{{ project.name }}</td>
+        <td class="text-center">
+            <!-- Edit project buttons -->
+            <button class="btn btn-sm btn-primary" onclick="location.href='{% url 'projects:project' project.id %}'"
+                    type="button">
+                <span class="fa fa-edit"></span>
+            </button>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>

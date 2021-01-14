@@ -23,14 +23,10 @@ import debug_toolbar
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),
-    path('', include('projects.urls')),
-    path('', include('workstreams.urls')),
-    path('', include('deliverables.urls')),
-    path('', include('tasks.urls')),
-    path('', include('users.urls')),
-    path('', include('organizations.urls')),
-    path('', include('content.urls')),
-    path('', include('teams.urls')),
+    path('', include('projects.urls', namespace='projects')),
+    path('', include('organizations.urls', namespace='organizations')),
+    path('', include('modals.urls', namespace='modals')),
+    path('', include('users.urls', namespace='users')),
     path('__debug__/', include(debug_toolbar.urls)),
 ] \
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)\

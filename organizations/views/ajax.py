@@ -1,9 +1,36 @@
 from django.http import HttpResponse
+from django.http import JsonResponse
+from django.template.loader import render_to_string
 
-from deliverables.models import SpecificationType, ConditionType
+from projects.models import SpecificationType, ConditionType
 from projects.models import Project
-from workstreams.models import WorkstreamType
-from tasks.models import TaskType
+from projects.models import WorkstreamType
+from projects.models import TaskType
+from ..models import Content
+
+
+def ajax_add_organization(request):
+    data = dict()
+    if request.method == 'GET':
+        data['data'] = ""
+        return JsonResponse(data)
+
+
+def ajax_add_deliverable_type(request):
+    # todo: add logic for updating the table of deliverable types
+    data = dict()
+    if request.method == 'GET':
+        data['data'] = ""
+        return JsonResponse(data)
+
+
+def content_download(request):
+    if request.method == 'GET':
+        content = Content.objects.get(id=request.GET['content_id'])
+        return HttpResponse(content.file.url)
+    else:
+        return HttpResponse("unsuccesful")
+
 
 def update_type(request):
     if request.method == 'POST':
@@ -108,14 +135,6 @@ def update_declined_organization(request):
         user = request.user
         user.declined_organization = True
         user.save()
-
-        ref_project = Project()
-        ref_project.name = "Reference project"
-        ref_project.description = "Placeholder project for holding an organization's default workstreams."
-        ref_project.client = user.email
-        ref_project.is_the_reference_project = True
-
-        ref_project.save()
 
         message = 'update successful'
     else:
