@@ -18,10 +18,9 @@ class DeliverableType(models.Model):
 
 
 class Deliverable(models.Model):
-    description = models.CharField(max_length=50, null=True, blank=True)
-    category = models.ForeignKey(DeliverableType, on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
-    scope = models.CharField(max_length=50, blank=True)
+    description = models.TextField(max_length=500, null=True, blank=True)
+    category = models.ForeignKey(DeliverableType, on_delete=models.CASCADE)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     workstream = models.ForeignKey(Workstream, on_delete=models.CASCADE, null=True, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True, null=True)

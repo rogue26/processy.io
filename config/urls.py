@@ -27,6 +27,7 @@ urlpatterns = [
     path('', include('organizations.urls', namespace='organizations')),
     path('', include('modals.urls', namespace='modals')),
     path('', include('users.urls', namespace='users')),
+    path('tools/RACI/', include('RACI.urls', namespace='RACI')),
     path('__debug__/', include(debug_toolbar.urls)),
 ] \
     + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)\

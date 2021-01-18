@@ -1,0 +1,62 @@
+<th class="text-center" scope="col">Activity</th>
+<th class="text-center" scope="col">Responsible</th>
+<th class="text-center" scope="col">Accountable</th>
+<th class="text-center" scope="col">Consulted</th>
+<th class="text-center" scope="col">Informed</th>
+
+
+<tr>
+    <td class="text-center">{{ Activity }}</td>
+    <td class="text-center">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group" id="activity-r-{{activity.id}}-group" none="">
+                    <label for="activity-r-{{activity.id}}">Internal or external client?</label>
+                    <select name="internal" class="form-control" id="activity-r-{{activity.id}}">
+                        <option value="internal" selected="">Internal</option>
+                        <option value="external">External</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </td>
+    <td class="text-center">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group" id="activity-a-{{activity.id}}-group" none="">
+                    <label for="activity-a-{{activity.id}}">Internal or external client?</label>
+                    <select name="internal" class="form-control" id="activity-a-{{activity.id}}">
+                        <option value="internal" selected="">Internal</option>
+                        <option value="external">External</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </td>
+    <td class="text-center">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group" id="activity-c-{{activity.id}}-group" none="">
+                    <label for="activity-c-{{activity.id}}">Internal or external client?</label>
+                    <select name="internal" class="form-control" id="activity-c-{{activity.id}}">
+                        <option value="internal" selected="">Internal</option>
+                        <option value="external">External</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </td>
+    <td class="text-center">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group" id="activity-i-{{activity.id}}-group" none="">
+                    <label for="activity-i-{{activity.id}}">Internal or external client?</label>
+                    <select name="internal" class="form-control" id="activity-i-{{activity.id}}">
+                        <option value="internal" selected="">Internal</option>
+                        <option value="external">External</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </td>
+</tr>

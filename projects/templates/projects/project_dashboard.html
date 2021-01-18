@@ -4,10 +4,10 @@
 
 {% load widget_tweaks %}
 
-
-<div class="container-fluid">
-    <div class="row mt-4 mb-3">
-        <div class="col-md-3 pl-5">
+<div class="d-flex" id="wrapper">
+    <!-- Sidebar -->
+    <div class="bg-light border-right" id="sidebar-wrapper">
+        <div class="sidebar-heading">
             <h4 class="mb-3">Project info</h4>
             <div>
                 <h6><strong>Project name:</strong> {{project.name}}</h6>
@@ -18,215 +18,210 @@
             <div>
                 <h6><strong>Division:</strong> {{project.division}}</h6>
             </div>
-            <div class="row mb-3 mt-3">
-                <div class="col-md-12">
-                    <button id="configure" class="btn btn-secondary text-left btn-block active" type="button"
-                            name="button"
-                            style="active">
-                        <span class="fa fa-gear mr-2"></span>Configure project
-                    </button>
-                </div>
-            </div>
-            <div class="row mb-3">
-                <div class="col-md-12">
-                    <div class="dropdown">
-                        <button id="sow" class="btn btn-secondary text-left btn-block dropdown-toggle" type="button"
-                                name="button"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <span class="fa fa-file-text mr-2"></span>Export SOW
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" href="#">Configure SOW</a>
-                            <a id="output-sow" class="dropdown-item" href="#">Export SOW</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row mb-3">
-                <div class="col-md-12">
-                    <div class="dropdown">
-                        <button id="content" class="btn btn-secondary text-left btn-block" type="button" name="button">
-                            <span class="fa fa-lightbulb mr-2"></span>Knowledge management
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="row mb-3">
-                <div class="col-md-12">
-                    <button id="manage-team" class="btn btn-secondary text-left btn-block" type="button" name="button">
-                        <span class="fa fa-users mr-2"></span>Manage team
-                    </button>
-                </div>
-            </div>
-            <div class="row mb-3">
-                <div class="col-md-12">
-                    <button id="view-timeline" class="btn btn-secondary text-left btn-block" type="button"
-                            name="button">
-                        <span class="fa fa-calendar mr-2"></span>Timeline and utilization
-                    </button>
-                </div>
-            </div>
         </div>
-        <div class="col-md-9">
-            <div id="configure-project-selector">
-                <div class="btn-group d-flex btn-group-toggle pl-5 pr-5 mx-auto" data-toggle="buttons">
-                    <label class="btn btn-secondary active w-100">
-                        <input type="radio" name="options" id="option1" autocomplete="off" value="workstreams">
-                        Workstreams
-                    </label>
-                    <label class="btn btn-secondary w-100">
-                        <input type="radio" name="options" id="option2" autocomplete="off" value="deliverables">
-                        Deliverables
-                    </label>
-                    <label class="btn btn-secondary w-100">
-                        <input type="radio" name="options" id="option3" autocomplete="off" value="tasks">
-                        Tasks
-                    </label>
-                </div>
-            </div>
-            <div id="configure-project-table" class="mt-3">
-                <div id="workstreams" class="row">
-                    <div class="col-md-12">
-                        <div class="row mb-3 pl-3">
-                            <h4 class="my-auto">Project workstreams</h4>
-                            <button id="add-workstream" class="btn btn-secondary ml-3 asyncModal" type="button"
-                                    name="button" data-form-url="{{workstream_form_url}}"
-                                    data-data-url="{{workstream_data_url}}"
-                                    data-modal-id="{{modal_id}}" data-data-element-id="{{workstream_data_element_id}}">
-                                <span class="fa fa-plus mr-2"></span>Add new workstream
-                            </button>
-                        </div>
-                        <div id="workstreams-table">
-                            {% if workstreams %}
-                            {% include "projects/tables/workstreams_table.html" %}
-                            {% else %}
-                            <p class="no-projects text-primary">No workstreams added yet.</p>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-                <div id="deliverables" class="row" style="display: none;">
-                    <div class="col-md-12">
-                        <div class="row mb-3 pl-3">
-                            <h4 class="my-auto">Project deliverables</h4>
-                            <button id="add-deliverable" class="btn btn-secondary ml-3 asyncModal" type="button"
-                                    name="button" data-form-url="{{deliverable_form_url}}"
-                                    data-data-url="{{deliverable_data_url}}"
-                                    data-modal-id="{{modal_id}}" data-data-element-id="{{deliverable_data_element_id}}">
-                                <span class="fa fa-plus mr-2"></span>Add new deliverables
-                            </button>
-                        </div>
-                        <div id="deliverables-table">
-                            {% if deliverables %}
-                            {% include "projects/tables/deliverables_table.html" %}
-                            {% else %}
-                            <p class="no-projects text-primary">No deliverables added yet.</p>
-                            {% endif %}
-                        </div>
-
-
-                    </div>
-                </div>
-                <div id="tasks" class="row" style="display: none;">
-                    <div class="col-md-12">
-                        <div class="row mb-3 pl-3">
-                            <h4 class="my-auto">Project tasks</h4>
-                            <button id="add-task" class="btn btn-secondary ml-3 asyncModal" type="button" name="button"
-                                    data-form-url="{{task_form_url}}" data-data-url="{{task_data_url}}"
-                                    data-modal-id="{{modal_id}}" data-data-element-id="{{task_data_element_id}}">
-                                <span class="fa fa-plus mr-2"></span>Add new tasks
-                            </button>
-                        </div>
-                        <div id="tasks-table">
-                            {% if tasks %}
-                            {% include "projects/tables/tasks_table.html" %}
-                            {% else %}
-                            <p class="no-projects text-primary">No tasks added yet.</p>
-                            {% endif %}
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-            <div id="project-content" style="display: none;">
-                <h4 class="mb-3">Project content</h4>
-                {% if content_data %}
-                {% include "projects/tables/project_content_table.html" %}
-                {% else %}
-                <p class="no-projects text-primary">No content found for this project.</p>
-                {% endif %}
-            </div>
-            <div id="team-members" style="display: none;">
-                <div class="row mb-3 pl-3">
-                    <h4 class="mb-3 my-auto">Project team</h4>
-                    <button id="add-team-member" class="btn btn-secondary ml-3 " type="button"
-                            name="button">
-                        <span class="fa fa-plus mr-2"></span>Add team member
-                    </button>
-                </div>
-                <div id="team-members-table">
-                    {% if team_members %}
-                    {% include "projects/tables/team-members-table.html" %}
-                    {% else %}
-                    <p class="no-projects text-primary">No team members created for this project yet.</p>
-                    {% endif %}
-                </div>
-            </div>
-            <div id="project-timeline-utilization" style="display: none;">
-                <div class="btn-group d-flex btn-group-toggle pl-5 pr-5 mx-auto" data-toggle="buttons">
-                    <label class="btn btn-secondary active w-100">
-                        <input type="radio" name="timeline-utilization-options" id="timeline-util-option1"
-                               autocomplete="off"
-                               value="timeline">
-                        Timeline
-                    </label>
-                    <label class="btn btn-secondary w-100">
-                        <input type="radio" name="timeline-utilization-options" id="timeline-util-option2"
-                               autocomplete="off"
-                               value="utilization">
-                        Utilization
-                    </label>
-                </div>
-                <div id="timeline">
-
-                    <div class="row mb-3 mt-3 pl-3">
-                        <h4 id="timeline-header" class="my-auto">Project timeline</h4>
-                        <button class="btn btn-secondary ml-3 " type="button"
-                                name="button">
-                            <span class="fa fa-calendar-check mr-2"></span>Apply resource constraints
-                        </button>
-                    </div>
-
-                    <div class="gantt-target"></div>
-
-                </div>
-                <div id="utilization" style="display: none;" data-url="{% url 'projects:utilization_chart' %}">
-
-                    <div class="row mb-3 mt-3 pl-3">
-                        <h4 id="utilization-header" class="my-auto">Team utilization</h4>
-                        <button class="btn btn-secondary ml-3 " type="button"
-                                name="button">
-                            <span class="fa fa-calendar-check mr-2"></span>Apply resource constraints
-                        </button>
-                    </div>
-
-                    {% for tm in project.teammember_set.all%}
-                    <div class="row mb-3">
-                        <div class="col-md-2 pl-3 my-auto">
-                            {{tm}}
-                        </div>
-                        <div class="col-md-10">
-                            <div id="container" style="height:20vh; width:100%">
-                                <canvas id="utilization_chart_{{tm.id}}" class="team-member-chart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-
-                    {% endfor%}
+        <div class="list-group list-group-flush">
+            <a id="configure" href="#" class="list-group-item list-group-item-action bg-light showDiv" target="configure-project">
+                <span class="fa fa-cog mr-2"></span>Configure project
+            </a>
+            <a id="output-sow" href="#" class="list-group-item list-group-item-action bg-light showDiv">
+                <span class="fa fa-file-alt mr-2"></span>Export SOW
+            </a>
+            <a id="content" href="#" class="list-group-item list-group-item-action bg-light showDiv" target="knowledge-mgt">
+                <span class="fa fa-lightbulb mr-2"></span>Knowledge management
+            </a>
+            <a id="manage-team" href="#" class="list-group-item list-group-item-action bg-light showDiv" target="team-members">
+                <span class="fa fa-users mr-2"></span>Manage team
+            </a>
+            <a id="view-timeline" href="#" class="list-group-item list-group-item-action bg-light showDiv" target="project-timeline-utilization">
+                <span class="fa fa-calendar mr-2"></span>Timeline & utilization
+            </a>
+            <a id="tools-button" class="list-group-item list-group-item-action bg-light dropdown-toggle" role="button"
+               data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                <span class="fa fa-tools mr-2"></span>Tools
+            </a>
+            <div class="collapse" id="collapseExample">
+                <div class="well" id="nav-well">
+                    <ul style="list-style: none">
+                        <li>
+                            <a id="RACI-button" href="#" class="showDiv" target="RACI-tool"><span class="fa fa-people-arrows mr-2"></span>RACI</a>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Page Content -->
+    <div id="page-content-wrapper">
+        <div class="container-fluid">
+            <div class="row mt-4 mb-3">
+                <div class="col-md-12">
+                    <div id="configure-project" class="targetDiv">
+                        <div id="configure-project-selector">
+                            <div class="btn-group d-flex btn-group-toggle pl-5 pr-5 mx-auto" data-toggle="buttons">
+                                <label class="btn btn-secondary active w-100 showSubDiv" target="workstreams">
+                                    <input type="radio">
+                                    Workstreams
+                                </label>
+                                <label class="btn btn-secondary w-100 showSubDiv" target="deliverables">
+                                    <input type="radio">
+                                    Deliverables
+                                </label>
+                                <label class="btn btn-secondary w-100 showSubDiv" target="tasks">
+                                    <input type="radio">
+                                    Tasks
+                                </label>
+                            </div>
+                        </div>
+                        <div id="configure-project-table" class="mt-3">
+                            <div id="workstreams" class="row targetSubDiv firstSubDiv">
+                                <div class="col-md-12">
+                                    <div class="row mb-3 pl-3">
+                                        <h4 class="my-auto">Project workstreams</h4>
+                                        <button id="add-workstream" class="btn btn-secondary ml-3 asyncModal" type="button"
+                                                name="button" data-form-url="{{workstream_form_url}}"
+                                                data-data-url="{{workstream_data_url}}"
+                                                data-modal-id="{{modal_id}}"
+                                                data-data-element-id="{{workstream_data_element_id}}">
+                                            <span class="fa fa-plus mr-2"></span>Add new workstream
+                                        </button>
+                                    </div>
+                                    <div id="workstreams-table">
+                                        {% if workstreams %}
+                                        {% include "projects/tables/workstreams_table.html" %}
+                                        {% else %}
+                                        <p class="no-projects text-primary">No workstreams added yet.</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="deliverables" class="row targetSubDiv" style="display: none;">
+                                <div class="col-md-12">
+                                    <div class="row mb-3 pl-3">
+                                        <h4 class="my-auto">Project deliverables</h4>
+                                        <button id="add-deliverable" class="btn btn-secondary ml-3 asyncModal" type="button"
+                                                name="button" data-form-url="{{deliverable_form_url}}"
+                                                data-data-url="{{deliverable_data_url}}"
+                                                data-modal-id="{{modal_id}}"
+                                                data-data-element-id="{{deliverable_data_element_id}}">
+                                            <span class="fa fa-plus mr-2"></span>Add new deliverables
+                                        </button>
+                                    </div>
+                                    <div id="deliverables-table">
+                                        {% if deliverables %}
+                                        {% include "projects/tables/deliverables_table.html" %}
+                                        {% else %}
+                                        <p class="no-projects text-primary">No deliverables added yet.</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="tasks" class="row targetSubDiv" style="display: none;">
+                                <div class="col-md-12">
+                                    <div class="row mb-3 pl-3">
+                                        <h4 class="my-auto">Project tasks</h4>
+                                        <button id="add-task" class="btn btn-secondary ml-3 asyncModal" type="button"
+                                                name="button"
+                                                data-form-url="{{task_form_url}}" data-data-url="{{task_data_url}}"
+                                                data-modal-id="{{modal_id}}"
+                                                data-data-element-id="{{task_data_element_id}}">
+                                            <span class="fa fa-plus mr-2"></span>Add new tasks
+                                        </button>
+                                    </div>
+                                    <div id="tasks-table">
+                                        {% if tasks %}
+                                        {% include "projects/tables/tasks_table.html" %}
+                                        {% else %}
+                                        <p class="no-projects text-primary">No tasks added yet.</p>
+                                        {% endif %}
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="knowledge-mgt" class="targetDiv" style="display: none;">
+                        <h4 class="mb-3">Project content</h4>
+                        {% if content_data %}
+                        {% include "projects/tables/project_content_table.html" %}
+                        {% else %}
+                        <p class="no-projects text-primary">No content found for this project.</p>
+                        {% endif %}
+                    </div>
+                    <div id="team-members" class="targetDiv" style="display: none;">
+                        <div class="row mb-3 pl-3">
+                            <h4 class="mb-3 my-auto">Project team</h4>
+                            <button id="add-team-member" class="btn btn-secondary ml-3 " type="button"
+                                    name="button">
+                                <span class="fa fa-plus mr-2"></span>Add team member
+                            </button>
+                        </div>
+                        <div id="team-members-table">
+                            {% if team_members %}
+                            {% include "projects/tables/team-members-table.html" %}
+                            {% else %}
+                            <p class="no-projects text-primary">No team members created for this project yet.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div id="project-timeline-utilization" class="targetDiv" style="display: none;">
+                        <div class="btn-group d-flex btn-group-toggle pl-5 pr-5 mx-auto" data-toggle="buttons">
+                            <label class="btn btn-secondary active w-100 showSubDiv" target="timeline">
+                                <input type="radio" autocomplete="off">
+                                Timeline
+                            </label>
+                            <label class="btn btn-secondary w-100 showSubDiv" target="utilization">
+                                <input type="radio" autocomplete="off">
+                                Utilization
+                            </label>
+                        </div>
+                        <div id="timeline" class="targetSubDiv firstSubDiv">
+
+                            <div class="row mb-3 mt-3 pl-3">
+                                <h4 id="timeline-header" class="my-auto">Project timeline</h4>
+                                <button class="btn btn-secondary ml-3 " type="button"
+                                        name="button">
+                                    <span class="fa fa-calendar-check mr-2"></span>Apply resource constraints
+                                </button>
+                            </div>
+
+                            <div class="gantt-target"></div>
+
+                        </div>
+                        <div id="utilization" class="targetSubDiv" style="display: none;" data-url="{% url 'projects:utilization_chart' %}">
+
+                            <div class="row mb-3 mt-3 pl-3">
+                                <h4 id="utilization-header" class="my-auto">Team utilization</h4>
+                                <button class="btn btn-secondary ml-3 " type="button"
+                                        name="button">
+                                    <span class="fa fa-calendar-check mr-2"></span>Apply resource constraints
+                                </button>
+                            </div>
+
+                            {% for tm in project.teammember_set.all%}
+                            <div class="row mb-3">
+                                <div class="col-md-2 pl-3 my-auto">
+                                    {{tm}}
+                                </div>
+                                <div class="col-md-10">
+                                    <div id="container" style="height:20vh; width:100%">
+                                        <canvas id="utilization_chart_{{tm.id}}" class="team-member-chart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {% endfor%}
+                        </div>
+                    </div>
+                    <div id="RACI-tool" class="targetDiv" style="display:none;">
+                        {% include "RACI/RACI.html" %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /#page-content-wrapper -->
+
 </div>
 
 
@@ -238,101 +233,14 @@
 <script type="text/javascript">
 
 $(function() {
-
+    var token = '{{csrf_token}}';
     var project_id = {{project.id}};
 
-
-    $('input[type=radio][name="options"]').change(function() {
-        if ($(this).val() == "workstreams") {
-            $('#workstreams').show()
-            $('#deliverables').hide()
-            $('#tasks').hide()
-        } else if ($(this).val() == "deliverables") {
-            $('#workstreams').hide()
-            $('#deliverables').show()
-            $('#tasks').hide()
-        } else if ($(this).val() == "tasks") {
-            $('#workstreams').hide()
-            $('#deliverables').hide()
-            $('#tasks').show()
-        }
-    });
-
-    $('input[type=radio][name="timeline-utilization-options"]').change(function() {
-
-        if ($(this).val() == "timeline") {
-            $('#timeline').show()
-            $('#utilization').hide()
-        } else if ($(this).val() == "utilization") {
-            $('#timeline').hide()
-            $('#utilization').show()
-        }
-
-    });
-
-    $("#configure").click(function() {
-        $("#configure-project-selector").show();
-        $("#configure-project-table").show();
-        $("#project-content").hide();
-        $("#team-members").hide();
-        $("#timeline-header").hide();
-        $("#project-timeline-utilization").hide();
-
-        $("#configure").removeClass('inactive').addClass('active');
-        $("#sow").removeClass('active').addClass('inactive');
-        $("#content").removeClass('active').addClass('inactive');
-        $("#manage-team").removeClass('active').addClass('inactive');
-        $("#view-timeline").removeClass('active').addClass('inactive');
-    });
-
-    $("#content").click(function() {
-        $("#configure-project-selector").hide();
-        $("#configure-project-table").hide();
-        $("#project-content").show();
-        $("#team-members").hide();
-        $("#timeline-header").hide();
-        $("#project-timeline-utilization").hide();
-
-        $("#configure").removeClass('active').addClass('inactive');
-        $("#sow").removeClass('active').addClass('inactive');
-        $("#content").removeClass('inactive').addClass('active');
-        $("#manage-team").removeClass('active').addClass('inactive');
-        $("#view-timeline").removeClass('active').addClass('inactive');
-    });
-
-    $("#manage-team").click(function() {
-        $("#configure-project-selector").hide();
-        $("#configure-project-table").hide();
-        $("#project-content").hide();
-        $("#team-members").show();
-        $("#timeline-header").hide();
-        $("#project-timeline-utilization").hide();
-
-        $("#configure").removeClass('active').addClass('inactive');
-        $("#sow").removeClass('active').addClass('inactive');
-        $("#content").removeClass('active').addClass('inactive');
-        $("#manage-team").removeClass('inactive').addClass('active');
-        $("#view-timeline").removeClass('active').addClass('inactive');
-    });
-
-    $("#view-timeline").click(function() {
-        $("#configure-project-selector").hide();
-        $("#configure-project-table").hide();
-        $("#project-content").hide();
-        $("#team-members").hide();
-        $("#timeline-header").show();
-        $("#project-timeline-utilization").show();
-
-        $("#configure").removeClass('active').addClass('inactive');
-        $("#sow").removeClass('active').addClass('inactive');
-        $("#content").removeClass('active').addClass('inactive');
-        $("#manage-team").removeClass('active').addClass('inactive');
-        $("#view-timeline").removeClass('inactive').addClass('active');
-    });
+    $('body').on('click', '[add-new-below]', {token: token}, addNewTypeBelow);
 
     $('#output-sow').click(function() {
-
-        $('.fa-file-text').removeClass('fa-file-text').addClass('fa-spinner').addClass('fa-spin');
+        console.log('am I here?');
+        $('.fa-file-alt').removeClass('fa-file-alt').addClass('fa-spinner').addClass('fa-spin');
 
         $.ajax({
             type: "GET",
@@ -347,7 +255,7 @@ $(function() {
                 a.click();
                 a.remove();
                 window.URL.revokeObjectURL(url);
-                $('.fa-spinner').removeClass('fa-spinner').removeClass('fa-spin').addClass('fa-file-text')
+                $('.fa-spinner').removeClass('fa-spinner').removeClass('fa-spin').addClass('fa-file-alt')
             }
         })
     });
@@ -375,84 +283,85 @@ $(function() {
         })
     });
 
-    $.ajax({
-        url: $('#utilization').data("url"),
-        data: {project_id: project_id},
-        success: function(data) {
+<!--    $.ajax({-->
+<!--        url: $('#utilization').data("url"),-->
+<!--        data: {project_id: project_id},-->
+<!--        success: function(data) {-->
 
-            var json = JSON.parse(data);
+<!--            var json = JSON.parse(data);-->
 
-            var gantt_data = json.gantt_data
-            var utilization_data = json.utilization_schedule
+<!--            var gantt_data = json.gantt_data-->
+<!--            var utilization_data = json.utilization_schedule-->
 
-            var gantt_chart = new Gantt(".gantt-target", gantt_data, {
-                on_click: function(task) {
-                    console.log(task);
-                },
-                on_date_change: function(task, start, end) {
-                    console.log(task, start, end);
-                },
-                on_progress_change: function(task, progress) {
-                    console.log(task, progress);
-                },
-                on_view_change: function(mode) {
-                    console.log(mode);
-                },
-                view_mode: 'Day',
-                language: 'en'
-            });
+<!--            var gantt_chart = new Gantt(".gantt-target", gantt_data, {-->
+<!--                on_click: function(task) {-->
+<!--                    console.log(task);-->
+<!--                },-->
+<!--                on_date_change: function(task, start, end) {-->
+<!--                    console.log(task, start, end);-->
+<!--                },-->
+<!--                on_progress_change: function(task, progress) {-->
+<!--                    console.log(task, progress);-->
+<!--                },-->
+<!--                on_view_change: function(mode) {-->
+<!--                    console.log(mode);-->
+<!--                },-->
+<!--                view_mode: 'Day',-->
+<!--                language: 'en'-->
+<!--            });-->
 
 
-            var ctx_array = []
-            $('.team-member-chart').each(function(i, item){
+<!--            var ctx_array = []-->
+<!--            $('.team-member-chart').each(function(i, item){-->
 
-                ctx_array[i] = $(this)[0].getContext("2d");
+<!--                ctx_array[i] = $(this)[0].getContext("2d");-->
 
-                new Chart(ctx_array[i], {
-                    type: 'line',
-                    data: {
-                        labels: utilization_data[i].labels,
-                        datasets: [{
-                            steppedLine: true,
-                            label: 'Utilization',
-                            backgroundColor: '#c0d0dc',
-                            data: utilization_data[i].data,
-                        }]
-                    },
-                    options: {
-                        elements: {
-                            point:{
-                                radius: 0
-                            }
-                        },
-                        legend: {
-                            display: false
-                        },
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            yAxes: [{
-                                ticks: {
-                                    beginAtZero: true,
-                                    max:3,
-                                    stepSize: 0.5
-                                }
-                            }],
-                            xAxes: [{
-                                type: 'time',
-                                time: {
-                                    unit: 'day'
-                                }
+<!--                new Chart(ctx_array[i], {-->
+<!--                    type: 'line',-->
+<!--                    data: {-->
+<!--                        labels: utilization_data[i].labels,-->
+<!--                        datasets: [{-->
+<!--                            steppedLine: true,-->
+<!--                            label: 'Utilization',-->
+<!--                            backgroundColor: '#c0d0dc',-->
+<!--                            data: utilization_data[i].data,-->
+<!--                        }]-->
+<!--                    },-->
+<!--                    options: {-->
+<!--                        elements: {-->
+<!--                            point:{-->
+<!--                                radius: 0-->
+<!--                            }-->
+<!--                        },-->
+<!--                        legend: {-->
+<!--                            display: false-->
+<!--                        },-->
+<!--                        responsive: true,-->
+<!--                        maintainAspectRatio: false,-->
+<!--                        scales: {-->
+<!--                            yAxes: [{-->
+<!--                                ticks: {-->
+<!--                                    beginAtZero: true,-->
+<!--                                    max:3,-->
+<!--                                    stepSize: 0.5-->
+<!--                                }-->
+<!--                            }],-->
+<!--                            xAxes: [{-->
+<!--                                type: 'time',-->
+<!--                                time: {-->
+<!--                                    unit: 'day'-->
+<!--                                }-->
 
-                            }],
+<!--                            }],-->
 
-                        }
-                    }
-                });
-            });
-        }
-    });
+<!--                        }-->
+<!--                    }-->
+<!--                });-->
+<!--            });-->
+<!--        }-->
+<!--    });-->
 });
+
 
 </script>
 

@@ -15,20 +15,25 @@ from projects.models import (
     DeliverableType,
     Task,
     TaskType,
-    TeamMember
+    TeamMember,
+    Resource
 )
 from projects.forms import (
     ProjectModalForm,
+    AddWorkstreamTypeForm,
     WorkstreamTypeForm,
+    WorkstreamForm,
     DeliverableTypeForm,
     AddDeliverableTypeForm,
+    DeliverableForm,
     TaskTypeForm,
-    TeamMemberForm
+    TeamMemberForm,
+    TaskForm
 )
 from organizations.forms import ContentForm, DivisionForm, OrganizationModalForm
 
 
-class AddOrganization(BSModalFormView):
+class AddOrganization(BSModalCreateView):
     template_name = 'modals/add_edit.html'
     form_class = OrganizationModalForm
     success_url = "/"  # doesn't matter, because we're going to submit asyncronously and not use success_url
@@ -54,17 +59,15 @@ class AddProject(BSModalFormView):
     success_url = "/"  # doesn't matter, because we're going to submit asyncronously and not use success_url
 
     def get_form(self, form_class=None):
-        form = super(AddProject, self).get_form(form_class=form_class)
+        form = super().get_form(form_class=form_class)
         form.fields['client'].widget.attrs.update({'class': 'initial-hide'})
-        # current_id = form.fields['client'].widget.attrs['id']
         form.fields['internal'].widget.attrs.update({'id': 'id_internal_modal'})
 
-        organization = self.request.user.organization
-        if organization is None:
-            del form.fields['division']
-        else:
-            if not organization.division_set.all().exists():
+        if self.request.user.organization:
+            if not self.request.user.organization.division_set.all().exists():
                 del form.fields['division']
+        else:
+            del form.fields['division']
 
         return form
 
@@ -79,15 +82,113 @@ class AddProject(BSModalFormView):
         return super().form_valid(form)
 
 
-class AddWorkstream(BSModalFormView):
-    template_name = 'modals/add_edit.html'
-    form_class = WorkstreamTypeForm
-    success_url = "/"  # doesn't matter, because we're going to submit asyncronously and not use success_url
+# class AddWorkstream(BSModalFormView):
+#     template_name = 'modals/add_edit.html'
+#     form_class = WorkstreamTypeForm
+#     success_url = "/"  # doesn't matter, because we're going to submit asyncronously and not use success_url
+#
+#     # def get_form(self, form_class=None):
+#     #     form = super(AddWorkstream, self).get_form()
+#     #     form.fields['deliverables'].queryset = Deliverable.objects.filter(project_id=self.kwargs['project_id'])
+#     # return form
+#
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['project'] = Project.objects.get(id=self.kwargs['project_id'])
+#         context['header_text'] = "Add new workstream"
+#         context['button_text'] = "Save workstream"
+#         return context
+#
+#     # def get_form_kwargs(self):
+#     #     kwargs = super().get_form_kwargs()
+#     #     kwargs.update({'project_id': self.kwargs['project_id']})
+#     #     return kwargs
+#
+#     def form_valid(self, form):
+#         # note, this must be done in the view rather than the form because workstreams, deliverables, and tasks are
+#         # not created using a ModelForm. Types are selected (potentially multiple at once) and then the workstream,
+#         # deliverable, and task objects are created in a loop
+#         if not self.request.is_ajax() or self.request.POST.get('asyncUpdate') == 'True':
+#             types_to_add = self.request.POST.getlist('workstream_type')
+#
+#             project = Project.objects.get(id=self.kwargs['project_id'])
+#             for type_num in types_to_add:
+#                 workstream_type = WorkstreamType.objects.get(id=int(type_num))
+#
+#                 # if created for the reference project, then set is_the_default_workstream to True
+#                 if project.is_the_reference_project:
+#                     new_ws = Workstream.objects.create(name=workstream_type.name, description=workstream_type.name,
+#                                                        category_id=int(type_num),
+#                                                        project_id=self.kwargs['project_id'],
+#                                                        is_the_reference_workstream=True)
+#                     new_ws.save()
+#                 else:
+#                     # attempt to copy the reference workstream for this workstream category
+#                     try:
+#                         new_ws = Workstream.objects.filter(is_the_reference_workstream=True,
+#                                                            category=workstream_type).first()
+#                         reference_ws_id = new_ws.id
+#                         old_deliverables = Deliverable.objects.filter(workstream_id=new_ws.id)
+#
+#                         new_ws.pk = None
+#                         new_ws.project = project
+#                         new_ws.is_the_reference_workstream = False
+#                         new_ws.save()
+#
+#                         new_ws.copied_from_id = reference_ws_id
+#                         new_ws.save()
+#
+#                         # now copy over all deliverables associated with the reference workstream
+#                         for old_deliverable in old_deliverables:
+#                             old_tasks = Task.objects.filter(deliverable_id=old_deliverable.id)
+#                             reference_deliverable_id = old_deliverable.id
+#                             old_deliverable.pk = None
+#                             old_deliverable.project = project
+#                             old_deliverable.is_the_reference_deliverable = False
+#                             old_deliverable.workstream = new_ws
+#                             old_deliverable.save()
+#                             old_deliverable.copied_from_id = reference_deliverable_id
+#                             old_deliverable.save()
+#
+#                             # copy over all tasks associated with this deliverable in the reference configuration
+#                             for old_task in old_tasks:
+#                                 reference_task_id = old_task.id
+#                                 old_task.pk = None
+#                                 old_task.project = project
+#                                 old_task.is_the_reference_task = False
+#                                 old_task.deliverable = old_deliverable
+#                                 old_task.save()
+#                                 old_task.copied_from_id = reference_task_id
+#                                 old_task.save()
+#                     except:
+#                         new_ws = Workstream.objects.create(name=workstream_type.name, description=workstream_type.name,
+#                                                            category_id=int(type_num),
+#                                                            project_id=self.kwargs['project_id'],
+#                                                            is_the_reference_workstream=False)
+#                         new_ws.save()
+#         else:
+#             pass
+#         return super().form_valid(form)
 
-    # def get_form(self, form_class=None):
-    #     form = super(AddWorkstream, self).get_form()
-    #     form.fields['deliverables'].queryset = Deliverable.objects.filter(project_id=self.kwargs['project_id'])
-    # return form
+
+class AddWorkstream(BSModalCreateView):
+    template_name = 'modals/add_edit.html'
+    form_class = WorkstreamForm
+    success_url = '/'
+
+    def get_form(self, form_class=None):
+        form = super().get_form()
+        form.fields['category'].queryset = WorkstreamType.objects.filter(organization=self.request.user.organization)
+
+        form.fields['category'].widget.attrs.update({'class': 'modelchoicefield'})
+
+        deliverables = Deliverable.objects.filter(project_id=self.kwargs['project_id'])
+        if deliverables:
+            form.fields['deliverables'].queryset = deliverables
+            form.fields['deliverables'].widget.attrs.update({'class': 'modelchoicefield'})
+        else:
+            del form.fields['deliverables']
+        return form
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -96,88 +197,39 @@ class AddWorkstream(BSModalFormView):
         context['button_text'] = "Save workstream"
         return context
 
-    # def get_form_kwargs(self):
-    #     kwargs = super().get_form_kwargs()
-    #     kwargs.update({'project_id': self.kwargs['project_id']})
-    #     return kwargs
-
     def form_valid(self, form):
-        # note, this must be done in the view rather than the form because workstreams, deliverables, and tasks are
-        # not created using a ModelForm. Types are selected (potentially multiple at once) and then the workstream,
-        # deliverable, and task objects are created in a loop
         if not self.request.is_ajax() or self.request.POST.get('asyncUpdate') == 'True':
-            types_to_add = self.request.POST.getlist('workstream_type')
-
-            project = Project.objects.get(id=self.kwargs['project_id'])
-            for type_num in types_to_add:
-                workstream_type = WorkstreamType.objects.get(id=int(type_num))
-
-                # if created for the reference project, then set is_the_default_workstream to True
-                if project.is_the_reference_project:
-                    new_ws = Workstream.objects.create(name=workstream_type.name, description=workstream_type.name,
-                                                       category_id=int(type_num),
-                                                       project_id=self.kwargs['project_id'],
-                                                       is_the_reference_workstream=True)
-                    new_ws.save()
-                else:
-                    # attempt to copy the reference workstream for this workstream category
-                    try:
-                        new_ws = Workstream.objects.filter(is_the_reference_workstream=True,
-                                                           category=workstream_type).first()
-                        reference_ws_id = new_ws.id
-                        old_deliverables = Deliverable.objects.filter(workstream_id=new_ws.id)
-
-                        new_ws.pk = None
-                        new_ws.project = project
-                        new_ws.is_the_reference_workstream = False
-                        new_ws.save()
-
-                        new_ws.copied_from_id = reference_ws_id
-                        new_ws.save()
-
-                        # now copy over all deliverables associated with the reference workstream
-                        for old_deliverable in old_deliverables:
-                            old_tasks = Task.objects.filter(deliverable_id=old_deliverable.id)
-                            reference_deliverable_id = old_deliverable.id
-                            old_deliverable.pk = None
-                            old_deliverable.project = project
-                            old_deliverable.is_the_reference_deliverable = False
-                            old_deliverable.workstream = new_ws
-                            old_deliverable.save()
-                            old_deliverable.copied_from_id = reference_deliverable_id
-                            old_deliverable.save()
-
-                            # copy over all tasks associated with this deliverable in the reference configuration
-                            for old_task in old_tasks:
-                                reference_task_id = old_task.id
-                                old_task.pk = None
-                                old_task.project = project
-                                old_task.is_the_reference_task = False
-                                old_task.deliverable = old_deliverable
-                                old_task.save()
-                                old_task.copied_from_id = reference_task_id
-                                old_task.save()
-                    except:
-                        new_ws = Workstream.objects.create(name=workstream_type.name, description=workstream_type.name,
-                                                           category_id=int(type_num),
-                                                           project_id=self.kwargs['project_id'],
-                                                           is_the_reference_workstream=False)
-                        new_ws.save()
+            form.instance.project_id = self.kwargs['project_id']
+            form.save()
         else:
             pass
         return super().form_valid(form)
 
 
-class AddDeliverable(BSModalFormView):
+class AddDeliverable(BSModalCreateView):
     template_name = 'modals/add_edit.html'
-    form_class = DeliverableTypeForm
-    success_url = "/"  # doesn't matter, because we're going to submit asyncronously and not use success_url
+    form_class = DeliverableForm
+    success_url = '/'
 
-    # def get_form(self, form_class=None):
-    #     form = super(AddDeliverable, self).get_form()
-    #     form.fields['workstreams'].queryset = Workstream.objects.filter(project_id=self.kwargs['project_id'])
-    #     form.fields['tasks'].queryset = Task.objects.filter(project_id=self.kwargs['project_id'])
-    # return form
+    def get_form(self, form_class=None):
+        form = super().get_form()
+
+        form.fields['category'].widget.attrs.update({'class': 'modelchoicefield'})
+
+        workstreams = Workstream.objects.filter(project_id=self.kwargs['project_id'])
+        if workstreams:
+            form.fields['workstream'].queryset = workstreams
+            form.fields['workstream'].widget.attrs.update({'class': 'modelchoicefield'})
+        else:
+            del form.fields['workstream']
+
+        tasks = Task.objects.filter(project_id=self.kwargs['project_id'])
+        if tasks:
+            form.fields['tasks'].queryset = tasks
+        else:
+            del form.fields['tasks']
+
+        return form
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -186,42 +238,39 @@ class AddDeliverable(BSModalFormView):
         context['button_text'] = "Save deliverable"
         return context
 
-    # def get_form_kwargs(self):
-    #     kwargs = super().get_form_kwargs()
-    #     kwargs.update({'project_id': self.kwargs['project_id']})
-    #     return kwargs
-
     def form_valid(self, form):
-        # note, this must be done in the view rather than the form because workstreams, deliverables, and tasks are
-        # not created using a ModelForm. Types are selected (potentially multiple at once) and then the workstream,
-        # deliverable, and task objects are created in a loop
         if not self.request.is_ajax() or self.request.POST.get('asyncUpdate') == 'True':
-            types_to_add = self.request.POST.getlist('deliverable_type')
-
-            for type_num in types_to_add:
-                deliverable_type = DeliverableType.objects.get(id=int(type_num))
-                new_deliverable = Deliverable.objects.create(name=deliverable_type.name,
-                                                             description=deliverable_type.name,
-                                                             project_id=self.kwargs['project_id'],
-                                                             category_id=int(type_num))
-                new_deliverable.save()
+            form.instance.project_id = self.kwargs['project_id']
+            form.save()
         else:
             pass
         return super().form_valid(form)
 
 
-class AddTask(BSModalFormView):
+class AddTask(BSModalCreateView):
     template_name = 'modals/add_edit.html'
-    form_class = TaskTypeForm
-    success_url = "/"  # doesn't matter, because we're going to submit asyncronously and not use success_url
+    form_class = TaskForm
+    success_url = '/'
 
-    # def get_form(self, form_class=None):
-    #     form = super(AddTask, self).get_form()
-    #     form.fields['deliverables'].queryset = Deliverable.objects.filter(project_id=self.kwargs['project_id'])
-    #     form.fields['parent_tasks'].queryset = Task.objects.filter(project_id=self.kwargs['project_id']).exclude(
-    #         id=self.kwargs['task_id'])
-    #     form.fields['team_members'].queryset = TeamMember.objects.filter(project_id=self.kwargs['project_id'])
-    #     return form
+    def get_form(self, form_class=None):
+        form = super().get_form()
+
+        form.fields['category'].widget.attrs.update({'class': 'modelchoicefield'})
+
+        tasks = Task.objects.filter(project_id=self.kwargs['project_id'])
+        if tasks:
+            form.fields['parent_tasks'].queryset = Task.objects.filter(project_id=self.kwargs['project_id'])
+            form.fields['deliverable'].widget.attrs.update({'class': 'modelmultichoicefield'})
+        else:
+            del form.fields['parent_tasks']
+
+        team_members = TeamMember.objects.filter(project_id=self.kwargs['project_id'])
+        if team_members:
+            form.fields['team_member'].queryset = TeamMember.objects.filter(project_id=self.kwargs['project_id'])
+            form.fields['team_member'].widget.attrs.update({'class': 'modelchoicefield'})
+        else:
+            del form.fields['team_member']
+        return form
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -230,13 +279,12 @@ class AddTask(BSModalFormView):
         context['button_text'] = "Save task"
         return context
 
-    # def get_form_kwargs(self):
-    #     kwargs = super().get_form_kwargs()
-    #     kwargs.update({'project_id': self.kwargs['project_id']})
-    #     return kwargs
-
     def form_valid(self, form):
-        form.save()
+        if not self.request.is_ajax() or self.request.POST.get('asyncUpdate') == 'True':
+            form.instance.project_id = self.kwargs['project_id']
+            form.save()
+        else:
+            pass
         return super().form_valid(form)
 
 
@@ -305,7 +353,7 @@ class AddTeamMember(BSModalFormView):
                 task.save()
         else:
             pass
-        return HttpResponseRedirect(self.get_success_url())
+        return super().form_valid(form)
 
 
 class AddDivision(BSModalCreateView):
@@ -319,19 +367,27 @@ class AddDivision(BSModalCreateView):
             form.save()
         else:
             pass
-        return HttpResponseRedirect(self.get_success_url())
+        return super().form_valid(form)
 
 
-# class AddWorkstreamType(BSModalCreateView):
-#     template_name = 'modals/add_edit.html'
-#     form_class = WorkstreamTypeForm
-#     success_url = "/"  # doesn't matter, because we're going to submit asyncronously and not use success_url
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['header_text'] = "Add new workstream type"
-#         context['button_text'] = "Save"
-#         return context
+class AddWorkstreamType(BSModalCreateView):
+    template_name = 'modals/add_edit.html'
+    form_class = AddWorkstreamTypeForm
+    success_url = "/"  # doesn't matter, because we're going to submit asyncronously and not use success_url
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['header_text'] = "Add new workstream type"
+        context['button_text'] = "Save"
+        return context
+
+    def form_valid(self, form):
+        if not self.request.is_ajax() or self.request.POST.get('asyncUpdate') == 'True':
+            form.instance.organization = self.request.user.organization
+            form.save()
+        else:
+            pass
+        return super().form_valid(form)
 
 
 class AddDeliverableType(BSModalFormView):
@@ -353,19 +409,29 @@ class AddDeliverableType(BSModalFormView):
             deliverable_type.save()
         else:
             pass
-        return HttpResponseRedirect(self.get_success_url())
+        return super().form_valid(form)
 
 
-# class AddTaskType(BSModalCreateView):
-#     template_name = 'modals/add_edit.html'
-#     form_class = TaskTypeForm
-#     success_url = "/"  # doesn't matter, because we're going to submit asyncronously and not use success_url
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['header_text'] = "Add new task type"
-#         context['button_text'] = "Save"
-#         return context
+class AddTaskType(BSModalFormView):
+    template_name = 'modals/add_edit.html'
+    form_class = TaskTypeForm
+    success_url = "/"  # doesn't matter, because we're going to submit asyncronously and not use success_url
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['header_text'] = "Add new task type"
+        context['button_text'] = "Save"
+        return context
+
+    def form_valid(self, form):
+        if not self.request.is_ajax() or self.request.POST.get('asyncUpdate') == 'True':
+            task_type = form.save()
+
+            task_type.organization = self.request.user.organization
+            task_type.save()
+        else:
+            pass
+        return super().form_valid(form)
 
 
 class AddContentType(BSModalCreateView):

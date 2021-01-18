@@ -1,0 +1,72 @@
+<tr>
+    <td class="text-center">{{ activity }}</td>
+
+    <td class="text-center">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="float-left">
+                    <a act-id="{{activity.id}}" class="edit-act-desc" href="#" data-editable>{{ activity.description
+                        }}</a>
+                </div>
+            </div>
+        </div>
+    </td>
+
+    <td class="text-center" style="vertical-align:middle">
+        {% for act_task in activity.tasks.all %}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="float-left">
+                    <a act-task-id="{{act_task.id}}" class="edit-act-task" href="#" data-editable>{{ act_task }}</a>
+                    <a href="#" act-task-id="{{act_task.id}}" class="remove-act-task" delete-item><span
+                            class="fa fa-minus-circle ml-2"></span></a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        <div id="add-new-act-task-{{ activity.id }}" class="row">
+            <div class="col-md-12">
+                <div class="float-left">
+                    <a id="add-new-act-task" act-id="{{activity.id}}" href="#" class="add-new-act-task" add-new><span
+                            class="fa fa-plus mr-2"></span><strong>Add new</strong></a>
+                </div>
+            </div>
+        </div>
+    </td>
+
+    <td class="text-center">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group" id="id_internal_group" none="">
+                    <label for="id_internal">Internal or external client?</label>
+                    <select name="internal" class="form-control" id="id_internal">
+                        <option value="internal" selected="">Internal</option>
+                        <option value="external">External</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </td>
+
+    <td class="text-center" style="vertical-align:middle">
+        {% for act_tool in activity.tools.all %}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="float-left">
+                    <a act-tool-id="{{act_tool.id}}" class="edit-act-tool" href="#" data-editable>{{ act_tool }}</a>
+                    <a href="#" act-tool-id="{{act_tool.id}}" class="remove-act-tool" delete-item><span
+                            class="fa fa-minus-circle ml-2"></span></a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        <div id="add-new-act-tool-{{ activity.id }}" class="row">
+            <div class="col-md-12">
+                <div class="float-left">
+                    <a id="add-new-act-tool" act-id="{{activity.id}}" href="#" class="add-new-act-tool" add-new><span
+                            class="fa fa-plus mr-2"></span><strong>Add new</strong></a>
+                </div>
+            </div>
+        </div>
+    </td>
+</tr>

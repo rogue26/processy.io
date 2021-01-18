@@ -19,12 +19,13 @@ class ManageProjects(FormView):
 
         form.fields['client'].widget.attrs.update({'class': 'initial-hide'})
 
-        organization = self.request.user.organization
-        if organization is None:
-            del form.fields['division']
-        else:
-            if not organization.division_set.all().exists():
+        if self.request.user.is_authenticated:
+            organization = self.request.user.organization
+            if organization is None:
                 del form.fields['division']
+            else:
+                if not organization.division_set.all().exists():
+                    del form.fields['division']
 
         return form
 

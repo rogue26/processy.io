@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'projects',
     'organizations',
     'modals',
+    'RACI'
 ]
 
 STATICFILES_FINDERS = [

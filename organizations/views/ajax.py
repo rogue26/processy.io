@@ -1,23 +1,11 @@
 from django.http import HttpResponse
 from django.http import JsonResponse
-from django.template.loader import render_to_string
 
-from projects.models import SpecificationType, ConditionType
-from projects.models import Project
-from projects.models import WorkstreamType
-from projects.models import TaskType
+from projects.models import WorkstreamType, DeliverableType, TaskType, ConditionType, SpecificationType
 from ..models import Content
 
 
 def ajax_add_organization(request):
-    data = dict()
-    if request.method == 'GET':
-        data['data'] = ""
-        return JsonResponse(data)
-
-
-def ajax_add_deliverable_type(request):
-    # todo: add logic for updating the table of deliverable types
     data = dict()
     if request.method == 'GET':
         data['data'] = ""
@@ -32,102 +20,119 @@ def content_download(request):
         return HttpResponse("unsuccesful")
 
 
-def update_type(request):
+def add_workstream_type(request):
     if request.method == 'POST':
-
-        model_type = request.POST.get('modeltype')
-        model_id = request.POST.get('modelid')
         newval = request.POST.get('newval')
-
-        if model_type == 'specificationtype':
-            item = SpecificationType.objects.get(id=model_id)
-            item.name = newval
-            item.save()
-        elif model_type == 'conditiontype':
-            item = ConditionType.objects.get(id=model_id)
-            item.name = newval
-            item.save()
-        elif model_type == 'workstreamtype':
-            item = WorkstreamType.objects.get(id=model_id)
-            item.name = newval
-            item.save()
-        elif model_type == 'tasktype':
-            item = TaskType.objects.get(id=model_id)
-            item.name = newval
-            item.save()
-
-        message = 'update successful'
-    else:
-        message = 'update unsuccessful'
-    return HttpResponse(message)
+        item = WorkstreamType.objects.create(name=newval)
+        item.organization = request.user.organization
+        item.save()
+        return HttpResponse(item.id)
 
 
-def add_type(request):
+def add_deliverable_type(request):
     if request.method == 'POST':
-
-        model_type = request.POST.get('modeltype')
-        deliverabletype_id = request.POST.get('deliverabletype_id')
         newval = request.POST.get('newval')
-
-        if model_type == 'specificationtype':
-            item = SpecificationType(name=newval)
-            item.save()
-            item.deliverable_type_id = deliverabletype_id
-            item.save()
-            new_id = item.id
-            return HttpResponse(new_id)
-
-        elif model_type == 'conditiontype':
-            item = ConditionType(name=newval)
-            item.save()
-            item.deliverable_type_id = deliverabletype_id
-            item.save()
-            new_id = item.id
-            return HttpResponse(new_id)
-
-        elif model_type == 'workstreamtype':
-            item = WorkstreamType(name=newval)
-            item.save()
-            item.organization = request.user.organization
-            item.save()
-            new_id = item.id
-            return HttpResponse(new_id)
-
-        elif model_type == 'tasktype':
-            item = TaskType(name=newval)
-            item.save()
-            item.organization = request.user.organization
-            item.save()
-            new_id = item.id
-            return HttpResponse(new_id)
-
-    else:
-        message = 'update unsuccessful'
-        return HttpResponse(message)
+        item = DeliverableType.objects.create(name=newval)
+        item.organization = request.user.organization
+        item.save()
+        return HttpResponse(item.id)
 
 
-def delete_type(request):
+def add_task_type(request):
     if request.method == 'POST':
+        newval = request.POST.get('newval')
+        item = TaskType.objects.create(name=newval)
+        item.organization = request.user.organization
+        item.save()
+        return HttpResponse(item.id)
 
-        model_type = request.POST.get('modeltype')
-        model_id = request.POST.get('modelid')
 
-        if model_type == 'specificationtype':
-            SpecificationType.objects.get(id=model_id).delete()
+def add_specification_type(request):
+    if request.method == 'POST':
+        newval = request.POST.get('newval')
+        item = SpecificationType.objects.create(name=newval)
+        item.organization = request.user.organization
+        item.save()
+        return HttpResponse(item.id)
 
-        elif model_type == 'conditiontype':
-            ConditionType.objects.get(id=model_id).delete()
 
-        elif model_type == 'workstreamtype':
-            WorkstreamType.objects.get(id=model_id).delete()
+def add_condition_type(request):
+    if request.method == 'POST':
+        newval = request.POST.get('newval')
+        item = ConditionType.objects.create(name=newval)
+        item.organization = request.user.organization
+        item.save()
+        return HttpResponse(item.id)
 
-        elif model_type == 'tasktype':
-            TaskType.objects.get(id=model_id).delete()
 
-        message = 'update successful'
-    else:
-        message = 'update unsuccessful'
-    return HttpResponse(message)
+def edit_workstream_type(request):
+    if request.method == 'POST':
+        item = WorkstreamType.objects.get(id=request.POST.get('modelid'))
+        item.name = request.POST.get('newval')
+        item.save()
+        return HttpResponse('success')
+
+
+def edit_deliverable_type(request):
+    if request.method == 'POST':
+        item = DeliverableType.objects.get(id=request.POST.get('modelid'))
+        item.name = request.POST.get('newval')
+        item.save()
+        return HttpResponse('success')
+
+
+def edit_task_type(request):
+    if request.method == 'POST':
+        item = TaskType.objects.get(id=request.POST.get('modelid'))
+        item.name = request.POST.get('newval')
+        item.save()
+        return HttpResponse('success')
+
+
+def edit_condition_type(request):
+    if request.method == 'POST':
+        item = ConditionType.objects.get(id=request.POST.get('modelid'))
+        item.name = request.POST.get('newval')
+        item.save()
+        return HttpResponse('success')
+
+
+def edit_specification_type(request):
+    if request.method == 'POST':
+        item = SpecificationType.objects.get(id=request.POST.get('modelid'))
+        item.name = request.POST.get('newval')
+        item.save()
+        return HttpResponse('success')
+
+
+def delete_workstream_type(request):
+    if request.method == 'POST':
+        WorkstreamType.objects.get(id=request.POST.get('modelid')).delete()
+        return HttpResponse('success')
+
+
+def delete_deliverable_type(request):
+    if request.method == 'POST':
+        DeliverableType.objects.get(id=request.POST.get('modelid')).delete()
+        return HttpResponse('success')
+
+
+def delete_task_type(request):
+    if request.method == 'POST':
+        TaskType.objects.get(id=request.POST.get('modelid')).delete()
+        return HttpResponse('success')
+
+
+def delete_condition_type(request):
+    if request.method == 'POST':
+        ConditionType.objects.get(id=request.POST.get('modelid')).delete()
+        return HttpResponse('success')
+
+
+def delete_specification_type(request):
+    if request.method == 'POST':
+        SpecificationType.objects.get(id=request.POST.get('modelid')).delete()
+        return HttpResponse('success')
 
 
 def update_declined_organization(request):

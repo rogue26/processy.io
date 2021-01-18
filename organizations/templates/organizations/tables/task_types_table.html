@@ -1,31 +1,43 @@
 <table id="task-types-table" class="table table-striped">
     <thead>
     <tr>
-        <th class="text-center" scope="col">Task type
+        <th class="text-center" scope="col">Workstream type
             <span class="fa fa-question-circle text-secondary ml-2" data-toggle="tooltip" data-placement="right"
                   title="Tooltip on right"></span>
         </th>
     </tr>
     </thead>
     <tbody>
+    {% for tt in task_types.all %}
     <tr>
-        <td class="text-center" style="vertical-align:middle">
-            {% for tt in task_types.all %}
+        <th class="text-center" style="vertical-align:middle">
             <div class="row">
                 <div class="col-md-12">
                     <div class="float-left">
-                        <a tt-id="{{tt.id}}" class="edit-tt" href="#" data-editable>{{ tt }}</a>
-                        <a href="#" tt-id="{{tt.id}}" class="remove-tt" delete-item><span
-                                class="fa fa-minus-circle ml-2"></span></a>
+                        <a modelid="{{tt.id}}" href="#" data-editable
+                        data-url="{% url 'organizations:edit_task_type' %}">
+                            {{ tt }}
+                        </a>
+                        <a modelid="{{tt.id}}" href="#" delete-item-row
+                           data-url="{% url 'organizations:delete_task_type' %}">
+                            <span modelid="{{tt.id}}" class="fa fa-minus-circle ml-2"></span>
+                        </a>
                     </div>
                 </div>
             </div>
-            {% endfor %}
-            <div id="add-new-tt-{{ tt.id }}" class="row">
+        </th>
+    </tr>
+    {% endfor %}
+    <tr>
+        <td class="text-center" style="vertical-align:middle">
+            <div class="row">
                 <div class="col-md-12">
                     <div class="float-left">
-                        <a id="add-new-spectype" href="#" class="add-new-tt" tt-id="{{tt.id}}" add-new><span
-                                class="fa fa-plus mr-2"></span><strong>Add new</strong></a>
+                        <a href="#" add-new-above-row
+                           data-url="{% url 'organizations:add_task_type' %}"
+                           delete-data-url="{% url 'organizations:delete_task_type' %}">
+                            <span class="fa fa-plus mr-2"></span><strong>Add new</strong>
+                        </a>
                     </div>
                 </div>
             </div>

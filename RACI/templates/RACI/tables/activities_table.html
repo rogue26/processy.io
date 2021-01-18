@@ -1,0 +1,18 @@
+{% load RACI_tags %}
+
+<table id="tasks-table" class="table table-striped">
+    <thead>
+    <tr>
+        <th class="text-center" scope="col">Activity</th>
+        <th class="text-center" scope="col">Description</th>
+        <th class="text-center" scope="col">Tasks</th>
+        <th class="text-center" scope="col">Task frequency</th>
+        <th class="text-center" scope="col">Tools required</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for activity in activities %}
+        {% render_RACI_row activity %}
+    {% endfor %}
+    </tbody>
+</table>
