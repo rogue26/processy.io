@@ -8,24 +8,36 @@
     </tr>
     </thead>
     <tbody>
+    {% for wt in workstream_types.all %}
     <tr>
-        <td class="text-center" style="vertical-align:middle">
-            {% for wt in workstream_types.all %}
+        <th class="text-center" style="vertical-align:middle">
             <div class="row">
                 <div class="col-md-12">
                     <div class="float-left">
-                        <a wt-id="{{wt.id}}" class="edit-wt" href="#" data-editable>{{ wt }}</a>
-                        <a href="#" wt-id="{{wt.id}}" class="remove-wt" delete-item><span
-                                class="fa fa-minus-circle ml-2"></span></a>
+                        <a modelid="{{wt.id}}" href="#" data-editable
+                        data-url="{% url 'organizations:edit_workstream_type' %}">
+                            {{ wt }}
+                        </a>
+                        <a modelid="{{wt.id}}" href="#" delete-item-row
+                           data-url="{% url 'organizations:delete_workstream_type' %}">
+                            <span modelid="{{wt.id}}" class="fa fa-minus-circle ml-2"></span>
+                        </a>
                     </div>
                 </div>
             </div>
-            {% endfor %}
-            <div id="add-new-wt-{{ wt.id }}" class="row">
+        </th>
+    </tr>
+    {% endfor %}
+    <tr>
+        <td class="text-center" style="vertical-align:middle">
+            <div class="row">
                 <div class="col-md-12">
                     <div class="float-left">
-                        <a id="add-new-spectype" href="#" class="add-new-wt" wt-id="{{wt.id}}" add-new><span
-                                class="fa fa-plus mr-2"></span><strong>Add new</strong></a>
+                        <a href="#" add-new-above-row
+                           data-url="{% url 'organizations:add_workstream_type' %}"
+                           delete-data-url="{% url 'organizations:delete_workstream_type' %}">
+                            <span class="fa fa-plus mr-2"></span><strong>Add new</strong>
+                        </a>
                     </div>
                 </div>
             </div>

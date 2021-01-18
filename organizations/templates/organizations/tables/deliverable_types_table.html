@@ -5,37 +5,63 @@
             <span class="fa fa-question-circle text-secondary ml-2" data-toggle="tooltip" data-placement="right"
                   title="Tooltip on right"></span>
         </th>
-        <th class="text-center" scope="col">Specification types
+        <th class="text-center" scope="col">Specification fields
             <span class="fa fa-question-circle text-secondary ml-2" data-toggle="tooltip" data-placement="right"
-                  title="Tooltip on right"></span>
+                  title="Things that should be specified related to this type of deliverable. Example: Specifications
+                  for a dashboard might include the technology and types of views required."></span>
         </th>
-        <th class="text-center" scope="col">Condition types
+        <th class="text-center" scope="col">Condition fields
             <span class="fa fa-question-circle text-secondary ml-2" data-toggle="tooltip" data-placement="right"
-                  title="Tooltip on right"></span>
+                  title="Types of conditions that should be specified for this type of deliverable. Example:
+                  Conditions for a dashboard might include the client designating someone as the dashboard
+                  maintainer."></span>
         </th>
     </tr>
     </thead>
     <tbody>
     {% for dt in deliverable_types %}
     <tr>
-        <th class="text-center my-auto" scope="row" style="vertical-align:middle">{{ dt }}</th>
+        <th class="text-center" style="vertical-align:middle">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="float-left">
+                        <a modelid="{{dt.id}}" href="#" data-editable
+                        data-url="{% url 'organizations:edit_deliverable_type' %}">
+                            {{ dt }}
+                        </a>
+                        <a modelid="{{dt.id}}" href="#" delete-item-row
+                           data-url="{% url 'organizations:delete_deliverable_type' %}">
+                            <span modelid="{{dt.id}}" class="fa fa-minus-circle ml-2"></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </th>
         <td class="text-center" style="vertical-align:middle">
             {% for st in dt.specificationtype_set.all %}
             <div class="row">
                 <div class="col-md-12">
                     <div class="float-left">
-                        <a st-id="{{st.id}}" class="edit-st" href="#" data-editable>{{ st }}</a>
-                        <a href="#" st-id="{{st.id}}" class="remove-st" delete-item><span
-                                class="fa fa-minus-circle ml-2"></span></a>
+                        <a modelid="{{st.id}}" href="#" data-editable
+                           data-url="{% url 'organizations:edit_specification_type' %}">
+                            {{ st }}
+                        </a>
+                        <a modelid="{{st.id}}" href="#" delete-item
+                           data-url="{% url 'organizations:delete_specification_type' %}">
+                            <span class="fa fa-minus-circle ml-2"></span>
+                        </a>
                     </div>
                 </div>
             </div>
             {% endfor %}
-            <div id="add-new-st-{{ dt.id }}" class="row">
+            <div class="row">
                 <div class="col-md-12">
                     <div class="float-left">
-                        <a id="add-new-spectype" href="#" class="add-new-st" dt-id="{{dt.id}}" add-new><span
-                                class="fa fa-plus mr-2"></span><strong>Add new</strong></a>
+                        <a href="#" add-new-above
+                           data-url="{% url 'organizations:add_specification_type' %}"
+                           delete-data-url="{% url 'organizations:delete_specification_type' %}">
+                            <span class="fa fa-plus mr-2"></span><strong>Add new</strong>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -45,24 +71,48 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="float-left">
-                        <a ct-id="{{ct.id}}" class="edit-ct" href="#" data-editable>{{ ct }}</a>
-                        <a href="#" ct-id="{{ct.id}}" class="remove-ct" delete-item>
+                        <a modelid="{{ct.id}}" href="#" data-editable
+                           data-url="{% url 'organizations:edit_condition_type' %}"> {{ ct }} </a>
+                        <a modelid="{{ct.id}}" href="#" delete-item
+                           data-url="{% url 'organizations:delete_condition_type' %}">
                             <span class="fa fa-minus-circle ml-2"></span>
                         </a>
                     </div>
                 </div>
             </div>
             {% endfor %}
-            <div id="add-new-ct-{{ dt.id }}" class="row">
+            <div class="row">
                 <div class="col-md-12">
                     <div class="float-left">
-                        <a id="add-new-condtype" href="#" class="add-new-ct" dt-id="{{dt.id}}" add-new><span
-                                class="fa fa-plus mr-2"></span><strong>Add new</strong></a>
+                        <a href="#" add-new-above
+                           data-url="{% url 'organizations:add_condition_type' %}"
+                           delete-data-url="{% url 'organizations:delete_condition_type' %}">
+                            <span class="fa fa-plus mr-2"></span><strong>Add new</strong>
+                        </a>
                     </div>
                 </div>
             </div>
         </td>
     </tr>
     {% endfor %}
+    <tr>
+        <th class="text-center my-auto" scope="row" style="vertical-align:middle">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="float-left">
+                        <a href="#" add-new-above-row
+                           data-url="{% url 'organizations:add_deliverable_type' %}"
+                           delete-data-url="{% url 'organizations:delete_deliverable_type' %}">
+                            <span class="fa fa-plus mr-2"></span><strong>Add new</strong>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </th>
+        <td class="text-center" style="vertical-align:middle">
+        </td>
+        <td class="text-center" style="vertical-align:middle">
+        </td>
+    </tr>
     </tbody>
 </table>

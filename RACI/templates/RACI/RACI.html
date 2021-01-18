@@ -1,0 +1,28 @@
+{% load RACI_tags %}
+
+<div id="raci-view-selector" class="mb-3">
+    <div class="btn-group d-flex btn-group-toggle pl-5 pr-5 mx-auto" data-toggle="buttons">
+        <label class="btn btn-secondary active w-100 showSubDiv" target="RACI-table">
+            <input type="radio" autocomplete="off" value="RACI">
+            Configure RACI
+        </label>
+        <label class="btn btn-secondary w-100 showSubDiv" target="activities-table">
+            <input type="radio" autocomplete="off" value="activities">
+            Configure activities
+        </label>
+    </div>
+</div>
+
+<div id="RACI-table" class="targetSubDiv firstSubDiv">
+    <div class="row mb-3 pl-3">
+        <h4 class="my-auto">Configure RACI</h4>
+    </div>
+    {% include "RACI/tables/RACI_table.html" %}
+</div>
+<div id="activities-table" class="targetSubDiv" style="display:none;">
+    <div class="row mb-3 pl-3">
+        <h4 class="my-auto">Configure Activities</h4>
+    </div>
+    {% include "RACI/tables/activities_table.html" %}
+</div>
+

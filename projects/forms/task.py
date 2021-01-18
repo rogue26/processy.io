@@ -46,5 +46,11 @@ class TaskForm(BSModalModelForm):
 
     class Meta:
         model = Task
-        fields = ['name', 'category', 'team_member', 'deliverable', 'description', 'baseline_fte_days',
+        fields = ['category', 'name', 'team_member', 'deliverable', 'description', 'baseline_fte_days',
                   'percent_complete', 'resources_required', 'parent_tasks', 'complexity_drivers']
+        labels = {
+            'baseline_fte_days': 'Baseline FTE days'
+        }
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 4}),
+        }

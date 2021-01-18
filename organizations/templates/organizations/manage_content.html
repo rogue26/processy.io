@@ -15,7 +15,7 @@
                     <button id="configure" class="btn btn-secondary text-left btn-block active" type="button"
                             name="button"
                             style="active">
-                        <span class="fa fa-gear mr-2"></span>Create new material type
+                        <span class="fa fa-cog mr-2"></span>Create new material type
                     </button>
                 </div>
             </div>
@@ -50,7 +50,7 @@
 
             $('#output-sow').click(function(){
 
-                $('.fa-file-text').removeClass('fa-file-text').addClass('fa-spinner').addClass('fa-spin');
+                $('.fa-file-alt').removeClass('fa-file-alt').addClass('fa-spinner').addClass('fa-spin');
 
                 var project_id = {{ project.id }};
                 $.ajax(
@@ -68,7 +68,7 @@
                             a.click();
                             a.remove();
                             window.URL.revokeObjectURL(url);
-                            $('.fa-spinner').removeClass('fa-spinner').removeClass('fa-spin').addClass('fa-file-text')
+                            $('.fa-spinner').removeClass('fa-spinner').removeClass('fa-spin').addClass('fa-file-alt')
                         }
                      }
                  )

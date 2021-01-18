@@ -1,5 +1,10 @@
 from django import template
 from django.urls import reverse_lazy
+from django.utils.html import mark_safe
+from pprint import pprint
+
+from projects.forms import WorkstreamForm
+from projects.models import WorkstreamType, DeliverableType, TaskType
 
 register = template.Library()
 
@@ -7,6 +12,31 @@ register = template.Library()
 @register.simple_tag
 def form_group_id_modal(field):
     return str(field.auto_id) + "_group_modal"
+
+
+@register.inclusion_tag('modals/modal_add_button.html')
+def form_add_button(field):
+    context = dict()
+
+    model = field.field._queryset.model
+    if model == WorkstreamType:
+        context['form_url'] = reverse_lazy('modals:add_workstream_type')
+    elif model == DeliverableType:
+        context['form_url'] = reverse_lazy('modals:add_deliverable_type')
+    elif model == TaskType:
+        context['form_url'] = reverse_lazy('modals:add_task_type')
+    return context
+
+
+@register.simple_tag
+def form_group_class(field):
+    try:
+        if "modelchoicefield" in field.field.widget.attrs['class']:
+            return mark_safe("class=\"col-md-11\"")
+        else:
+            return mark_safe("class=\"col-md-12\"")
+    except KeyError:
+        return mark_safe("class=\"col-md-12\"")
 
 
 @register.simple_tag

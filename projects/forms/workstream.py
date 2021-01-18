@@ -23,6 +23,8 @@ class WorkstreamTypeForm(BSModalForm):
 
 
 class WorkstreamForm(BSModalModelForm):
+    test_attr = 3
+
     deliverables = forms.ModelMultipleChoiceField(
         queryset=Deliverable.objects.all(),
         widget=forms.CheckboxSelectMultiple,
@@ -30,4 +32,7 @@ class WorkstreamForm(BSModalModelForm):
 
     class Meta:
         model = Workstream
-        fields = ['category', 'name', 'description', 'objective', 'motivation', 'owner', 'deliverables']
+        fields = ['category', 'name', 'description', 'objective', 'motivation', 'deliverables']
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 4}),
+        }
