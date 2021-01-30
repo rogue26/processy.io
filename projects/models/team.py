@@ -36,9 +36,25 @@ class TeamMember(models.Model):
             for td in overallocated_taskdays:
                 td.stretch(allocation)
 
-
     def __str__(self):
         if self.user is not None:
             return self.user.email
         else:
             return ' '.join([self.first_name, self.last_name])
+
+
+class ResourceDay(models.Model):
+    date = models.DateField(null=True, blank=True)
+    allocation = models.DecimalField(
+        max_digits=3,
+        decimal_places=2,
+        default=1,
+        validators=[
+            MaxValueValidator(1),
+            MinValueValidator(0)
+        ]
+    )
+    task = models.ForeignKey(Task, null=True, blank=True, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return " ".join([str(self.task), str(self.date)])
