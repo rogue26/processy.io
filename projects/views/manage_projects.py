@@ -9,7 +9,7 @@ from ..models import Project
 
 
 class ManageProjects(FormView):
-    template_name = "projects/manage_projects.html"
+    template_name = "projects/contributor_dashboard.html"
     landing_template_name = "projects/index.html"
     form_class = ProjectForm
     success_url = "/"
